@@ -14,6 +14,15 @@ use App\Http\Controllers\Backend\ProductController;
 use App\Http\Controllers\Backend\ReservationController;
 use App\Http\Controllers\Backend\TableController;
 
+
+
+// test 
+
+Route::get('/add-product', function () {
+    return view('test.add-product');
+});
+
+
 Route::get('/', function () {
     return redirect()->route('login');
 });
@@ -122,8 +131,11 @@ Route::controller(FacebookController::class)->group(function () {
 });
 
 // Định nghĩa route cho thanh toán PayPal
-Route::prefix('payment')->group(function () {
-    Route::get('/create/{reservationId}/{amount}', [PayPalController::class, 'createPayment'])->name('payment.create');
-    Route::get('/success', [PayPalController::class, 'executePayment'])->name('payment.success');
-    Route::get('/cancel', [PayPalController::class, 'cancelPayment'])->name('payment.cancel');
-});
+// Route::prefix('payment')->group(function () {
+//     Route::get('/create/{reservationId}/{amount}', [PayPalController::class, 'createPayment'])->name('payment.create');
+//     Route::get('/success', [PayPalController::class, 'executePayment'])->name('payment.success');
+//     Route::get('/cancel', [PayPalController::class, 'cancelPayment'])->name('payment.cancel');
+// });
+
+
+

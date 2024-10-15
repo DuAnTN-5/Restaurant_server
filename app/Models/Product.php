@@ -12,16 +12,20 @@ class Product extends Model
     // Define fillable fields to allow mass assignment
     protected $fillable = [
         'name', 
+        'slug',
         'description', 
+        'summary',
         'price', 
         'category_id', 
-        'type', 
         'image_url', 
         'stock_quantity', 
-        'discount_price', 
+        'discount_price',
+        'ingredients', 
         'availability', 
         'position', 
         'status',
+        'tags',
+        'product_code',
     ];
 
     // Define relationship to the ProductCategory model
