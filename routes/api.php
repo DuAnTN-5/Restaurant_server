@@ -1,10 +1,12 @@
 <?php
 
+use App\Http\Controllers\API\DishReviewController;
 use App\Http\Controllers\API\ProductController;
 use App\Http\Controllers\API\RegisterController;
 use App\Http\Controllers\API\PostCategoryController; 
 use App\Http\Controllers\API\ProductCategoryController; 
 use App\Http\Controllers\API\PostController;
+use App\Models\DishReview;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -19,34 +21,46 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+// Đường dẫn API yêu cầu xác thực
+// Route::middleware('auth:sanctum')->group(function () {
+// });
+
 // Đăng ký các route cho đăng ký và đăng nhập
 Route::controller(RegisterController::class)->group(function () {
     Route::post('register', 'register')->name('register');
     Route::post('login', 'login')->name('login');
 });
 
-// Đường dẫn API yêu cầu xác thực
-Route::middleware('auth:sanctum')->group(function () {
 
-    Route::post('logout', [RegisterController::class, 'logout'])->name('logout');
+Route::post('logout', [RegisterController::class, 'logout'])->name('logout');
 
-    // Route cho sản phẩm
-    Route::apiResource('products', ProductController::class);
-    
-    // Route cho bài viết
-    Route::apiResource('posts', PostController::class);
-    
-    // Route cho danh mục bài viết
-    Route::apiResource('post-categories', PostCategoryController::class);
-    
-    // Route cho danh mục sản phẩm
-    Route::apiResource('product-categories', ProductCategoryController::class);
+// Route cho sản phẩm
+Route::apiResource('products', ProductController::class);
 
-    // Route để lấy sản phẩm theo danh mục
-    Route::get('product-categories/{id}/products', [ProductCategoryController::class, 'products'])->name('product-categories.products');
-    
-    // Đường dẫn để lấy thông tin người dùng hiện tại
-    Route::get('user', function (Request $request) {
-        return $request->user();
-    })->name('user');
-});
+// Route cho bài viết
+Route::apiResource('posts', PostController::class);
+
+// Route cho danh mục bài viết
+Route::apiResource('post-categories', PostCategoryController::class);
+
+// Route cho danh mục sản phẩm
+Route::apiResource('product-categories', ProductCategoryController::class);
+
+// Route để lấy sản phẩm theo danh mục
+Route::get('product-categories/{id}/products', [ProductCategoryController::class, 'products'])->name('product-categories.products');
+
+// Đường dẫn để lấy thông tin người dùng hiện tại
+Route::get('user', function (Request $request) {
+    return $request->user();
+})->name('user');
+
+// Route cho đánh giá món ăn
+Route::post('/reviews-dish', [DishReviewController::class, 'store']); // Thêm đánh giá
+Route::get('/reviews-dish/{dish_id}', [DishReviewController::class, 'index']); // Lấy đánh giá của món ăn
+Route::put('/reviews-dish/{id}', [DishReviewController::class, 'update']); // Cập nhật đánh giá
+Route::delete('/reviews-dish/{id}', [DishReviewController::class, 'destroy']); // Xóa đánh giá
+
+Route::get('/dishrating/{dish_id}', [DishReviewController::class, 'getDishRating']);
+
+
+
