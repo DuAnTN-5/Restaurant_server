@@ -1,10 +1,12 @@
 <?php
 
 namespace App\Http\Controllers\Backend;
+
 use App\Http\Controllers\Controller;
 use App\Models\Reservation;
 use Illuminate\Http\Request;
 use Flasher\Prime\FlasherInterface;
+use Carbon\Carbon;
 
 class ReservationController extends Controller
 {
@@ -23,21 +25,34 @@ class ReservationController extends Controller
         $userId = $request->input('user_id');
         $tableId = $request->input('table_id');
 
+        // Apply filters if present
         if ($status) {
             $query->where('status', $status);
         }
-
         if ($userId) {
             $query->where('user_id', $userId);
         }
-
         if ($tableId) {
             $query->where('table_id', $tableId);
         }
 
+        // Automatically update expired reservations
+        $this->autoUpdateExpiredReservations();
+
         $reservations = $query->paginate(10)->appends($request->except('page'));
 
         return view('admin.reservations.index', compact('reservations', 'status', 'userId', 'tableId'));
+    }
+
+    // Method to automatically update expired reservations
+    protected function autoUpdateExpiredReservations()
+    {
+        // Fetch reservations that may need status updates
+        $reservations = Reservation::whereIn('status', ['reserved', 'in_use'])->get();
+        
+        foreach ($reservations as $reservation) {
+            $reservation->updateStatusIfExpired();
+        }
     }
 
     // Show the form for creating a new reservation
@@ -56,7 +71,7 @@ class ReservationController extends Controller
             'reservation_date' => 'required|date',
             'guest_count' => 'required|integer|min:1',
             'special_requests' => 'nullable|string',
-            'status' => 'required|string|in:confirmed,canceled,pending',
+            'status' => 'required|string|in:reserved,confirmed,canceled,pending,in_use',
         ]);
 
         Reservation::create($validatedData);
@@ -84,11 +99,26 @@ class ReservationController extends Controller
             'reservation_date' => 'required|date',
             'guest_count' => 'required|integer|min:1',
             'special_requests' => 'nullable|string',
-            'status' => 'required|string|in:confirmed,canceled,pending',
+            'status' => 'required|string|in:reserved,confirmed,canceled,pending,in_use',
         ]);
 
         $reservation->update($validatedData);
         $this->flasher->addSuccess('Reservation updated successfully.');
+
+        return redirect()->route('admin.reservations.index');
+    }
+
+    // Mark a reservation as "in use" if the customer arrives and orders at the table
+    public function markAsInUse($id)
+    {
+        $reservation = Reservation::findOrFail($id);
+        
+        if ($reservation->isReserved()) {
+            $reservation->update(['status' => 'in_use']);
+            $this->flasher->addSuccess('Reservation marked as in use.');
+        } else {
+            $this->flasher->addWarning('Reservation is not available for use.');
+        }
 
         return redirect()->route('admin.reservations.index');
     }

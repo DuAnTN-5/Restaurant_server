@@ -4,7 +4,7 @@
             <div class="card shadow-sm border-0">
                 <div class="card-header text-white">
                     <h5 class="mb-0">Bàn Số {{ $table->number }}</h5>
-                    <a href="{{ route('admin.tables.reserve', $table->id) }}" class="btn btn-success btn-sm">
+                    <a href="" class="btn btn-success btn-sm">
                         <i class="fa fa-calendar-plus-o"></i> Đặt Bàn
                     </a>
                 </div>

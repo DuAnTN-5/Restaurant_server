@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Carbon\Carbon;
 
 class Reservation extends Model
 {
@@ -52,15 +53,41 @@ class Reservation extends Model
         return $this->status === 'confirmed';
     }
 
-    // Kiểm tra nếu đặt chỗ bị hủy
     public function isCanceled()
     {
         return $this->status === 'canceled';
     }
 
-    // Kiểm tra nếu đặt chỗ đang chờ xử lý
     public function isPending()
     {
         return $this->status === 'pending';
+    }
+
+    public function isReserved()
+    {
+        return $this->status === 'reserved';
+    }
+
+    public function isInUse()
+    {
+        return $this->status === 'in_use';
+    }
+
+    // Kiểm tra xem đã quá hạn 3 giờ kể từ khi đặt không
+    public function isExpired()
+    {
+        return $this->created_at->lt(Carbon::now()->subHours(3));
+    }
+
+    // Phương thức để cập nhật trạng thái nếu quá hạn 3 giờ
+    public function updateStatusIfExpired()
+    {
+        if ($this->isReserved() && $this->isExpired()) {
+            $this->update(['status' => 'available']);
+        }
+
+        if ($this->isInUse() && $this->updated_at->lt(Carbon::now()->subHours(3))) {
+            $this->update(['status' => 'available']);
+        }
     }
 }
