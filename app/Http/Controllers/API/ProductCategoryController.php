@@ -14,7 +14,7 @@ class ProductCategoryController extends Controller
     // Lấy danh sách tất cả danh mục
     public function index()
     {
-        $categories = ProductCategory::all();
+        $categories = ProductCategory::getAllParent();
         return response()->json([
             'status' => true,
             'data' => ProductCategoryResource::collection($categories),
