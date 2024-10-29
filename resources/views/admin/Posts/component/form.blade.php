@@ -15,30 +15,28 @@
                     required>
             </div>
 
-            <!-- Mã bài viết (code) -->
-            {{-- <div class="form-group">
-                <label for="code">Mã bài viết:</label>
-                <input type="text" name="code" class="form-control" value="{{ old('code', $post->code ?? '') }}"
-                    required>
-            </div> --}}
-
-            <!-- Thứ tự -->
-            <div class="form-group">
-                <label for="position">Thứ tự:</label>
-                <input type="number" name="position" class="form-control"
-                    value="{{ old('position', $post->position ?? '') }}" required>
-            </div>
-
             <!-- Nội dung -->
             <div class="form-group">
                 <label for="body">Nội dung:</label>
-                <textarea name="body" class="form-control" rows="5" required>{{ old('body', $post->body ?? '') }}</textarea>
+                <textarea name="body" class="form-control summernote" rows="5" required>{{ old('body', $post->body ?? '') }}</textarea>
             </div>
 
             <!-- Tóm tắt -->
             <div class="form-group">
                 <label for="summary">Tóm tắt:</label>
-                <textarea name="summary" class="form-control" rows="3">{{ old('summary', $post->summary ?? '') }}</textarea>
+                <textarea name="summary" class="form-control summernote" rows="3">{{ old('summary', $post->summary ?? '') }}</textarea>
+            </div>
+
+            <!-- Meta Keywords -->
+            <div class="form-group">
+                <label for="meta_keywords">Meta Keywords:</label>
+                <input type="text" name="meta_keywords" class="form-control " value="{{ old('meta_keywords', $post->meta_keywords ?? '') }}">
+            </div>
+
+            <!-- Meta Description -->
+            <div class="form-group">
+                <label for="meta_description">Meta Description:</label>
+                <textarea name="meta_description" class="form-control " rows="2">{{ old('meta_description', $post->meta_description ?? '') }}</textarea>
             </div>
         </div>
 
@@ -71,20 +69,28 @@
                 <!-- Hiển thị ảnh được chọn -->
                 <div id="preview-images" class="text-center"></div>
             </div>
+            {{-- <div class="form-group">
+                <label for="tags">Tags:</label>
+                <input type="text" name="tags" class="form-control" value="{{ old('tags', $post->tags ?? '') }}">
+            </div> --}}
+            <!-- Thứ tự -->
+            <div class="form-group">
+                <label for="position">Thứ tự:</label>
+                <input type="number" name="position" class="form-control"
+                    value="{{ old('position', $post->position ?? '') }}" required>
+            </div>
             
 
             <!-- Trạng thái -->
             <div class="form-group">
                 <label for="status">Trạng thái:</label>
                 <select name="status" class="form-control" required>
-                    <option value="draft" {{ old('status', $post->status ?? '') == 'draft' ? 'selected' : '' }}>Nháp
-                    </option>
-                    <option value="published"
-                        {{ old('status', $post->status ?? '') == 'published' ? 'selected' : '' }}>Đã xuất bản</option>
-                    <option value="archived" {{ old('status', $post->status ?? '') == 'archived' ? 'selected' : '' }}>
-                        Lưu trữ</option>
+                    <option value="published" {{ old('status', $post->status ?? 'published') == 'published' ? 'selected' : '' }}>Đã xuất bản</option>
+                    <option value="draft" {{ old('status', $post->status ?? '') == 'draft' ? 'selected' : '' }}>Nháp</option>
                 </select>
             </div>
+            
+            
         </div>
     </div>
 
@@ -95,22 +101,32 @@
         <a href="{{ route('posts.index') }}" class="btn btn-secondary">Hủy</a>
     </div>
 </form>
-<!-- JavaScript để hiển thị trước các ảnh -->
+<script src=" {{ asset('backend/js/plugins/summernote/summernote.min.js') }}"></script>
+<link href="{{ asset('backend/css/plugins/summernote/summernote.css') }}" rel="stylesheet">
+<link href="{{ asset('backend/css/plugins/summernote/summernote-bs3.css') }}" rel="stylesheet">
 <script>
+    $(document).ready(function() {
+
+        $('.summernote').summernote();
+
+    });
+</script>
+<!-- JavaScript để hiển thị trước các ảnh -->
+{{-- <script>
     function previewImage(event) {
     const file = event.target.files[0];  // Lấy file đã chọn
     const preview = document.getElementById('preview-image');
 
     const reader = new FileReader();
     reader.onload = function(e) {
-        // Thay thế src của hình ảnh bằng file đã chọn
+
         preview.src = e.target.result;
     };
 
-    // Kiểm tra nếu file là ảnh hợp lệ
+
     if (file) {
         reader.readAsDataURL(file);
     }
 }
 
-</script>
+</script> --}}

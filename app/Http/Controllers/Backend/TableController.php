@@ -1,118 +1,121 @@
 <?php
 
 namespace App\Http\Controllers\Backend;
-
 use App\Http\Controllers\Controller;
 use App\Models\Table;
 use App\Models\User;
+use App\Models\Reservation;
 use Illuminate\Http\Request;
 use Flasher\Prime\FlasherInterface;
-use App\Models\Reservation;
-use App\Http\Controllers\Banking\PayPalController;
 
 class TableController extends Controller
 {
-    protected $paypal;
+    protected $flasher;
 
-    // public function __construct(PayPalController $paypal)
-    // {
-    //     $this->paypal = $paypal;
-    // }
+    public function __construct(FlasherInterface $flasher)
+    {
+        $this->flasher = $flasher;
+    }
 
-    // Hiển thị danh sách bàn với tìm kiếm và phân trang
+    // Display a listing of tables with pagination, search, and filter
     public function index(Request $request)
     {
-        // Lấy các thông tin tìm kiếm và lọc từ request
-        $search = $request->input('search');
-        $status = $request->input('status'); // Lấy giá trị lọc theo tình trạng bàn
-
-        // Query để lấy danh sách bàn
         $query = Table::query();
+        $search = $request->input('search');
+        $status = $request->input('status');
 
-        // Nếu có tìm kiếm theo số bàn
         if ($search) {
             $query->where('number', 'LIKE', "%{$search}%");
         }
 
-        // Nếu có lọc theo tình trạng bàn
         if ($status) {
             $query->where('status', $status);
         }
 
-        // Lấy danh sách người dùng
-        $users = User::all();
+        $tables = $query->paginate(8)->appends($request->except('page'));
 
-        // Phân trang kết quả
-        $tables = $query->paginate(10)->appends($request->except('page'));
-
-        return view('admin.tables.index', compact('tables', 'search', 'status', 'users')); // Truyền thêm biến $users
+        return view('admin.tables.index', compact('tables', 'search', 'status'));
     }
 
-    // Lưu thông tin bàn vào cơ sở dữ liệu và thực hiện thanh toán qua PayPal
-    // Lưu thông tin bàn vào cơ sở dữ liệu và thực hiện thanh toán qua PayPal
-public function store(Request $request, FlasherInterface $flasher)
-{
-    $request->validate([
-        'user_id' => 'required|exists:users,id',
-        'table_id' => 'required|exists:tables,id',
-        'guest_count' => 'required|integer|min:1',
-        'reservation_date' => 'required|date|after:today',
-    ]);
-
-    // Cập nhật trạng thái bàn thành 'reserved'
-    $table = Table::find($request->table_id);
-    if ($table->status === 'available') {
-        $table->update(['status' => 'reserved']);
+    // Show the form for creating a new table
+    public function create()
+    {
+        return view('tables.create');
     }
 
-    // Tạo đặt chỗ mới
-    $reservation = Reservation::create(array_merge($request->all(), ['status' => 'pending']));
+    // Store a newly created table in storage
+    public function store(Request $request)
+    {
+        $validatedData = $request->validate([
+            'number' => 'required|unique:tables',
+            'seats' => 'required|integer',
+            'status' => 'required|string',
+            'location' => 'nullable|string',
+            'special_features' => 'nullable|string',
+            'suitable_for_events' => 'nullable|string',
+            'custom_availability' => 'nullable|string',
+        ]);
 
-    // Flash message to indicate the booking was successful
-    $flasher->addSuccess('Đặt bàn thành công!');
+        Table::create($validatedData);
+        $this->flasher->addSuccess('Table created successfully.');
 
-    // Redirect to the reservations list
-    return redirect()->route('reservations.index');
-}
+        return redirect()->route('admin.tables.index');
+    }
 
-
-    // Hiển thị form chỉnh sửa bàn
+    // Show the form for editing the specified table
     public function edit($id)
     {
         $table = Table::findOrFail($id);
         return view('admin.tables.edit', compact('table'));
     }
 
-    // Cập nhật thông tin bàn
-    public function update(Request $request, $id, FlasherInterface $flasher)
+    // Update the specified table in storage
+    public function update(Request $request, $id)
     {
         $table = Table::findOrFail($id);
 
-        $request->validate([
-            'number' => 'required|max:10|unique:tables,number,' . $table->id,
-            'seats' => 'required|integer|min:1',
-            'location' => 'required|max:255',
-            'status' => 'required|in:available,reserved,occupied',
+        $validatedData = $request->validate([
+            'number' => 'required|unique:tables,number,' . $table->id,
+            'seats' => 'required|integer',
+            'status' => 'required|string',
+            'location' => 'nullable|string',
+            'special_features' => 'nullable|string',
+            'suitable_for_events' => 'nullable|string',
+            'custom_availability' => 'nullable|string',
         ]);
 
-        $table->update($request->all());
+        $table->update($validatedData);
+        $this->flasher->addSuccess('Table updated successfully.');
 
-        $flasher->addSuccess('Thông tin bàn đã được cập nhật!');
-        return redirect()->route('tables.index');
+        return redirect()->route('admin.tables.index');
     }
 
-    // Cập nhật trạng thái bàn thay vì xóa bàn
-    public function updateStatus($id, $status, FlasherInterface $flasher)
+    // Remove the specified table from storage
+    public function destroy($id)
     {
         $table = Table::findOrFail($id);
+        $table->delete();
+        $this->flasher->addSuccess('Table deleted successfully.');
 
-        if (in_array($status, ['available', 'reserved', 'occupied'])) {
-            $table->update(['status' => $status]);
-            $flasher->addSuccess("Trạng thái bàn đã được cập nhật thành '{$status}'!");
-        } else {
-            $flasher->addError('Trạng thái không hợp lệ.');
-        }
+        return redirect()->route('admin.tables.index');
+    }
 
-        return redirect()->route('tables.index');
+    // Reserve a table
+    public function reserve(Request $request)
+    {
+        $validatedData = $request->validate([
+            'table_id' => 'required|exists:tables,id',
+            'user_id' => 'required|exists:users,id',
+            'reservation_date' => 'required|date',
+        ]);
+
+        // Assuming a Reservation model exists
+        $reservation = new Reservation($validatedData);
+        $reservation->status = 'reserved';
+        $reservation->save();
+
+        $this->flasher->addSuccess('Table reserved successfully.');
+
+        return redirect()->route('admin.tables.index');
     }
 }

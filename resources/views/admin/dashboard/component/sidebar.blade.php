@@ -63,7 +63,7 @@
                 </a>
                 <ul class="nav nav-second-level">
                     <li class="{{ Request::is('admin/PostCategories') ? 'active' : '' }}">
-                        <a href="{{ route('PostCategories.index') }}"><i class="fa fa-list"></i> Loại Bài Viết</a>
+                        <a href="{{ route('post-categories.index') }}"><i class="fa fa-list"></i> Loại Bài Viết</a>
                     </li>
                     <li class="{{ Request::is('admin/posts') ? 'active' : '' }}">
                         <a href="{{ route('posts.index') }}"><i class="fa fa-list"></i> Danh Sách Bài Viết</a>

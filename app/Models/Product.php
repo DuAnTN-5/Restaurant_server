@@ -66,10 +66,10 @@ class Product extends Model
     }
 
     // Lấy URL của ảnh sản phẩm hoặc trả về ảnh mặc định nếu không có
-    public function getImageUrlAttribute()
-    {
-        return $this->image_url ? asset($this->image_url) : asset('default-product-image.png');
-    }
+    // public function getImageUrlAttribute()
+    // {
+    //     return $this->image_url ? asset($this->image_url) : asset('default-product-image.png');
+    // }
 
     // Tính giá sau khi áp dụng giảm giá (nếu có)
     public function getFinalPriceAttribute()

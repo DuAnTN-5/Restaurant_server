@@ -20,7 +20,7 @@
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
                     <span class="label label-warning pull-right">Tổng</span>
-                    <h5>Số lượng khách hàng mới trong tháng</h5>
+                    <h5> User mới trong tháng</h5>
                 </div>
                 <div class="ibox-content">
                     <h1 class="no-margins">{{ $newUsersThisMonth }}</h1> <!-- Hiển thị tổng số khách hàng mới -->
