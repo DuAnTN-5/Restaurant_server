@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\DB;
 
 class ProductCategory extends Model
 {
@@ -53,4 +54,8 @@ class ProductCategory extends Model
     // {
     //     return $this->slug;
     // }
+    public static function getAllParent(){
+        $product_catrgories = DB::table('product_categories')->whereNull('parent_id')->whereNull('deleted_at')->get();
+        return $product_catrgories;
+    }
 }
