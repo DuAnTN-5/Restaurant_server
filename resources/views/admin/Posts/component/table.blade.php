@@ -5,7 +5,7 @@
             <th>Mã Bài Viết</th>
             <th>Tiêu Đề</th>
             <th>Hình Ảnh</th>
-            <th>Thứ Tự</th>
+            {{-- <th>Thứ Tự</th> --}}
             <th>Tình Trạng</th>
             <th>Ngày Tạo</th>
             <th>Thao Tác</th>
@@ -21,26 +21,21 @@
                     <small style="color: red;">Danh mục: {{ $post->category->name ?? 'Không có' }}</small>
                 </td>
                 <td>
-                    @if ($post->image_url)
+                    @if ($post->image_url && file_exists(public_path($post->image_url)))
                         <img src="{{ asset($post->image_url) }}" alt="Image" width="80">
                     @else
                         <img src="{{ asset('default-post.png') }}" alt="Default Image" width="50">
                     @endif
                 </td>
-                <td>{{ $post->position ?? 'Không xác định' }}</td>
-                <td>
-                    <button class="btn btn-status-toggle" data-id="{{ $post->id }}">
-                        @if ($post->status == 'published')
-                            <span class="badge badge-success">Đã xuất bản</span>
-                        @elseif ($post->status == 'draft')
-                            <span class="badge badge-warning">Nháp</span>
-                        @else
-                            <span class="badge badge-secondary">Lưu trữ</span>
-                        @endif
-                    </button>
+                
+                {{-- <td>{{ $post->position ?? 'Không xác định' }}</td> --}}
+                <td style="text-align: center; vertical-align: middle;">
+                    <input type="checkbox" class="js-switch" data-id="{{ $post->id }}" {{ $post->status == 'published' ? 'checked' : '' }}>
                 </td>
+                
+                
                 <td>{{ $post->created_at->format('d/m/Y') }}</td>
-                <td>
+                <td style="text-align: center; vertical-align: middle;">
                     <a href="{{ route('posts.edit', $post->id) }}" class="btn btn-success">
                         <i class="fa fa-edit"></i>
                     </a>

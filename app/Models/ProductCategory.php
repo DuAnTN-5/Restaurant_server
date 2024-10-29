@@ -49,8 +49,8 @@ class ProductCategory extends Model
     }
 
     // Lấy slug của danh mục để sử dụng cho URL
-    public function getSlugAttribute()
-    {
-        return $this->slug;
-    }
+    // public function getSlugAttribute()
+    // {
+    //     return $this->slug;
+    // }
 }

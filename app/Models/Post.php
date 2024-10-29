@@ -46,10 +46,10 @@ class Post extends Model
     }
 
     // Lấy slug để sử dụng cho URL
-    public function getSlugAttribute()
-    {
-        return $this->slug;
-    }
+    // public function getSlugAttribute()
+    // {
+    //     return $this->slug;
+    // }
 
     // Kiểm tra trạng thái bài viết (ví dụ: published, draft, archived)
     public function isPublished()
@@ -64,8 +64,8 @@ class Post extends Model
     }
 
     // Lấy URL ảnh đại diện nếu có, nếu không thì trả về ảnh mặc định
-    public function getImageUrlAttribute()
-    {
-        return $this->image_url ? asset($this->image_url) : asset('default-image.png');
-    }
+    // public function getImageUrlAttribute()
+    // {
+    //     return $this->image_url ? asset($this->image_url) : asset('default-image.png');
+    // }
 }

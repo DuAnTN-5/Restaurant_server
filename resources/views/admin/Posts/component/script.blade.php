@@ -1,53 +1,93 @@
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-    document.querySelectorAll('.btn-status-toggle').forEach(function (button) {
-        button.addEventListener('click', function () {
-            var postId = this.getAttribute('data-id');
-            var button = this;
+<!-- Switchery CSS and JS -->
+<link rel="stylesheet" href="{{ asset('backend/css/plugins/switchery/switchery.css') }}">
+<script src="{{ asset('backend/js/plugins/switchery/switchery.js') }}"></script>
 
-            console.log("Clicked on post ID: ", postId);  // Thêm log để kiểm tra
+<!-- Toastr CSS and JS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+<link href="backend/css/plugins/dropzone/dropzone.css" rel="stylesheet">
+<script src="backend/js/plugins/dropzone/dropzone.js"></script>
 
-            // Gửi AJAX request để thay đổi trạng thái
-            fetch(`/admin/posts/${postId}/toggle-status`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log("Response status: ", data.status);  // Thêm log để kiểm tra response
-                if (data.status === 'published') {
-                    button.innerHTML = '<span class="badge badge-success">Đã xuất bản</span>';
-                } else if (data.status === 'draft') {
-                    button.innerHTML = '<span class="badge badge-warning">Nháp</span>';
-                } else if (data.status === 'archived') {
-                    button.innerHTML = '<span class="badge badge-secondary">Lưu trữ</span>';
-                }
-            })
-            .catch(error => console.error('Error:', error));
-        });
-    });
-});
-
-
-// image 
-function previewImages(event) {
-    var files = event.target.files;
-    var previewContainer = document.getElementById('preview-images');
-    previewContainer.innerHTML = ''; // Xóa các ảnh đã hiển thị trước đó
-
-    for (var i = 0; i < files.length; i++) {
-        var reader = new FileReader();
-        reader.onload = function(e) {
-            var imgElement = document.createElement('img');
-            imgElement.src = e.target.result;
-            imgElement.width = 150; // Set kích thước của ảnh
-            previewContainer.appendChild(imgElement); // Thêm ảnh mới vào container
-        };
-        reader.readAsDataURL(files[i]); // Đọc file ảnh
+<style>
+    .toast-success {
+        background-color: #1AB394 !important;
+        /* Success color */
     }
-}
 
+    .toast-error {
+        background-color: red !important;
+        /* Error color */
+    }
+
+    .text-center th,
+    .text-center td {
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    .img-thumbnail {
+        width: 50px;
+        height: 50px;
+        object-fit: cover;
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize Switchery for status toggle in Posts
+        var elems = document.querySelectorAll('.js-switch');
+        elems.forEach(function(elem) {
+            var switchery = new Switchery(elem, {
+                color: '#1AB394'
+            });
+
+            elem.onchange = function() {
+                var postId = this.getAttribute('data-id');
+                var status = this.checked ? 'published' : 'draft';
+
+                // Update status via fetch for posts
+                fetch('{{ route('posts.update-status') }}', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                        body: JSON.stringify({
+                            id: postId,
+                            status: status
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            toastr.success(data.message);
+                        } else {
+                            toastr.error('Có lỗi xảy ra, vui lòng thử lại.');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        toastr.error('Có lỗi xảy ra. Vui lòng thử lại.');
+                    });
+            };
+        });
+
+        // Toastr configuration
+        toastr.options = {
+            "closeButton": true,
+            "debug": false,
+            "newestOnTop": true,
+            "progressBar": true,
+            "positionClass": "toast-top-right",
+            "preventDuplicates": false,
+            "showDuration": "300",
+            "hideDuration": "1000",
+            "timeOut": "5000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+        };
+    });
 </script>

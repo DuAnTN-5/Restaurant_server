@@ -77,25 +77,40 @@ Route::group(['middleware' => ['auth', 'admin']], function () {
         Route::get('/{id}/edit', [StaffController::class, 'edit'])->name('staff.edit'); // Form chỉnh sửa nhân viên
         Route::put('/{id}', [StaffController::class, 'update'])->name('staff.update'); // Cập nhật thông tin nhân viên
         Route::delete('/{id}', [StaffController::class, 'destroy'])->name('staff.destroy'); // Xóa nhân viên
-    
+
         // Route để khôi phục nhân viên đã xóa
         Route::post('/{id}/restore', [StaffController::class, 'restore'])->name('staff.restore'); // Khôi phục nhân viên
-    
+
         // Route để xem chi tiết nhân viên
         Route::get('/{id}', [StaffController::class, 'show'])->name('staff.show'); // Xem chi tiết nhân viên
     });
-    
-    // Định nghĩa route cho quản lý loại tin tức (Post Categories)
-    Route::prefix('/categories/post-categories')->group(function () {
-        Route::get('/', [PostCategoriesController::class, 'index'])->name('PostCategories.index');
-        Route::get('/create', [PostCategoriesController::class, 'create'])->name('PostCategories.create');
-        Route::post('/', [PostCategoriesController::class, 'store'])->name('PostCategories.store');
-        Route::get('/{id}/edit', [PostCategoriesController::class, 'edit'])->name('PostCategories.edit');
-        Route::put('/{id}', [PostCategoriesController::class, 'update'])->name('PostCategories.update');
-        Route::delete('/{id}', [PostCategoriesController::class, 'destroy'])->name('PostCategories.destroy');
-        Route::post('/{id}/toggle-status', [PostCategoriesController::class, 'toggleStatus'])->name('PostCategories.toggleStatus');
+
+    // Route cho danh mục bài viết (Post Categories)
+    Route::prefix('categories/post-categories')->group(function () {
+        Route::get('/', [PostCategoriesController::class, 'index'])->name('post-categories.index'); // Danh sách danh mục bài viết
+        Route::get('/create', [PostCategoriesController::class, 'create'])->name('post-categories.create'); // Form thêm danh mục bài viết
+        Route::post('/', [PostCategoriesController::class, 'store'])->name('post-categories.store'); // Lưu danh mục bài viết
+        Route::get('/{id}/edit', [PostCategoriesController::class, 'edit'])->name('post-categories.edit'); // Form chỉnh sửa danh mục bài viết
+        Route::put('/{id}', [PostCategoriesController::class, 'update'])->name('post-categories.update'); // Cập nhật danh mục bài viết
+        Route::delete('/{id}', [PostCategoriesController::class, 'destroy'])->name('post-categories.destroy'); // Xóa danh mục bài viết
+
+        // Route cập nhật trạng thái (update-status) cho danh mục bài viết
+        Route::post('/post-categories/update-status', [PostCategoriesController::class, 'updateStatus'])->name('post-categories.update-status');
     });
-    
+
+    // Route cho bài viết (Posts)
+    Route::prefix('/posts')->group(function () {
+        Route::get('/', [PostController::class, 'index'])->name('posts.index'); // Danh sách bài viết
+        Route::get('/create', [PostController::class, 'create'])->name('posts.create'); // Form thêm bài viết
+        Route::post('/', [PostController::class, 'store'])->name('posts.store'); // Lưu bài viết
+        Route::get('/{id}/edit', [PostController::class, 'edit'])->name('posts.edit'); // Form chỉnh sửa bài viết
+        Route::put('/{id}', [PostController::class, 'update'])->name('posts.update'); // Cập nhật bài viết
+        Route::delete('/{id}', [PostController::class, 'destroy'])->name('posts.destroy'); // Xóa bài viết
+
+        // Route cập nhật trạng thái (update-status) cho bài viết
+        Route::post('/posts/update-status', [PostController::class, 'updateStatus'])->name('posts.update-status');
+    });
+
     // Định nghĩa route cho quản lý sản phẩm (Product Categories)
     Route::prefix('/categories/product-categories')->group(function () {
         Route::get('/', [ProductCategoriesController::class, 'index'])->name('product-categories.index');
@@ -104,21 +119,20 @@ Route::group(['middleware' => ['auth', 'admin']], function () {
         Route::get('/{id}/edit', [ProductCategoriesController::class, 'edit'])->name('product-categories.edit');
         Route::put('/{id}', [ProductCategoriesController::class, 'update'])->name('product-categories.update');
         Route::delete('/{id}', [ProductCategoriesController::class, 'destroy'])->name('product-categories.destroy');
-        Route::post('{id}/toggle-status', [ProductCategoriesController::class, 'toggleStatus'])->name('product-categories.toggleStatus');
+        Route::post('/product-categories/update-status', [ProductCategoriesController::class, 'updateStatus'])->name('product-categories.update-status');
+
     });
-    
-    // Định nghĩa route cho quản lý tin tức (Posts)
-    Route::prefix('/posts')->group(function () {
-        Route::get('/', [PostController::class, 'index'])->name('posts.index');
-        Route::get('/create', [PostController::class, 'create'])->name('posts.create');
-        Route::post('/', [PostController::class, 'store'])->name('posts.store');
-        Route::get('/{id}/edit', [PostController::class, 'edit'])->name('posts.edit');
-        Route::put('/{id}', [PostController::class, 'update'])->name('posts.update');
-        Route::delete('/{id}', [PostController::class, 'destroy'])->name('posts.destroy');
-    
-        // Route để thay đổi trạng thái của bài viết
-        Route::post('/{id}/toggle-status', [PostController::class, 'toggleStatus'])->name('posts.toggleStatus');
+    // Định nghĩa route cho quản lý sản phẩm (Products)
+    Route::prefix('/products')->group(function () {
+        Route::get('/', [ProductController::class, 'index'])->name('products.index');
+        Route::get('/create', [ProductController::class, 'create'])->name('products.create');
+        Route::post('/', [ProductController::class, 'store'])->name('products.store');
+        Route::get('/{id}/edit', [ProductController::class, 'edit'])->name('products.edit');
+        Route::put('/{id}', [ProductController::class, 'update'])->name('products.update');
+        Route::delete('/{id}', [ProductController::class, 'destroy'])->name('products.destroy');
+        Route::post('/products/update-status', [ProductController::class, 'updateStatus'])->name('products.update-status');
     });
+
     Route::prefix('/coupons')->group(function () {
         Route::get('/', [CouponsController::class, 'index'])->name('coupons.index'); // Hiển thị danh sách mã giảm giá
         Route::get('/create', [CouponsController::class, 'create'])->name('coupons.create'); // Form tạo mã giảm giá
@@ -126,36 +140,28 @@ Route::group(['middleware' => ['auth', 'admin']], function () {
         Route::get('/{id}/edit', [CouponsController::class, 'edit'])->name('coupons.edit'); // Form chỉnh sửa mã giảm giá
         Route::put('/{id}', [CouponsController::class, 'update'])->name('coupons.update'); // Cập nhật mã giảm giá
         Route::delete('/{id}', [CouponsController::class, 'destroy'])->name('coupons.destroy'); // Xóa mềm mã giảm giá
-    
+
         // Khôi phục mã giảm giá đã bị xóa mềm
         Route::post('/{id}/restore', [CouponsController::class, 'restore'])->name('coupons.restore');
-    
+
         // Xóa vĩnh viễn mã giảm giá đã bị xóa mềm
         Route::delete('/{id}/force-delete', [CouponsController::class, 'forceDelete'])->name('coupons.forceDelete');
-    
+
         // Cập nhật trạng thái của mã giảm giá (kích hoạt hoặc vô hiệu hóa)
         Route::post('/{id}/toggle-status', [CouponsController::class, 'updateStatus'])->name('coupons.updateStatus');
     });
-    
-    // Định nghĩa route cho quản lý sản phẩm (Products)
-    Route::prefix('/products')->group(function () {
-        Route::get('/', [ProductController::class, 'index'])->name('products.index');
-        Route::get('/create', [ProductController::class, 'create'])->name('products.create');
-        Route::post('/', [ProductController::class, 'store'])->name('products.store');
-        Route::get('/{id}/edit', [ProductController::class, 'edit'])->name('products.edit');
-    Route::put('/{id}', [ProductController::class, 'update'])->name('products.update');
-        Route::delete('/{id}', [ProductController::class, 'destroy'])->name('products.destroy');
-    });
-    
-    // Định nghĩa route cho quản lý bàn (Tables)
+
     Route::prefix('/tables')->group(function () {
-        Route::get('/', [TableController::class, 'index'])->name('tables.index');
-        Route::post('/', [TableController::class, 'store'])->name('tables.store');
-        Route::get('/{id}/edit', [TableController::class, 'edit'])->name('tables.edit');
-        Route::put('/{id}', [TableController::class, 'update'])->name('tables.update');
-        Route::delete('/{id}', [TableController::class, 'destroy'])->name('tables.destroy');
+        Route::get('/', [TableController::class, 'index'])->name('tables.index');          // Hiển thị danh sách bàn
+        Route::get('/create', [TableController::class, 'create'])->name('tables.create');   // Hiển thị form thêm bàn mới
+        Route::post('/', [TableController::class, 'store'])->name('tables.store');          // Lưu bàn mới
+        Route::get('/{id}/edit', [TableController::class, 'edit'])->name('tables.edit');    // Hiển thị form chỉnh sửa bàn
+        Route::put('/{id}', [TableController::class, 'update'])->name('tables.update');     // Cập nhật thông tin bàn
+        Route::delete('/{id}', [TableController::class, 'destroy'])->name('tables.destroy');// Xóa bàn
+        Route::post('/reserve', [TableController::class, 'reserve'])->name('tables.reserve'); // Đặt bàn
     });
     
+
     // Định nghĩa route cho quản lý đặt chỗ (Reservations)
     Route::prefix('/reservations')->group(function () {
         Route::get('/', [ReservationController::class, 'index'])->name('reservations.index');
@@ -175,7 +181,7 @@ Route::group(['middleware' => ['auth', 'admin']], function () {
         Route::delete('/{id}', [OrderController::class, 'destroy'])->name('orders.destroy');
         Route::post('/{id}/toggle-status', [OrderController::class, 'toggleStatus'])->name('orders.toggleStatus');
     });
-    
+
     // Định nghĩa route cho quản lý mặt hàng trong đơn (Order Items)
     Route::prefix('/order-items')->group(function () {
         Route::get('/{order_id}', [OrderItemController::class, 'index'])->name('order-items.index');

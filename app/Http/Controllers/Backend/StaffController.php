@@ -21,7 +21,10 @@ class StaffController extends Controller
     $role = $request->query('role'); // Bộ lọc role: Admin, Manager, Staff
 
     // Khởi tạo query với eager loading của 'user'
-    $query = Staff::with('user');
+    // $query = Staff::with('user');
+    $query = Staff::query()
+        ->select('staff.*', 'users.id as user_id', 'users.name as user_name', 'users.email')
+        ->join('users', 'staff.user_id', '=', 'users.id');
 
     // Nếu role được chọn, lọc theo role (1 = Admin, 2 = Manager, 3 = Staff)
     if ($role) {
@@ -48,6 +51,7 @@ class StaffController extends Controller
 
     // Phân trang kết quả
     $staffs = $query->paginate(10)->appends($request->except('page'));
+    // dd($staffs);
 
     // Trả về view với danh sách staff đã được eager load user
     return view('admin.staff.index', compact('staffs'));

@@ -63,19 +63,3 @@
 @push('scripts')
     @include('admin.users.component.script')
 @endpush
-{{-- <script>
-    $(document).ready(function() {
-        var elem = document.querySelector('.js-switch');
-    var switchery = new Switchery(elem, { color: '#1AB394' });
-    })
-</script> --}}
-{{-- <script>
-    $(document).ready(function() {
-        var elem = document.querySelector('.js-switch');
-        if (elem) {
-            var switchery = new Switchery(elem, { color: '#1AB394' });
-        } else {
-            console.error('Element not found: .js-switch');
-        }
-    });
-</script> --}}

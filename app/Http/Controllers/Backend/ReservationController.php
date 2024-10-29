@@ -1,79 +1,105 @@
 <?php
 
 namespace App\Http\Controllers\Backend;
-
 use App\Http\Controllers\Controller;
 use App\Models\Reservation;
-use App\Models\Table;
-use App\Models\User;
 use Illuminate\Http\Request;
 use Flasher\Prime\FlasherInterface;
 
 class ReservationController extends Controller
 {
+    protected $flasher;
+
+    public function __construct(FlasherInterface $flasher)
+    {
+        $this->flasher = $flasher;
+    }
+
+    // Display a listing of reservations with pagination, search, and filter
     public function index(Request $request)
     {
-        $search = $request->query('search');
-        $status = $request->query('status');
-        $startDate = $request->query('start_date');
-
         $query = Reservation::query();
-
-        if ($search) {
-            $query->whereHas('user', function ($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
-                    ->orWhere('email', 'like', "%{$search}%");
-            });
-        }
+        $status = $request->input('status');
+        $userId = $request->input('user_id');
+        $tableId = $request->input('table_id');
 
         if ($status) {
             $query->where('status', $status);
         }
 
-        if ($startDate) {
-            $query->where('reservation_date', '>=', $startDate);
+        if ($userId) {
+            $query->where('user_id', $userId);
         }
 
-        $reservations = $query->paginate(10)->appends([
-            'search' => $search,
-            'status' => $status,
-            'start_date' => $startDate,
-        ]);
+        if ($tableId) {
+            $query->where('table_id', $tableId);
+        }
 
-        return view('admin.reservations.index', compact('reservations'));
+        $reservations = $query->paginate(10)->appends($request->except('page'));
+
+        return view('admin.reservations.index', compact('reservations', 'status', 'userId', 'tableId'));
     }
 
-
-    public function store(Request $request, FlasherInterface $flasher)
+    // Show the form for creating a new reservation
+    public function create()
     {
-        // Validate the input
-        $request->validate([
-            'user_id' => 'required|exists:users,id',
-            'table_id' => 'required|exists:tables,id',
-            'guest_count' => 'required|integer|min:1',
-            'reservation_date' => 'required|date|after:today',
-        ]);
-
-        // Update the table status
-        $table = Table::find($request->table_id);
-        if ($table->status === 'available') {
-            $table->update(['status' => 'reserved']);
-        }
-
-        // Create a new reservation
-        $reservation = Reservation::create([
-            'user_id' => $request->user_id,
-            'table_id' => $request->table_id,
-            'guest_count' => $request->guest_count,
-            'reservation_date' => $request->reservation_date,
-            'special_requests' => $request->special_requests,
-            'status' => 'pending',
-        ]);
-
-        // Flash a success message
-        $flasher->addSuccess('Đặt bàn thành công!');
-
-        return redirect()->route('reservations.index');
+        return view('reservations.create');
     }
 
+    // Store a newly created reservation in storage
+    public function store(Request $request)
+    {
+        $validatedData = $request->validate([
+            'user_id' => 'required|exists:users,id',
+            'staff_id' => 'nullable|exists:staff,id',
+            'table_id' => 'required|exists:tables,id',
+            'reservation_date' => 'required|date',
+            'guest_count' => 'required|integer|min:1',
+            'special_requests' => 'nullable|string',
+            'status' => 'required|string|in:confirmed,canceled,pending',
+        ]);
+
+        Reservation::create($validatedData);
+        $this->flasher->addSuccess('Reservation created successfully.');
+
+        return redirect()->route('admin.reservations.index');
+    }
+
+    // Show the form for editing the specified reservation
+    public function edit($id)
+    {
+        $reservation = Reservation::findOrFail($id);
+        return view('admin.reservations.edit', compact('reservation'));
+    }
+
+    // Update the specified reservation in storage
+    public function update(Request $request, $id)
+    {
+        $reservation = Reservation::findOrFail($id);
+
+        $validatedData = $request->validate([
+            'user_id' => 'required|exists:users,id',
+            'staff_id' => 'nullable|exists:staff,id',
+            'table_id' => 'required|exists:tables,id',
+            'reservation_date' => 'required|date',
+            'guest_count' => 'required|integer|min:1',
+            'special_requests' => 'nullable|string',
+            'status' => 'required|string|in:confirmed,canceled,pending',
+        ]);
+
+        $reservation->update($validatedData);
+        $this->flasher->addSuccess('Reservation updated successfully.');
+
+        return redirect()->route('admin.reservations.index');
+    }
+
+    // Remove the specified reservation from storage
+    public function destroy($id)
+    {
+        $reservation = Reservation::findOrFail($id);
+        $reservation->delete();
+        $this->flasher->addSuccess('Reservation deleted successfully.');
+
+        return redirect()->route('admin.reservations.index');
+    }
 }
