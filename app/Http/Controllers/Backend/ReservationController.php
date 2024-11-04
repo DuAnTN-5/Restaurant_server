@@ -58,7 +58,7 @@ class ReservationController extends Controller
     // Show the form for creating a new reservation
     public function create()
     {
-        return view('reservations.create');
+        return view('admin.reservations.create');
     }
 
     // Store a newly created reservation in storage

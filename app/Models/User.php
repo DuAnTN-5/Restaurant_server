@@ -32,6 +32,9 @@ class User extends Authenticatable
         'address',
         'facebook_id',
         'google_id',
+        'is_verified',
+        'verification_token',
+        'verification_expires_at',
     ];
 
     // Các trường sẽ bị ẩn khi trả về dữ liệu
