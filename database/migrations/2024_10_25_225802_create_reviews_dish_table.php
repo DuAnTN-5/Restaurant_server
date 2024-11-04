@@ -11,14 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('reviews_dish', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('user_id')->constrained('users')->onDelete('cascade'); // ID người dùng
-            $table->foreignId('dish_id')->constrained('products')->onDelete('cascade'); // ID món ăn
-            $table->integer('rating')->unsigned()->comment('Số sao đánh giá, từ 1 đến 5'); // Số sao
-            $table->text('comment')->nullable(); // Nội dung đánh giá
-            $table->timestamps();
-        });
+        // Schema::create('reviews_dish', function (Blueprint $table) {
+        //     $table->id();
+        //     $table->foreignId('user_id')->constrained('users')->onDelete('cascade'); // ID người dùng
+        //     $table->foreignId('dish_id')->constrained('products')->onDelete('cascade'); // ID món ăn
+        //     $table->integer('rating')->unsigned()->comment('Số sao đánh giá, từ 1 đến 5'); // Số sao
+        //     $table->text('comment')->nullable(); // Nội dung đánh giá
+        //     $table->timestamps();
+        // });
     }
 
     /**
@@ -26,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('reviews_dish');
+        // Schema::dropIfExists('reviews_dish');
     }
 };

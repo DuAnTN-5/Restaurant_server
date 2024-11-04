@@ -47,56 +47,56 @@ class ProductCategoryController extends Controller
     }
 
     // Thêm mới danh mục
-    public function store(StoreProductCategoryRequest $request)
-    {
-        $validatedData = $request->validated();
+    // public function store(StoreProductCategoryRequest $request)
+    // {
+    //     $validatedData = $request->validated();
 
-        $category = ProductCategory::create($validatedData);
+    //     $category = ProductCategory::create($validatedData);
 
-        return response()->json([
-            'status' => true,
-            'message' => 'Danh mục đã được tạo thành công.',
-            'data' => new ProductCategoryResource($category),
-        ], 201);
-    }
+    //     return response()->json([
+    //         'status' => true,
+    //         'message' => 'Danh mục đã được tạo thành công.',
+    //         'data' => new ProductCategoryResource($category),
+    //     ], 201);
+    // }
 
     // Cập nhật danh mục
-    public function update(StoreProductCategoryRequest $request, $id)
-    {
-        $category = ProductCategory::find($id);
-        if (!$category) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Danh mục không tìm thấy.',
-            ], 404);
-        }
+    // public function update(StoreProductCategoryRequest $request, $id)
+    // {
+    //     $category = ProductCategory::find($id);
+    //     if (!$category) {
+    //         return response()->json([
+    //             'status' => false,
+    //             'message' => 'Danh mục không tìm thấy.',
+    //         ], 404);
+    //     }
 
-        $validatedData = $request->validated();
-        $category->update($validatedData);
+    //     $validatedData = $request->validated();
+    //     $category->update($validatedData);
 
-        return response()->json([
-            'status' => true,
-            'message' => 'Danh mục đã được cập nhật thành công.',
-            'data' => new ProductCategoryResource($category),
-        ]);
-    }
+    //     return response()->json([
+    //         'status' => true,
+    //         'message' => 'Danh mục đã được cập nhật thành công.',
+    //         'data' => new ProductCategoryResource($category),
+    //     ]);
+    // }
 
     // Xóa danh mục
-    public function destroy($id)
-    {
-        $category = ProductCategory::find($id);
-        if (!$category) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Danh mục không tìm thấy.',
-            ], 404);
-        }
+    // public function destroy($id)
+    // {
+    //     $category = ProductCategory::find($id);
+    //     if (!$category) {
+    //         return response()->json([
+    //             'status' => false,
+    //             'message' => 'Danh mục không tìm thấy.',
+    //         ], 404);
+    //     }
 
-        $category->delete();
+    //     $category->delete();
 
-        return response()->json([
-            'status' => true,
-            'message' => 'Danh mục đã được xóa thành công.',
-        ], 204);
-    }
+    //     return response()->json([
+    //         'status' => true,
+    //         'message' => 'Danh mục đã được xóa thành công.',
+    //     ], 204);
+    // }
 }
