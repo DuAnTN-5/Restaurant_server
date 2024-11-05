@@ -105,6 +105,26 @@
                     </li>
                 </ul>
             </li>
+            <li class="{{ Request::is('admin/orders*') || Request::is('admin/orders/*/items*') ? 'active' : '' }}">
+                <a href="#"><i class="fa fa-shopping-cart"></i> <span class="nav-label">Quản Lý Đơn Hàng</span> <span class="fa arrow"></span></a>
+                <ul class="nav nav-second-level">
+                    <!-- Quản lý Đơn Hàng -->
+                    <li class="{{ Request::is('admin/orders') ? 'active' : '' }}">
+                        <a href="{{ route('orders.index') }}"><i class="fa fa-list"></i> Danh Sách Đơn Hàng</a>
+                    </li>
+                    <!-- Quản lý Mục Đơn Hàng -->
+                    @isset($orderId)
+                        <li class="{{ Request::is("admin/orders/{$orderId}/items") ? 'active' : '' }}">
+                            <a href="{{ route('order_items.index', ['orderId' => $orderId]) }}"><i class="fa fa-list-alt"></i> Danh Sách Mục Đơn Hàng</a>
+                        </li>
+                        <li class="{{ Request::is("admin/orders/{$orderId}/items/create") ? 'active' : '' }}">
+                            <a href="{{ route('order_items.create', ['orderId' => $orderId]) }}"><i class="fa fa-plus-circle"></i> Thêm Mục Đơn Hàng</a>
+                        </li>
+                    @endisset
+                </ul>
+            </li>
+            
+            
             {{-- <li class="{{ Request::is('admin/orders*') || Request::is('admin/order-items*') ? 'active' : '' }}">
                 <a href="#"><i class="fa fa-shopping-cart"></i> <span class="nav-label">Quản Lý Đơn Hàng</span> <span class="fa arrow"></span></a>
                 <ul class="nav nav-second-level">

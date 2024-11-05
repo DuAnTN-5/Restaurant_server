@@ -1,7 +1,3 @@
-<!-- Switchery CSS and JS (Xóa nếu không cần nữa) -->
-<!-- <link rel="stylesheet" href="{{ asset('backend/css/plugins/switchery/switchery.css') }}"> -->
-<!-- <script src="{{ asset('backend/js/plugins/switchery/switchery.js') }}"></script> -->
-
 <!-- Toastr CSS and JS -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
@@ -29,26 +25,71 @@
         object-fit: cover;
     }
 </style>
-
+<style>
+    .status-select {
+        font-weight: bold;
+        padding: 5px;
+        border-radius: 4px;
+    }
+    .status-pending {
+        background-color: #f0ad4e; /* Đang chờ */
+        color: white;
+    }
+    .status-confirmed {
+        background-color: #5bc0de; /* Đã xác nhận */
+        color: white;
+    }
+    .status-preparing {
+        background-color: #5bc0de; /* Đang chuẩn bị */
+        color: white;
+    }
+    .status-ready {
+        background-color: #5cb85c; /* Sẵn sàng */
+        color: white;
+    }
+    .status-completed {
+        background-color: #337ab7; /* Hoàn thành */
+        color: white;
+    }
+    .status-canceled {
+        background-color: #d9534f; /* Hủy */
+        color: white;
+    }
+</style>
 <script>
+    function changeStatusColor(selectElement) {
+        // Loại bỏ tất cả các class màu hiện tại
+        selectElement.classList.remove('status-pending', 'status-confirmed', 'status-preparing', 'status-ready', 'status-completed', 'status-canceled');
+        
+        // Thêm class màu tương ứng với giá trị trạng thái đã chọn
+        const selectedValue = selectElement.value;
+        selectElement.classList.add('status-' + selectedValue);
+    }
+
+    // Khởi tạo màu nền đúng cho các dropdown khi trang được tải
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.status-select').forEach(function(select) {
+            changeStatusColor(select);
+        });
+    });
     document.addEventListener('DOMContentLoaded', function() {
         // Chọn tất cả dropdown trạng thái
         var statusSelects = document.querySelectorAll('.status-select');
 
         statusSelects.forEach(function(select) {
             select.onchange = function() {
-                var reservationId = this.getAttribute('data-id');
+                var orderId = this.getAttribute('data-id');
                 var status = this.value;  // Lấy giá trị đã chọn từ dropdown
 
                 // Cập nhật trạng thái qua fetch
-                fetch('{{ route('reservations.update-status') }}', {
+                fetch('{{ route('orders.updateStatus') }}', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                         'X-CSRF-TOKEN': '{{ csrf_token() }}'
                     },
                     body: JSON.stringify({
-                        id: reservationId,
+                        id: orderId,
                         status: status
                     })
                 })

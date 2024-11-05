@@ -17,18 +17,11 @@ use App\Http\Controllers\Backend\ReservationController;
 use App\Http\Controllers\Backend\TableController;
 use App\Http\Controllers\Backend\StaffController;
 use App\Http\Controllers\Backend\OrdersController;
-use App\Http\Controllers\Banking\OrderItemsController;
+use App\Http\Controllers\Backend\OrderItemsController; 
+
+
 use App\Http\Controllers\Backend\CouponsController;
-// test
 
-// Route::get('/add-product', function () {
-//     return view('test.add-product');
-// });
-
-
-// Route::get('/', function () {
-//     return redirect()->route('login');
-// });
 Route::controller(LoginController::class)->group(function () {
     Route::get('/login', 'showLoginForm')->name('login'); // Hiển thị form đăng nhập
     Route::post('/login', 'login')->name('login');        // Xử lý đăng nhập
@@ -66,9 +59,6 @@ Route::group(['middleware' => ['auth', 'admin']], function () {
 
     // Route để cập nhật trạng thái người dùng
     Route::post('/users/update-status', [UserController::class, 'updateStatus'])->name('users.update-status'); // Bỏ /admin trong URL
-
-
-
     // Routes cho nhân viên
     Route::prefix('/staff')->group(function () {
         Route::get('/', [StaffController::class, 'index'])->name('staff.index'); // Danh sách nhân viên
@@ -133,24 +123,6 @@ Route::group(['middleware' => ['auth', 'admin']], function () {
         Route::post('/products/update-status', [ProductController::class, 'updateStatus'])->name('products.update-status');
     });
 
-    Route::prefix('/coupons')->group(function () {
-        Route::get('/', [CouponsController::class, 'index'])->name('coupons.index'); // Hiển thị danh sách mã giảm giá
-        Route::get('/create', [CouponsController::class, 'create'])->name('coupons.create'); // Form tạo mã giảm giá
-        Route::post('/', [CouponsController::class, 'store'])->name('coupons.store'); // Lưu mã giảm giá
-        Route::get('/{id}/edit', [CouponsController::class, 'edit'])->name('coupons.edit'); // Form chỉnh sửa mã giảm giá
-        Route::put('/{id}', [CouponsController::class, 'update'])->name('coupons.update'); // Cập nhật mã giảm giá
-        Route::delete('/{id}', [CouponsController::class, 'destroy'])->name('coupons.destroy'); // Xóa mềm mã giảm giá
-
-        // Khôi phục mã giảm giá đã bị xóa mềm
-        Route::post('/{id}/restore', [CouponsController::class, 'restore'])->name('coupons.restore');
-
-        // Xóa vĩnh viễn mã giảm giá đã bị xóa mềm
-        Route::delete('/{id}/force-delete', [CouponsController::class, 'forceDelete'])->name('coupons.forceDelete');
-
-        // Cập nhật trạng thái của mã giảm giá (kích hoạt hoặc vô hiệu hóa)
-        Route::post('/{id}/toggle-status', [CouponsController::class, 'updateStatus'])->name('coupons.updateStatus');
-    });
-
     Route::prefix('/tables')->group(function () {
         Route::get('/', [TableController::class, 'index'])->name('tables.index');          // Hiển thị danh sách bàn
         Route::get('/create', [TableController::class, 'create'])->name('tables.create');   // Hiển thị form thêm bàn mới
@@ -158,10 +130,8 @@ Route::group(['middleware' => ['auth', 'admin']], function () {
         Route::get('/{id}/edit', [TableController::class, 'edit'])->name('tables.edit');    // Hiển thị form chỉnh sửa bàn
         Route::put('/{id}', [TableController::class, 'update'])->name('tables.update');     // Cập nhật thông tin bàn
         Route::delete('/{id}', [TableController::class, 'destroy'])->name('tables.destroy');// Xóa bàn
-        Route::post('/reserve', [TableController::class, 'reserve'])->name('tables.reserve'); // Đặt bàn
+        Route::post('/update-status', [TableController::class, 'updateStatus'])->name('tables.update-status');
     });
-    
-
     // Định nghĩa route cho quản lý đặt chỗ (Reservations)
     Route::prefix('/reservations')->group(function () {
         Route::get('/', [ReservationController::class, 'index'])->name('reservations.index');
@@ -170,26 +140,36 @@ Route::group(['middleware' => ['auth', 'admin']], function () {
         Route::get('/{id}/edit', [ReservationController::class, 'edit'])->name('reservations.edit');
         Route::put('/{id}', [ReservationController::class, 'update'])->name('reservations.update');
         Route::delete('/{id}', [ReservationController::class, 'destroy'])->name('reservations.destroy');
+        Route::post('/reservations/update-status', [ReservationController::class, 'updateStatus'])->name('reservations.update-status');
     });
     // Định nghĩa route cho quản lý đơn hàng (Orders)
     Route::prefix('/orders')->group(function () {
         Route::get('/', [OrdersController::class, 'index'])->name('orders.index');
-        Route::get('/create', [OrderController::class, 'create'])->name('orders.create');
-        Route::post('/', [OrderController::class, 'store'])->name('orders.store');
-        Route::get('/{id}/edit', [OrderController::class, 'edit'])->name('orders.edit');
-        Route::put('/{id}', [OrderController::class, 'update'])->name('orders.update');
-        Route::delete('/{id}', [OrderController::class, 'destroy'])->name('orders.destroy');
-        Route::post('/{id}/toggle-status', [OrderController::class, 'toggleStatus'])->name('orders.toggleStatus');
+        Route::get('/create', [OrdersController::class, 'create'])->name('orders.create');
+        Route::post('/', [OrdersController::class, 'store'])->name('orders.store');
+        Route::get('/{id}/edit', [OrdersController::class, 'edit'])->name('orders.edit');
+        Route::put('/{id}', [OrdersController::class, 'update'])->name('orders.update');
+        Route::delete('/{id}', [OrdersController::class, 'destroy'])->name('orders.destroy');
+        Route::post('/update-status', [OrdersController::class, 'updateStatus'])->name('orders.updateStatus');
+        
+        // Route cho modal "Đặt Món"
+        Route::get('/{orderId}/items', [OrdersController::class, 'showItems'])->name('orders.items');
+        Route::post('/{orderId}/items', [OrdersController::class, 'storeItems'])->name('orders.storeItems');
     });
-
-    // Định nghĩa route cho quản lý mặt hàng trong đơn (Order Items)
-    Route::prefix('/order-items')->group(function () {
-        Route::get('/{order_id}', [OrderItemController::class, 'index'])->name('order-items.index');
-        Route::post('/{order_id}/store', [OrderItemController::class, 'store'])->name('order-items.store');
-        Route::get('/{id}/edit', [OrderItemController::class, 'edit'])->name('order-items.edit');
-        Route::put('/{id}', [OrderItemController::class, 'update'])->name('order-items.update');
-        Route::delete('/{id}', [OrderItemsController::class, 'destroy'])->name('order-items.destroy');
+    
+    // CRUD cho Order Items chi tiết
+    Route::prefix('/orders/{orderId}/manage-items')->group(function () {
+        Route::get('/', [OrderItemsController::class, 'index'])->name('order_items.index');
+        Route::get('/create', [OrderItemsController::class, 'create'])->name('order_items.create');
+        Route::post('/', [OrderItemsController::class, 'store'])->name('order_items.store');
+        Route::get('/{id}/edit', [OrderItemsController::class, 'edit'])->name('order_items.edit');
+        Route::put('/{id}', [OrderItemsController::class, 'update'])->name('order_items.update');
+        Route::delete('/{id}', [OrderItemsController::class, 'destroy'])->name('order_items.destroy');
     });
+    
+    
+    
+    
 });
 
 
@@ -210,11 +190,3 @@ Route::get('language/{lang}', function ($lang) {
     }
     return redirect()->back();
 });
-
-
-// Định nghĩa route cho thanh toán PayPal
-// Route::prefix('payment')->group(function () {
-//     Route::get('/create/{reservationId}/{amount}', [PayPalController::class, 'createPayment'])->name('payment.create');
-//     Route::get('/success', [PayPalController::class, 'executePayment'])->name('payment.success');
-//     Route::get('/cancel', [PayPalController::class, 'cancelPayment'])->name('payment.cancel');
-// });

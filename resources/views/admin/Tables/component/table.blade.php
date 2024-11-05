@@ -4,9 +4,9 @@
             <div class="card shadow-sm border-0">
                 <div class="card-header text-white">
                     <h5 class="mb-0">Bàn Số {{ $table->number }}</h5>
-                    <a href="" class="btn btn-success btn-sm">
+                    <a href="{{ route('reservations.create') }}" class="btn btn-success btn-sm">
                         <i class="fa fa-calendar-plus-o"></i> Đặt Bàn
-                    </a>
+                    </a>                    
                 </div>
                 <div class="card-body">
                     {{-- <p><strong>ID:</strong> {{ $table->id }}</p> --}}
@@ -14,7 +14,7 @@
                     <p><strong>Trạng Thái:</strong> {{ $table->status }}</p>
                     <p><strong>Vị Trí:</strong> {{ $table->location }}</p>
                     <p><strong>Tính Năng Đặc Biệt:</strong> {{ $table->special_features ?? 'Không có' }}</p>
-                    <p><strong>Phù Hợp Cho Sự Kiện:</strong> {{ $table->suitable_for_events ? 'Có' : 'Không' }}</p>
+                    {{-- <p><strong>Phù Hợp Cho Sự Kiện:</strong> {{ $table->suitable_for_events ? 'Có' : 'Không' }}</p> --}}
                     <p><strong>Tính Khả Dụng Tùy Chỉnh:</strong> {{ $table->custom_availability ?? 'N/A' }}</p>
                     <p><strong>Ngày Tạo:</strong> {{ $table->created_at ? $table->created_at->format('d/m/Y') : 'N/A' }}</p>
                     <p><strong>Ngày Cập Nhật:</strong> {{ $table->updated_at ? $table->updated_at->format('d/m/Y') : 'N/A' }}</p>

@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Backend;
+
 use App\Http\Controllers\Controller;
 use App\Models\Table;
 use App\Models\User;
@@ -17,7 +18,7 @@ class TableController extends Controller
         $this->flasher = $flasher;
     }
 
-    // Display a listing of tables with pagination, search, and filter
+    // Hiển thị danh sách bàn với phân trang, tìm kiếm và lọc
     public function index(Request $request)
     {
         $query = Table::query();
@@ -37,13 +38,13 @@ class TableController extends Controller
         return view('admin.tables.index', compact('tables', 'search', 'status'));
     }
 
-    // Show the form for creating a new table
+    // Hiển thị form tạo bàn mới
     public function create()
     {
-        return view('tables.create');
+        return view('admin.tables.create');
     }
 
-    // Store a newly created table in storage
+    // Lưu bàn mới vào cơ sở dữ liệu
     public function store(Request $request)
     {
         $validatedData = $request->validate([
@@ -57,19 +58,19 @@ class TableController extends Controller
         ]);
 
         Table::create($validatedData);
-        $this->flasher->addSuccess('Table created successfully.');
+        $this->flasher->addSuccess('Bàn đã được tạo thành công.');
 
         return redirect()->route('admin.tables.index');
     }
 
-    // Show the form for editing the specified table
+    // Hiển thị form chỉnh sửa bàn cụ thể
     public function edit($id)
     {
         $table = Table::findOrFail($id);
         return view('admin.tables.edit', compact('table'));
     }
 
-    // Update the specified table in storage
+    // Cập nhật bàn cụ thể trong cơ sở dữ liệu
     public function update(Request $request, $id)
     {
         $table = Table::findOrFail($id);
@@ -85,37 +86,34 @@ class TableController extends Controller
         ]);
 
         $table->update($validatedData);
-        $this->flasher->addSuccess('Table updated successfully.');
+        $this->flasher->addSuccess('Bàn đã được cập nhật thành công.');
 
-        return redirect()->route('admin.tables.index');
+        return redirect()->route('tables.index');
     }
 
-    // Remove the specified table from storage
+    // Xóa bàn cụ thể khỏi cơ sở dữ liệu
     public function destroy($id)
     {
         $table = Table::findOrFail($id);
         $table->delete();
-        $this->flasher->addSuccess('Table deleted successfully.');
+        $this->flasher->addSuccess('Bàn đã được xóa thành công.');
 
-        return redirect()->route('admin.tables.index');
+        return redirect()->route('tables.index');
     }
 
-    // Reserve a table
-    public function reserve(Request $request)
+    // Cập nhật trạng thái của bàn
+    public function updateStatus(Request $request)
     {
-        $validatedData = $request->validate([
-            'table_id' => 'required|exists:tables,id',
-            'user_id' => 'required|exists:users,id',
-            'reservation_date' => 'required|date',
+        $request->validate([
+            'id' => 'required|exists:tables,id',
+            'status' => 'required|string'
         ]);
 
-        // Assuming a Reservation model exists
-        $reservation = new Reservation($validatedData);
-        $reservation->status = 'reserved';
-        $reservation->save();
+        $table = Table::findOrFail($request->id);
+        $table->status = $request->status;
+        $table->save();
 
-        $this->flasher->addSuccess('Table reserved successfully.');
-
-        return redirect()->route('admin.tables.index');
+        $message = $table->status === 'active' ? 'Bàn đã được kích hoạt.' : 'Bàn đã được tắt kích hoạt.';
+        return response()->json(['success' => true, 'message' => $message]);
     }
 }
