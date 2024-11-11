@@ -21,30 +21,38 @@ class ProductCategoryController extends Controller
         ]);
     }
 
-    // Lấy chi tiết danh mục
-    public function show($id)
-    {
-        $category = ProductCategory::find($id);
-        if (!$category) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Danh mục không tìm thấy.',
-            ], 404);
-        }
 
-        return response()->json([
-            'status' => true,
-            'data' => new ProductCategoryResource($category),
-        ]);
-    }
-
+    // Sản phẩm theo danh mục
     public function products($id)
     {
         $category = ProductCategory::findOrFail($id);
-        $products = $category->products; 
+        $products = $category->products;
 
-        return ProductResource::collection($products);
+        return response()->json([
+            'status' => true,
+            'data' => ProductResource::collection($products),
+        ]);
     }
+
+
+    // Lấy chi tiết danh mục
+    // public function show($id)
+    // {
+    //     $category = ProductCategory::find($id);
+    //     if (!$category) {
+    //         return response()->json([
+    //             'status' => false,
+    //             'message' => 'Danh mục không tìm thấy.',
+    //         ], 404);
+    //     }
+
+    //     return response()->json([
+    //         'status' => true,
+    //         'data' => new ProductCategoryResource($category),
+    //     ]);
+    // }
+
+   
 
     // Thêm mới danh mục
     // public function store(StoreProductCategoryRequest $request)
