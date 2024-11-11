@@ -11,7 +11,7 @@
             </ol>
         </div>
         <div class="col-lg-2 text-right">
-            <a href="{{ route('post-categories.create') }}" class="btn btn-primary" style="margin-top: 20px;">Thêm Loại Bài Viết</a>
+            <a href="{{ route('postCategories.create') }}" class="btn btn-primary" style="margin-top: 20px;">Thêm Loại Bài Viết</a>
         </div>
     </div>
 
@@ -29,9 +29,9 @@
                     </div>
                     <div class="ibox-content">
                         <div class="table-responsive">
-                            @include('admin.PostCategories.component.filter') <!-- Form tìm kiếm -->
-                            @include('admin.PostCategories.component.table')  <!-- Bảng dữ liệu -->
-                            @include('admin.PostCategories.component.paginate') <!-- Phân trang -->
+                            @include('admin.postCategories.component.filter') <!-- Form tìm kiếm -->
+                            @include('admin.postCategories.component.table')  <!-- Bảng dữ liệu -->
+                            @include('admin.postCategories.component.paginate') <!-- Phân trang -->
                         </div>
                     </div>
                 </div>
@@ -40,6 +40,6 @@
     </div>
 @endsection
 
-@push('scripts')
+{{-- @push('scripts')
     @include('admin.PostCategories.component.script') <!-- Script xử lý trạng thái -->
-@endpush
+@endpush --}}

@@ -21,9 +21,7 @@ class CouponsController extends Controller
 
         // Thực hiện tìm kiếm
         if ($search) {
-            $query->where(function ($q) use ($search) {
-                $q->where('code', 'LIKE', "%{$search}%");
-            });
+            $query->where('code', 'LIKE', "%{$search}%");
         }
 
         // Lọc theo trạng thái
@@ -49,10 +47,12 @@ class CouponsController extends Controller
         // Xác thực dữ liệu đầu vào
         $validator = Validator::make($request->all(), [
             'code' => 'required|unique:coupons,code',
-            'value' => 'required|numeric',
-            'type' => 'required|in:percentage,fixed',
+            'value' => 'required|numeric|min:0',
+            'discount_type' => 'required|in:percentage,fixed',
             'start_date' => 'required|date',
             'end_date' => 'required|date|after:start_date',
+            'usage_limit' => 'nullable|integer|min:1',
+            'minimum_order_value' => 'nullable|numeric|min:0',
         ]);
 
         if ($validator->fails()) {
@@ -65,11 +65,13 @@ class CouponsController extends Controller
         // Lưu mã giảm giá mới
         Coupon::create([
             'code' => $request->code,
-            'value' => $request->value,
-            'type' => $request->type,
+            'value' => number_format($request->value, 2, '.', ''), // Định dạng số tiền
+            'discount_type' => $request->discount_type,
             'start_date' => Carbon::parse($request->start_date),
             'end_date' => Carbon::parse($request->end_date),
             'status' => 'active',
+            'usage_limit' => $request->usage_limit,
+            'minimum_order_value' => number_format($request->minimum_order_value, 2, '.', ''), // Định dạng số tiền
         ]);
 
         $flasher->addSuccess('Mã giảm giá đã được tạo thành công!');
@@ -92,10 +94,12 @@ class CouponsController extends Controller
         // Xác thực dữ liệu
         $validator = Validator::make($request->all(), [
             'code' => 'required|unique:coupons,code,' . $id,
-            'value' => 'required|numeric',
-            'type' => 'required|in:percentage,fixed',
+            'value' => 'required|numeric|min:0',
+            'discount_type' => 'required|in:percentage,fixed',
             'start_date' => 'required|date',
             'end_date' => 'required|date|after:start_date',
+            'usage_limit' => 'nullable|integer|min:1',
+            'minimum_order_value' => 'nullable|numeric|min:0',
         ]);
 
         if ($validator->fails()) {
@@ -108,10 +112,12 @@ class CouponsController extends Controller
         // Cập nhật thông tin mã giảm giá
         $coupon->update([
             'code' => $request->code,
-            'value' => $request->value,
-            'type' => $request->type,
+            'value' => number_format($request->value, 2, '.', ''), // Định dạng số tiền
+            'discount_type' => $request->discount_type,
             'start_date' => Carbon::parse($request->start_date),
             'end_date' => Carbon::parse($request->end_date),
+            'usage_limit' => $request->usage_limit,
+            'minimum_order_value' => number_format($request->minimum_order_value, 2, '.', ''), // Định dạng số tiền
         ]);
 
         $flasher->addSuccess('Mã giảm giá đã được cập nhật thành công!');

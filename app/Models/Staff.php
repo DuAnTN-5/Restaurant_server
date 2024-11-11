@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Models;
-
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -15,16 +15,7 @@ class Staff extends Model
 
     // Các trường có thể điền vào (Mass Assignment)
     protected $fillable = [
-        'name',
-        'position',
-        'hire_date',
-        'department',
-        'salary',
-        'status',
-        'user_id', // Liên kết với bảng users
-        'shift_start',
-        'shift_end',
-        'task_description'
+        'user_id', 'position', 'hire_date', 'department', 'salary', 'status', 'shift_start', 'shift_end', 'task_description'
     ];
 
     // Định dạng cho các trường kiểu dữ liệu
@@ -37,7 +28,7 @@ class Staff extends Model
         'updated_at' => 'datetime',
         'deleted_at' => 'datetime',
     ];
-
+    
     // Mối quan hệ với bảng users (one-to-one or one-to-many)
     public function user()
     {

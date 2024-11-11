@@ -20,6 +20,9 @@ class UserResource extends JsonResource
             'email' => $this->email, // Email người dùng
             'created_at' => $this->created_at, // Ngày tạo tài khoản
             'updated_at' => $this->updated_at, // Ngày cập nhật thông tin
+            'is_verified' => $this->is_verified, // Trạng thái xác minh
+            'verification_token' => $this->verification_token, // Mã xác nhận
+            'verification_expires_at' => $this->verification_expires_at, // Thời gian hết hạn mã xác nhận
         ];
     }
 }

@@ -63,7 +63,7 @@
                 </a>
                 <ul class="nav nav-second-level">
                     <li class="{{ Request::is('admin/PostCategories') ? 'active' : '' }}">
-                        <a href="{{ route('post-categories.index') }}"><i class="fa fa-list"></i> Loại Bài Viết</a>
+                        <a href="{{ route('postCategories.index') }}"><i class="fa fa-list"></i> Loại Bài Viết</a>
                     </li>
                     <li class="{{ Request::is('admin/posts') ? 'active' : '' }}">
                         <a href="{{ route('posts.index') }}"><i class="fa fa-list"></i> Danh Sách Bài Viết</a>
@@ -123,24 +123,39 @@
                     @endisset
                 </ul>
             </li>
-            
-            
-            {{-- <li class="{{ Request::is('admin/orders*') || Request::is('admin/order-items*') ? 'active' : '' }}">
-                <a href="#"><i class="fa fa-shopping-cart"></i> <span class="nav-label">Quản Lý Đơn Hàng</span> <span class="fa arrow"></span></a>
+            <li class="{{ Request::is('admin/coupons*') || Request::is('admin/discount_promotions*') ? 'active' : '' }}">
+                <a href="#"><i class="fa fa-tags"></i> <span class="nav-label">Quản Lý Coupons & Khuyến Mãi</span> <span class="fa arrow"></span></a>
                 <ul class="nav nav-second-level">
-                    <!-- Quản lý Đơn Hàng -->
-                    <li class="{{ Request::is('admin/orders') ? 'active' : '' }}">
-                        <a href="{{ route('orders.index') }}"><i class="fa fa-list"></i> Danh Sách Đơn Hàng</a>
+                    <!-- Quản lý Coupons -->
+                    <li class="{{ Request::is('admin/coupons') ? 'active' : '' }}">
+                        <a href="{{ route('coupons.index') }}"><i class="fa fa-list"></i> Danh Sách Coupons</a>
                     </li>
-                    <li class="{{ Request::is('admin/orders/create') ? 'active' : '' }}">
-                        <a href="{{ route('orders.create') }}"><i class="fa fa-plus-circle"></i> Thêm Đơn Hàng</a>
+                    <!-- Quản lý Chương Trình Khuyến Mãi -->
+                    {{-- <li class="{{ Request::is('admin/discountPromotions') ? 'active' : '' }}">
+                        <a href="{{ route('discounts_promotions.index') }}"><i class="fa fa-calendar"></i> Danh Sách Khuyến Mãi</a>
                     </li>
-                    <!-- Quản lý Mặt Hàng trong Đơn -->
-                    <li class="{{ Request::is('admin/order-items') ? 'active' : '' }}">
-                        <a href="{{ route('order-items.index', ['order_id' => $orderId]) }}"><i class="fa fa-cube"></i> Mặt Hàng trong Đơn</a>
-                    </li>
+                    <li class="{{ Request::is('admin/discountPromotions/create') ? 'active' : '' }}">
+                        <a href="{{ route('discounts_promotions.create') }}"><i class="fa fa-plus-circle"></i> Thêm Khuyến Mãi</a>
+                    </li> --}}
                 </ul>
-            </li> --}}
+            </li>
+            <li class="{{ Request::is('admin/payments*') || Request::is('admin/payment_methods*') ? 'active' : '' }}">
+                <a href="#"><i class="fa fa-credit-card"></i> <span class="nav-label">Quản Lý Thanh Toán</span> <span class="fa arrow"></span></a>
+                <ul class="nav nav-second-level">
+                    <!-- Quản lý Danh Sách Thanh Toán -->
+                    <li class="{{ Request::is('admin/payments') ? 'active' : '' }}">
+                        <a href="{{ route('payments.index') }}"><i class="fa fa-list"></i> Danh Sách Thanh Toán</a>
+                    </li>
+            
+                    <!-- Quản lý Phương Thức Thanh Toán -->
+                    <li class="{{ Request::is('admin/payment_methods') ? 'active' : '' }}">
+                        <a href="{{ route('payment_methods.index') }}"><i class="fa fa-list-alt"></i>Phương Thức Thanh Toán</a>
+                    </li>
+
+                </ul>
+            </li>
+            
+            
             
         </ul>
     </div>

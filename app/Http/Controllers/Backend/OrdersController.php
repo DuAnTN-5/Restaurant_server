@@ -191,20 +191,35 @@ class OrdersController extends Controller
 
 public function storeItems(Request $request, $orderId)
 {
-    $order = Order::findOrFail($orderId);
-    $quantities = $request->input('quantities');
-
-    foreach ($quantities as $productId => $quantity) {
-        if ($quantity > 0) {
-            // Cập nhật hoặc tạo mới OrderItem cho sản phẩm
-            OrderItem::updateOrCreate(
-                ['order_id' => $orderId, 'product_id' => $productId],
-                ['quantity' => $quantity, 'price' => Product::find($productId)->price]
-            );
+    // dd($request->all());
+    try{
+        $order = Order::findOrFail($orderId);
+        $quantities = $request->input('quantities');
+       
+        foreach ($quantities as $productId => $quantity) {
+            if ($quantity > 0) {
+                // Cập nhật hoặc tạo mới OrderItem cho sản phẩm
+                $order = OrderItem::where('order_id' , '=', $orderId)->where('product_id','=', $productId)->first();
+                if(!$order){
+                    $order = new OrderItem();
+                    $order->order_id = $orderId;
+                    $order->product_id = $productId;
+                    $order->quantity = $quantity;
+                    $order->price = Product::find($productId)->price;
+                    $order->save();
+                } else {
+                    $order->quantity += $quantity;
+                    $order->save();
+                }
+                
+            }
         }
-    }
+    
+        return response()->json(['success' => true, 'message' => 'Đã thêm sản phẩm vào đơn hàng thành công!']);
 
-    return response()->json(['success' => true, 'message' => 'Đã thêm sản phẩm vào đơn hàng thành công!']);
+    } catch (\Exception $e) {
+        return response()->json(['success' => false, 'message' => 'Có l��i xảy ra khi thêm sản phẩm vào đơn hàng: '. $e->getMessage()]);
+    }
 }
 
 

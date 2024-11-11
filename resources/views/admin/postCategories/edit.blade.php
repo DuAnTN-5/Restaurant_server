@@ -11,7 +11,7 @@
             </ol>
         </div>
         <div class="col-lg-2 text-right">
-            <a href="{{ route('PostCategories.index') }}" class="btn btn-primary" style="margin-top: 20px;">Danh Sách</a>
+            <a href="{{ route('postCategories.index') }}" class="btn btn-primary" style="margin-top: 20px;">Danh Sách</a>
         </div>
     </div>
 
@@ -33,7 +33,7 @@
                         <h5>Chỉnh Sửa Loại Bài Viết</h5>
                     </div>
                     <div class="ibox-content">
-                        @include('admin.PostCategories.component.form') <!-- Include form -->
+                        @include('admin.postCategories.component.form') <!-- Include form -->
                     </div>
                 </div>
             </div>

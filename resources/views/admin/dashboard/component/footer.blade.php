@@ -1,8 +1,8 @@
 <div class="footer">
     <div class="pull-right">
-        10GB of <strong>250GB</strong> Free.
+        Trần Minh Quân <strong>0947648059</strong>
     </div>
     <div>
-        <strong>Copyright</strong> Example Company &copy; 2014-2017
+        <strong>Copyright</strong> HightFive Company &copy; 2024-2025
     </div>
 </div>

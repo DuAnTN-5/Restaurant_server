@@ -1,26 +1,28 @@
 @extends('admin.dashboard.layoutadmin')
 
 @section('content')
-    <div class="row wrapper border-bottom white-bg page-heading">
-        @flasher_render
-        <div class="col-lg-10">
-            <h2>Danh Sách Người Dùng</h2>
-            <ol class="breadcrumb">
-                <li>
-                    <a href="{{ route('admin.index') }}">Trang Chủ</a>
-                </li>
-                <li>
-                    <a>Quản Lý Người Dùng</a>
-                </li>
-                <li class="active">
-                    <strong>Danh Sách Người Dùng</strong>
-                </li>
-            </ol>
-        </div>
-        <div class="col-lg-2 text-right">
-            <a href="{{ route('users.create') }}" class="btn btn-primary" style="margin-top: 20px;">Thêm Người Dùng</a>
-        </div>
+<div class="row wrapper border-bottom white-bg page-heading">
+    @flasher_render
+    <div class="col-lg-10">
+        <h2>Danh Sách Người Dùng</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="{{ route('admin.index') }}">Trang Chủ</a>
+            </li>
+            <li>
+                <a>Quản Lý Người Dùng</a>
+            </li>
+            <li class="active">
+                <strong>Danh Sách Người Dùng</strong>
+            </li>
+        </ol>
     </div>
+    <div class="col-lg-2 text-right">
+        <!-- Nút Xem Danh Sách Đã Xóa -->
+        <a href="{{ route('users.trashed') }}" class="btn btn-warning" style="margin-top: 20px; margin-left: 10px;">Xem Danh Sách Đã Xóa</a>
+    </div>
+</div>
+
 
     @if ($errors->has('error'))
         <div class="alert alert-danger">{{ $errors->first('error') }}</div>
@@ -60,6 +62,6 @@
     </div>
 @endsection
 
-@push('scripts')
+{{-- @push('scripts')
     @include('admin.users.component.script')
-@endpush
+@endpush --}}

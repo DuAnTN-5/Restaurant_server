@@ -1,39 +1,17 @@
 <!-- Switchery CSS and JS -->
-<link rel="stylesheet" href="backend/css/plugins/switchery/switchery.css">
-<script src="backend/js/plugins/switchery/switchery.js"></script>
+{{-- <link rel="stylesheet" href="backend/css/plugins/switchery/switchery.css">
+<script src="backend/js/plugins/switchery/switchery.js"></script> --}}
 
 <!-- Toastr CSS and JS -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+{{-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 <link href="backend/css/plugins/dropzone/dropzone.css" rel="stylesheet">
-<script src="backend/js/plugins/dropzone/dropzone.js"></script>
+<script src="backend/js/plugins/dropzone/dropzone.js"></script> --}}
 {{-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/dropzone.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/dropzone.min.js"></script> --}}
-<style>
-    .toast-success {
-        background-color: #1AB394 !important;
-        /* Success color */
-    }
 
-    .toast-error {
-        background-color: red !important;
-        /* Error color */
-    }
 
-    .text-center th,
-    .text-center td {
-        text-align: center;
-        vertical-align: middle;
-    }
-
-    .img-thumbnail {
-        width: 50px;
-        height: 50px;
-        object-fit: cover;
-    }
-</style>
-
-<script>
+{{-- <script>
     document.addEventListener('DOMContentLoaded', function() {
         // Initialize Switchery for status toggle
         var elems = document.querySelectorAll('.js-switch');
@@ -108,4 +86,4 @@
             "hideMethod": "fadeOut"
         };
     });
-</script>
+</script> --}}
