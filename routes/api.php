@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\API\CommentProductController;
 use App\Http\Controllers\API\DishReviewController;
 use App\Http\Controllers\API\ProductController;
 use App\Http\Controllers\API\RegisterController;
@@ -25,18 +26,21 @@ use Illuminate\Support\Facades\Route;
 // Đường dẫn API yêu cầu xác thực
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [RegisterController::class, 'logout']);
+    // Thêm sản phẩm vào giỏ hàng
+    Route::post('/cart/add', [ProductController::class, 'addToCart']);
+
+    Route::post('/comment-product', [CommentProductController::class, 'store']);
 });
 
 // Đăng ký các route cho đăng ký và đăng nhập
 Route::controller(RegisterController::class)->group(function () {
     Route::post('register', 'register')->name('register');
     Route::post('login', 'login')->name('login');
-    // Route::post('logout', 'logout')->name('logout');
 });
 
 // Route xác nhận email đăng kí
 Route::get('/verify-email/{token}', [RegisterController::class, 'verifyEmail']);
-
+// Route quên mật khẩu
 Route::post('/forgot-password', [RegisterController::class, 'forgotPassword']);
 Route::post('/reset-password', [RegisterController::class, 'resetPassword']);
 
@@ -44,24 +48,24 @@ Route::post('/reset-password', [RegisterController::class, 'resetPassword']);
 Route::get('auth/{provider}', [SocialAuthController::class, 'redirectToProvider']);
 Route::get('auth/{provider}/callback', [SocialAuthController::class, 'handleProviderCallback']);
 
-// Route::post('logout', [RegisterController::class, 'logout'])->name('logout');
-
 // Route cho sản phẩm
-Route::apiResource('products', ProductController::class);
+Route::get('/products', [ProductController::class, 'index']);
+Route::get('/products/{slug}', [ProductController::class, 'show']);
+
+Route::get('/products/{slug}/comments', [CommentProductController::class, 'index']);
+
+// Route cho danh mục sản phẩm
+Route::get('/product-categories', [ProductCategoryController::class, 'index']);
+
+// Route để lấy sản phẩm theo danh mục
+Route::get('/product-categories/{id}', [ProductCategoryController::class, 'products']);
+
 
 // Route cho bài viết
 Route::apiResource('posts', PostController::class);
 
 // Route cho danh mục bài viết
 // Route::apiResource('post-categories', PostCategoryController::class);
-
-// Route cho danh mục sản phẩm
-Route::apiResource('product-categories', ProductCategoryController::class);
-
-// Route để lấy sản phẩm theo danh mục
-Route::get('product-categories/{id}/products', [ProductCategoryController::class, 'products'])->name('product-categories.products');
-
-
 
 // Route cho đánh giá món ăn
 // Route::post('/reviews-dish', [DishReviewController::class, 'store']); // Thêm đánh giá
