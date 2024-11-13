@@ -168,4 +168,11 @@ class User extends Authenticatable
     {
         return $this->hasMany(Event::class, 'user_id');
     }
+
+
+    public function cart()
+    {
+        return $this->hasOne(Cart::class);
+    }
+
 }

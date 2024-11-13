@@ -31,7 +31,7 @@ function initializeSwitchery() {
                 case 'product':
                     updateStatusRoute = updateProductStatusRoute;
                     break;
-                case 'product_category':
+                case 'productCategory':
                     updateStatusRoute = updateProductCategoriesStatusRoute;
                     break;
                 case 'order':
@@ -43,7 +43,7 @@ function initializeSwitchery() {
                 case 'reservation':
                     updateStatusRoute = updateReservationsStatusRoute;
                     break;
-                case 'coupon':
+                case 'coupons':
                     updateStatusRoute = updateCouponsStatusRoute;
                     break;
                 default:

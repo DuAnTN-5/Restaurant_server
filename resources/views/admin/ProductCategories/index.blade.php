@@ -53,7 +53,7 @@
     </div>
 @endsection
 
-@push('scripts')
+{{-- @push('scripts')
     <!-- Bao gồm script thay đổi trạng thái -->
     @include('admin.productcategories.component.script')
-@endpush
+@endpush --}}

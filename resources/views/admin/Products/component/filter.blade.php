@@ -7,13 +7,13 @@
                 <input type="date" name="created_at" class="form-control" value="{{ request()->input('created_at') }}">
             </div>
 
-            <!-- Dropdown chọn danh mục cha -->
+            <!-- Dropdown chọn danh mục sản phẩm -->
             <div class="form-group mx-sm-3 mb-2">
                 <select name="category_id" class="form-control">
                     <option value="">-- Chọn Danh Mục --</option>
-                    @foreach ($categories as $category)
-                        <option value="{{ $category->id }}" {{ request()->input('category_id') == $category->id ? 'selected' : '' }}>
-                            {{ $category->name }}
+                    @foreach ($productCategories as $productCategory)
+                        <option value="{{ $productCategory->id }}" {{ request()->input('category_id') == $productCategory->id ? 'selected' : '' }}>
+                            {{ $productCategory->name }}
                         </option>
                     @endforeach
                 </select>

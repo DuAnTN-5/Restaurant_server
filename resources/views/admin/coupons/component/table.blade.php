@@ -31,8 +31,13 @@
                 <td>{{ $coupon->usage_limit ?? 'Không giới hạn' }}</td>
                 <td>{{ number_format($coupon->minimum_order_value, 0, ',', '.') }} VND</td>
                 <td style="text-align: center; vertical-align: middle;">
-                    <input type="checkbox" class="js-switch" data-id="{{ $coupon->id }}" {{ $coupon->status == 'active' ? 'checked' : '' }}>
+                    <input type="checkbox" class="js-switch" 
+                           data-id="{{ $coupon->id }}" 
+                           data-type="coupons"
+                           {{ $coupon->status == 'active' ? 'checked' : '' }}>
                 </td>
+                
+
                 <td style="text-align: center; vertical-align: middle;">
                     <a href="{{ route('coupons.edit', $coupon->id) }}" class="btn btn-success">
                         <i class="fa fa-edit"></i>

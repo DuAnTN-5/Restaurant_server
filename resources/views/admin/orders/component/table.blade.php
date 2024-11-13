@@ -32,7 +32,7 @@
                 <td>{{ $order->note }}</td>
                 <td>{{ $order->created_at->format('d/m/Y') }}</td>
                 <td>
-                    <form method="POST" action="{{ route('orders.updateStatus') }}" style="display: inline;">
+                    <form method="POST" action="{{ route('orders.update-status') }}" style="display: inline;">
                         @csrf
                         <input type="hidden" name="id" value="{{ $order->id }}">
                         <select name="status" class="form-control status-select" data-id="{{ $order->id }}" onchange="changeStatusColor(this)">

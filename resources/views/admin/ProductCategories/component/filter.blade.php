@@ -11,7 +11,7 @@
             <div class="form-group mx-sm-3 mb-2">
                 <select name="parent_id" class="form-control">
                     <option value="">-- Chọn Danh Mục Cha --</option>
-                    @foreach ($categories as $parentCategory)
+                    @foreach ($productCategoriesParent as $parentCategory)
                         <option value="{{ $parentCategory->id }}" {{ request()->input('parent_id') == $parentCategory->id ? 'selected' : '' }}>
                             {{ $parentCategory->name }}
                         </option>

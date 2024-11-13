@@ -22,10 +22,13 @@
                     </div>
                 </td>
                 
-                <!-- Status Toggle -->
                 <td style="text-align: center; vertical-align: middle;">
-                    <input type="checkbox" class="js-switch" data-id="{{ $paymentMethod->id }}" data-type="payment_method" {{ $paymentMethod->is_active ? 'checked' : '' }}>
+                    <input type="checkbox" class="js-switch" 
+                           data-id="{{ $paymentMethod->id }}" 
+                           data-type="payment_method"
+                           {{ $paymentMethod->is_active ? 'checked' : '' }}>
                 </td>
+                
                 
                           
 

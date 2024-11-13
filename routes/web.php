@@ -41,20 +41,16 @@ Route::controller(RegisterController::class)->group(function () {
 Route::controller(ForgotPasswordController::class)->group(function () {
     Route::get('/forgot-password', 'showLinkRequestForm')->name('forgotPassword'); // Hiển thị form yêu cầu đặt lại mật khẩu
     Route::post('/forgot-password', 'sendResetLinkEmail')->name('password.email'); // Xử lý gửi email đặt lại mật khẩu
+    Route::get('/reset-password/{token}', 'showResetForm')->name('password.reset'); // Hiển thị form đặt lại mật khẩu
 });
 // Định nghĩa route cho Admin Dashboard và Quản lý người dùng
 Route::group(['middleware' => ['auth', 'admin']], function () {
     // Route index dashboard
     Route::get('/', [AdminController::class, 'index'])->name('admin.index'); // Sửa lại phần name thành 'admin.index'
     Route::controller(UserController::class)->group(function () {
-        // Route để xem danh sách người dùng
         Route::get('/users', 'index')->name('users.index'); // Danh sách người dùng
-
-        // Route để thêm người dùng
         Route::get('/users/create', 'create')->name('users.create'); // Form thêm người dùng
         Route::post('/users/store', 'store')->name('users.store'); // Lưu người dùng
-
-        // Route để chỉnh sửa người dùng
         Route::get('/users/{user}/edit', 'edit')->name('users.edit'); // Form chỉnh sửa người dùng
         Route::put('/users/{user}', 'update')->name('users.update'); // Cập nhật người dùng
 
@@ -75,7 +71,7 @@ Route::group(['middleware' => ['auth', 'admin']], function () {
 
     // Routes cho nhân viên
     Route::prefix('/staff')->group(function () {
-        Route::match(['get','post'],'/', [StaffController::class, 'index'])->name('staff.index'); // Danh sách nhân viên
+        Route::match(['get', 'post'], '/', [StaffController::class, 'index'])->name('staff.index'); // Danh sách nhân viên
         Route::post('/', [StaffController::class, 'store'])->name('staff.store'); // Lưu nhân viên mới
         Route::get('/{id}', [StaffController::class, 'show'])->name('staff.show'); // Xem chi tiết nhân viên
     });
@@ -89,21 +85,35 @@ Route::group(['middleware' => ['auth', 'admin']], function () {
         Route::delete('/{id}', [PostCategoriesController::class, 'destroy'])->name('postCategories.destroy');
         Route::post('/update-status', [PostCategoriesController::class, 'updateStatus'])->name('postCategories.update-status');
     });
-    
-    
 
     // Route cho bài viết (Posts)
-    Route::prefix('/posts')->group(function () {
+    Route::prefix('posts')->group(function () {
         Route::get('/', [PostController::class, 'index'])->name('posts.index'); // Danh sách bài viết
+
+        // Route để thêm bài viết
         Route::get('/create', [PostController::class, 'create'])->name('posts.create'); // Form thêm bài viết
-        Route::post('/', [PostController::class, 'store'])->name('posts.store'); // Lưu bài viết
-        Route::get('/{id}/edit', [PostController::class, 'edit'])->name('posts.edit'); // Form chỉnh sửa bài viết
-        Route::put('/{id}', [PostController::class, 'update'])->name('posts.update'); // Cập nhật bài viết
-        Route::delete('/{id}', [PostController::class, 'destroy'])->name('posts.destroy'); // Xóa bài viết
+        Route::post('/store', [PostController::class, 'store'])->name('posts.store'); // Lưu bài viết
+
+        // Route để chỉnh sửa bài viết
+        Route::get('/{post}/edit', [PostController::class, 'edit'])->name('posts.edit'); // Form chỉnh sửa bài viết
+        Route::put('/{post}', [PostController::class, 'update'])->name('posts.update'); // Cập nhật bài viết
+
+        // Route để xóa bài viết (soft delete)
+        Route::delete('/{post}', [PostController::class, 'destroy'])->name('posts.destroy'); // Xóa bài viết
+
+        // Route để khôi phục bài viết đã xóa
+        Route::post('/{post}/restore', [PostController::class, 'restore'])->name('posts.restore'); // Khôi phục bài viết đã xóa
+
+        // Route để xem danh sách bài viết đã bị xóa (soft deleted)
+        Route::get('/trashed', [PostController::class, 'trashed'])->name('posts.trashed'); // Xem danh sách bài viết đã xóa mềm
+
+        // Route để xóa vĩnh viễn bài viết
+        Route::delete('/{id}/force-delete', [PostController::class, 'forceDelete'])->name('posts.forceDelete'); // Xóa vĩnh viễn bài viết
 
         // Route cập nhật trạng thái (update-status) cho bài viết
-        Route::post('/posts/update-status', [PostController::class, 'updateStatus'])->name('posts.update-status');
+        Route::post('/update-status', [PostController::class, 'updateStatus'])->name('posts.update-status');
     });
+
 
     // Định nghĩa route cho quản lý sản phẩm (Product Categories)
     Route::prefix('/categories/product-categories')->group(function () {
@@ -117,15 +127,21 @@ Route::group(['middleware' => ['auth', 'admin']], function () {
 
     });
     // Định nghĩa route cho quản lý sản phẩm (Products)
-    Route::prefix('/products')->group(function () {
+    Route::prefix('products')->group(function () {
         Route::get('/', [ProductController::class, 'index'])->name('products.index');
         Route::get('/create', [ProductController::class, 'create'])->name('products.create');
-        Route::post('/', [ProductController::class, 'store'])->name('products.store');
+        Route::post('/store', [ProductController::class, 'store'])->name('products.store');
         Route::get('/{id}/edit', [ProductController::class, 'edit'])->name('products.edit');
         Route::put('/{id}', [ProductController::class, 'update'])->name('products.update');
         Route::delete('/{id}', [ProductController::class, 'destroy'])->name('products.destroy');
-        Route::post('/products/update-status', [ProductController::class, 'updateStatus'])->name('products.update-status');
+        Route::post('/update-status', [ProductController::class, 'updateStatus'])->name('products.update-status');
+    
+        // Routes cho sản phẩm đã xóa mềm
+        Route::get('/trashed', [ProductController::class, 'trashed'])->name('products.trashed');
+        Route::post('/{id}/restore', [ProductController::class, 'restore'])->name('products.restore');
+        Route::delete('/{id}/force-delete', [ProductController::class, 'forceDelete'])->name('products.forceDelete');
     });
+    
 
     Route::prefix('/tables')->group(function () {
         Route::get('/', [TableController::class, 'index'])->name('tables.index');          // Hiển thị danh sách bàn

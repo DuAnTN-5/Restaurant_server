@@ -21,7 +21,7 @@ class RegisterController extends BaseController
      {
          $validator = Validator::make($request->all(), [
              'name' => 'required',
-             'email' => 'required|email',
+             'email' => 'required|email|unique:users,email',
              'password' => 'required',
              'c_password' => 'required|same:password',
          ]);
@@ -41,32 +41,33 @@ class RegisterController extends BaseController
          $user = User::create($input);
         //  $success['token'] =  $user->createToken('MyApp')->plainTextToken;
 
-         $verificationUrl = url("api/verify-email/{$verificationToken}");
+         $verificationUrl = url("http://localhost:5173/verify-email/{$verificationToken}");
          Mail::to($user->email)->send(new VerificationMail($verificationUrl));
  
          $success['name'] =  $user->name;
-         return $this->sendResponse($success, 'User register successfully.');
+         $success['verification_required'] = true;
+         return $this->sendResponse($success, 'User register successfully. Please verify your email.');
      }
 
      // Xác nhận email api
      public function verifyEmail($token): JsonResponse
      {
-        $user = User::where('verification_token',$token)->first();
+        $user = User::where('verification_token', $token)->first();
 
         if(!$user) {
-            return $this->sendError('Token không hợp lệ.');
+            return $this->sendError('Token không hợp lệ.', [], 400);
         }
 
         if($user->verification_expires_at < now()) {
-            return $this->sendError('Token đã hết hạn.');
+            return $this->sendError('Token đã hết hạn.', [], 400);
         }
-
+ 
         $user->is_verified = true;
         $user->verification_token = NULL;
         $user->verification_expires_at = NULL;
         $user->save();
 
-        return $this->sendResponse([], 'Email Verify Successfully.');
+        return $this->sendResponse(['verified' => true], 'Email Verify Successfully.');
      }
  
      // Login api
@@ -82,10 +83,10 @@ class RegisterController extends BaseController
              $success['token'] =  $user->createToken('MyApp')->plainTextToken;
              $success['name'] =  $user->name;
  
-             return $this->sendResponse($success, 'User login successfully.');
+             return $this->sendResponse($success, 'Đăng nhập thành công..');
          }
          else{
-             return $this->sendError('Unauthorised.', ['error'=>'Unauthorised']);
+             return $this->sendError('Không có quyền truy cập.', ['error'=>'Không có quyền truy cập']);
          }
      }
 
@@ -110,17 +111,17 @@ class RegisterController extends BaseController
         ]);
 
         //gửi email với link đặt mk
-        $resetLink = url("api/reset-password/{$token}?email={$request->email}");
+        $resetLink = url("http://localhost:5173/reset-password/{$token}?email={$request->email}");
         Mail::to($request->email)->send(new ResetPasswordMail($resetLink));
 
-        return response()->json(['message' => 'Password reset link has been send to your email address.']);
+        return response()->json(['message' => 'Liên kết đặt lại mật khẩu đã được gửi đến email của bạn.',
+                                 'email_sent' => true ]);
     }
 
     // reset mật khẩu api
     public function resetPassword(Request $request): JsonResponse
     {
         $request->validate([
-            'email' => 'required|email|exists:users,email',
             'token' => 'required',
             'password' => 'required',
         ]);
@@ -132,7 +133,9 @@ class RegisterController extends BaseController
                     ->first();
         
         if(!$reset || $reset->created_at < now()->subMinutes(30)) {
-            return response()->json(['message' => 'This password token is invalid or has expired.'], 400);
+            return response()->json(['message' => 'Token đặt lại mật khẩu không hợp lệ hoặc đã hết hạn.',
+                                     'password_reset' => false
+                                    ], 400);
         }
 
         //đặt lại mật khẩu mới
@@ -144,7 +147,8 @@ class RegisterController extends BaseController
         //xóa token sau khi sử dung
         DB::table('password_reset_tokens')->where('email', $request->email)->delete();
 
-        return response()->json(['message'=> 'Password has been reset successfully.']);
+        return response()->json(['message'=> 'Password has been reset successfully.',
+                                 'password_reset' => true]);
     }
 
     public function logout(Request $request): JsonResponse

@@ -6,8 +6,11 @@ use Intervention\Image\Facades\Image;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Resources\ProductResource;
+use App\Models\Cart;
+use App\Models\CartItem;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ProductController extends Controller
 {
@@ -22,13 +25,30 @@ class ProductController extends Controller
     }
 
     // Lấy chi tiết sản phẩm
-    public function show($id)
+    // public function show($id)
+    // {
+    //     $product = Product::find($id);
+    //     if (!$product) {
+    //         return response()->json([
+    //             'status' => false,
+    //             'message' => 'Sản phẩm không tìm thấy.',
+    //         ], 404);
+    //     }
+
+    //     return response()->json([
+    //         'status' => true,
+    //         'data' => new ProductResource($product),
+    //     ]);
+    // }
+
+    // Sản phẩm theo slug
+    public function show($slug)
     {
-        $product = Product::find($id);
+        $product = Product::where('slug', $slug)->firstOrFail();
         if (!$product) {
             return response()->json([
                 'status' => false,
-                'message' => 'Sản phẩm không tìm thấy.',
+                'message' => 'Không tìm thấy món ăn.',
             ], 404);
         }
 
@@ -38,6 +58,49 @@ class ProductController extends Controller
         ]);
     }
 
+
+    public function addToCart(Request $request)
+    {
+        $user = Auth::user();
+        if(!$user) {
+            return response()->json([
+                'status'=> false,
+                'message' => 'Người dùng chưa đăng nhập.'
+            ], 401);
+        }
+
+        $request->validate([
+            'product_id' => 'required|exists:products,id',
+            'quantity' => 'required|integer|min:1'
+        ]);
+
+        // Tìm hoặc tạo giỏ hàng cho người dùng
+        $cart = Cart::firstOrCreate(['user_id' => $user->id]);
+
+         // Kiểm tra xem sản phẩm đã có trong giỏ hàng chưa
+        $cartItem = CartItem::where('cart_id', $cart->id)
+                             ->where('product_id', $request->product_id)
+                            ->first();
+
+        if($cartItem) {
+            // Nếu đã có, cập nhật số lượng
+            $cartItem->quantity += $request->quantity;
+            $cartItem->save();
+        } else {
+            // Nếu chưa có, thêm sản phẩm mới vào giỏ hàng
+            CartItem::create([
+                'cart_id' => $cart->id,
+                'product_id' => $request->product_id,
+                'quantity' => $request->quantity
+            ]);
+        }
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Product added to cart successfully',
+            'cart' => $cart->load('cartItems.product') // Load các sản phẩm trong giỏ hàng
+        ]);
+    }       
 
     // public function store(StoreProductRequest $request)
     // {

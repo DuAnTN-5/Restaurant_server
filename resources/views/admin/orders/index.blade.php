@@ -42,6 +42,6 @@
     </div>
 @endsection
 
-@push('scripts')
+{{-- @push('scripts')
     @include('admin.orders.component.script') <!-- Script cho đơn hàng -->
-@endpush
+@endpush --}}
