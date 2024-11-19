@@ -73,15 +73,16 @@ class RegisterController extends BaseController
      // Login api
      public function login(Request $request): JsonResponse
      {
-         if(Auth::attempt(['email' => $request->email, 'password' => $request->password])){
+         if(Auth::attempt(['email' => $request->email, 'password' => $request->password,])){
              $user = Auth::user();
-
+    
              if(!$user->is_verified){
                 return $this->sendError('Tài khoản của bạn chưa được xác minh. Vui lòng kiểm tra lại email trong hộp thư.');
              }
 
              $success['token'] =  $user->createToken('MyApp')->plainTextToken;
              $success['name'] =  $user->name;
+             $success['role'] =  $user->role;
  
              return $this->sendResponse($success, 'Đăng nhập thành công..');
          }

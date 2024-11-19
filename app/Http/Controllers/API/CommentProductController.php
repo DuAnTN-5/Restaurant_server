@@ -38,7 +38,7 @@ class CommentProductController extends Controller
              'product_id' => $product->id,
              'user_id' => auth()->id(),
              'content' => $request->content,
-             'parent_id' => $request->parent_id ?? NULL,
+             'parent_id' => $request->parent_id ?? 0,
          ]);
  
          return response()->json([
