@@ -31,26 +31,7 @@
         padding: 5px;
         border-radius: 4px;
     }
-    .status-pending {
-        background-color: #f0ad4e; /* Đang chờ */
-        color: white;
-    }
-    .status-confirmed {
-        background-color: #5bc0de; /* Đã xác nhận */
-        color: white;
-    }
-    .status-preparing {
-        background-color: #5bc0de; /* Đang chuẩn bị */
-        color: white;
-    }
-    .status-ready {
-        background-color: #5cb85c; /* Sẵn sàng */
-        color: white;
-    }
-    .status-completed {
-        background-color: #337ab7; /* Hoàn thành */
-        color: white;
-    }
+    
     .status-canceled {
         background-color: #d9534f; /* Hủy */
         color: white;
@@ -82,7 +63,7 @@
                 var status = this.value;  // Lấy giá trị đã chọn từ dropdown
 
                 // Cập nhật trạng thái qua fetch
-                fetch('{{ route('orders.updateStatus') }}', {
+                fetch('{{ route('orders.update-status') }}', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -95,12 +76,16 @@
                 })
                 .then(response => response.json())
                 .then(data => {
-                    if (data.success) {
-                        toastr.success(data.message);
-                    } else {
-                        toastr.error('Có lỗi xảy ra, vui lòng thử lại.');
-                    }
-                })
+                if (data.success) {
+                    toastr.success(data.message);
+                    // Tải lại trang sau 1 giây để người dùng thấy thông báo
+                    setTimeout(function() {
+                        location.reload();
+                    }, 1000);
+                } else {
+                    toastr.error('Có lỗi xảy ra, vui lòng thử lại.');
+                }
+            })
                 .catch(error => {
                     console.error('Error:', error);
                     toastr.error('Có lỗi xảy ra. Vui lòng thử lại.');

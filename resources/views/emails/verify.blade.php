@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+{{-- <!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
@@ -12,4 +12,4 @@
     <p>Nếu bạn không đăng ký tài khoản, bạn có thể bỏ qua email này.</p>
     <p>Trân trọng,<br>Đội ngũ hỗ trợ của chúng tôi </p>
 </body>
-</html>
+</html> --}}

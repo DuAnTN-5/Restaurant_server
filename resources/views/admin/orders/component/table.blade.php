@@ -44,18 +44,25 @@
                             <option value="canceled" class="status-canceled" {{ $order->status == 'canceled' ? 'selected' : '' }}>Hủy</option>
                         </select>
                     </form>
-                    <td>
-                        <!-- Nút "Đặt Món" để thêm sản phẩm vào đơn hàng -->
+                </td>
+                {{-- <td>
+                    <!-- Nút "Xem" luôn hiển thị -->
+                    <a href="{{ route('order_items.index', ['orderId' => $order->id]) }}" class="btn btn-info">
+                        <i class="fa fa-eye"></i> Xem
+                    </a>
+
+                    <!-- Nút "Thanh Toán" chỉ hiển thị khi trạng thái là "Hoàn Thành" -->
+                    @if($order->status == 'completed')
+                        <a href="{{ route('orders.pay', ['orderId' => $order->id]) }}" class="btn btn-warning">
+                            <i class="fa fa-money"></i> Thanh Toán
+                        </a>
+                    @else
+                        <!-- Nút "Đặt Món", "Sửa", và "Xóa" chỉ hiển thị khi trạng thái không phải là "Hoàn Thành" -->
                         <a href="javascript:void(0);" class="btn btn-info" onclick="openOrderItemModal({{ $order->id }})">
                             <i class="fa fa-plus"></i> Đặt Món
                         </a>
-                        
-                        <!-- Nút Sửa và Xóa như bạn đã có -->
                         <a href="{{ route('orders.edit', $order->id) }}" class="btn btn-success">
                             <i class="fa fa-edit"></i>
-                        </a>
-                        <a href="{{ route('order_items.index', ['orderId' => $order->id]) }}" class="btn btn-info">
-                            <i class="fa fa-eye"></i>
                         </a>
                         <form method="POST" action="{{ route('orders.destroy', $order->id) }}" style="display: inline;">
                             @csrf
@@ -64,8 +71,37 @@
                                 <i class="fa fa-trash"></i>
                             </button>
                         </form>
-                    </td>
-                    
+                    @endif
+                </td> --}}
+                <td>
+                    <!-- Nút "Xem" luôn hiển thị -->
+                    <a href="{{ route('order_items.index', ['orderId' => $order->id]) }}" class="btn btn-info">
+                        <i class="fa fa-eye"></i> Xem
+                    </a>
+                
+                    <!-- Nút "Thanh Toán" chỉ hiển thị khi trạng thái là "Hoàn Thành" -->
+                    @if($order->status == 'completed' && !$order->is_paid)
+                        <a href="javascript:void(0);" class="btn btn-warning" onclick="openPaymentModal({{ $order->id }})">
+                            <i class="fa fa-money"></i> Thanh Toán
+                        </a>
+                    @else
+                        <!-- Các nút thao tác khác nếu trạng thái không phải là "Hoàn Thành" hoặc đã thanh toán -->
+                        <a href="javascript:void(0);" class="btn btn-info" onclick="openOrderItemModal({{ $order->id }})">
+                            <i class="fa fa-plus"></i> Đặt Món
+                        </a>
+                        <a href="{{ route('orders.edit', $order->id) }}" class="btn btn-success">
+                            <i class="fa fa-edit"></i>
+                        </a>
+                        <form method="POST" action="{{ route('orders.destroy', $order->id) }}" style="display: inline;">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-danger" onclick="return confirm('Xác nhận xóa?')">
+                                <i class="fa fa-trash"></i>
+                            </button>
+                        </form>
+                    @endif
+                </td>
+                
             </tr>
         @endforeach
     </tbody>
