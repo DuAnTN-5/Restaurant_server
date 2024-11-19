@@ -30,7 +30,7 @@
                         @endif
 
                         <!-- Include form chỉnh sửa bài viết -->
-                        @include('admin.posts.component.form', ['post' => $post, 'categories' => $categories])
+                        @include('admin.posts.component.form', ['post' => $post, 'postCategories' => $postCategories])
                     </div>
                 </div>
             </div>

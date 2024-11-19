@@ -30,7 +30,10 @@
                 
                 {{-- <td>{{ $post->position ?? 'Không xác định' }}</td> --}}
                 <td style="text-align: center; vertical-align: middle;">
-                    <input type="checkbox" class="js-switch" data-id="{{ $post->id }}" {{ $post->status == 'published' ? 'checked' : '' }}>
+                    <input type="checkbox" class="js-switch" 
+                        data-id="{{ $post->id }}" 
+                        data-type="post"
+                        {{ $post->status === 'active' ? 'checked' : '' }}>
                 </td>
                 
                 

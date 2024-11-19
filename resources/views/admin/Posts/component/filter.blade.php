@@ -11,9 +11,9 @@
             <div class="form-group mb-2 mx-sm-3">
                 <select name="category_id" class="form-control">
                     <option value="">-- Chọn Danh Mục --</option>
-                    @foreach ($categories as $category)
-                        <option value="{{ $category->id }}" {{ request()->input('category_id') == $category->id ? 'selected' : '' }}>
-                            {{ $category->name }}
+                    @foreach ($postCategories as $postCategory)
+                        <option value="{{ $postCategory->id }}" {{ request()->input('category_id') == $postCategory->id ? 'selected' : '' }}>
+                            {{ $postCategory->name }}
                         </option>
                     @endforeach
                 </select>
@@ -23,9 +23,8 @@
             <div class="form-group mb-2 mx-sm-3">
                 <select name="status" class="form-control">
                     <option value="">-- Chọn Tình Trạng --</option>
-                    <option value="published" {{ request()->input('status') == 'published' ? 'selected' : '' }}>Đã xuất bản</option>
-                    <option value="draft" {{ request()->input('status') == 'draft' ? 'selected' : '' }}>Nháp</option>
-                    <option value="archived" {{ request()->input('status') == 'archived' ? 'selected' : '' }}>Lưu trữ</option>
+                    <option value="active" {{ request()->input('status') == 'active' ? 'selected' : '' }}>Hoạt động</option>
+                    <option value="inactive" {{ request()->input('status') == 'inactive' ? 'selected' : '' }}>Không hoạt động</option>
                 </select>
             </div>
 

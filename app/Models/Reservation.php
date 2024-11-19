@@ -10,7 +10,6 @@ class Reservation extends Model
 {
     use SoftDeletes;
 
-    // Các trường có thể điền vào (Mass Assignment)
     protected $fillable = [
         'user_id',
         'staff_id',
@@ -21,7 +20,6 @@ class Reservation extends Model
         'status',
     ];
 
-    // Định dạng cho các trường kiểu dữ liệu
     protected $casts = [
         'reservation_date' => 'datetime',
         'created_at' => 'datetime',
@@ -29,65 +27,85 @@ class Reservation extends Model
         'deleted_at' => 'datetime',
     ];
 
-    // Một đặt chỗ thuộc về một người dùng
+    const STATUS_CONFIRMED = 'confirmed';
+    const STATUS_CANCELED = 'canceled';
+    const STATUS_PENDING = 'pending';
+    const STATUS_RESERVED = 'reserved';
+    const STATUS_IN_USE = 'in_use';
+    const STATUS_AVAILABLE = 'available';
+
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    // Một đặt chỗ thuộc về một nhân viên quản lý (staff)
     public function staff()
     {
         return $this->belongsTo(Staff::class, 'staff_id');
     }
 
-    // Một đặt chỗ thuộc về một bàn
     public function table()
     {
         return $this->belongsTo(Table::class, 'table_id');
     }
 
-    // Kiểm tra trạng thái đặt chỗ
     public function isConfirmed()
     {
-        return $this->status === 'confirmed';
+        return $this->status === self::STATUS_CONFIRMED;
     }
 
     public function isCanceled()
     {
-        return $this->status === 'canceled';
+        return $this->status === self::STATUS_CANCELED;
     }
 
     public function isPending()
     {
-        return $this->status === 'pending';
+        return $this->status === self::STATUS_PENDING;
     }
 
     public function isReserved()
     {
-        return $this->status === 'reserved';
+        return $this->status === self::STATUS_RESERVED;
     }
 
     public function isInUse()
     {
-        return $this->status === 'in_use';
+        return $this->status === self::STATUS_IN_USE;
     }
 
-    // Kiểm tra xem đã quá hạn 3 giờ kể từ khi đặt không
+    public function isAvailable()
+    {
+        return $this->status === self::STATUS_AVAILABLE;
+    }
+
     public function isExpired()
     {
-        return $this->created_at->lt(Carbon::now()->subHours(3));
+        return $this->reservation_date->lt(Carbon::now()->subHours(3));
     }
 
-    // Phương thức để cập nhật trạng thái nếu quá hạn 3 giờ
     public function updateStatusIfExpired()
     {
         if ($this->isReserved() && $this->isExpired()) {
-            $this->update(['status' => 'available']);
+            $this->update(['status' => self::STATUS_AVAILABLE]);
         }
 
         if ($this->isInUse() && $this->updated_at->lt(Carbon::now()->subHours(3))) {
-            $this->update(['status' => 'available']);
+            $this->update(['status' => self::STATUS_AVAILABLE]);
         }
+    }
+
+    // Thêm phương thức reset trạng thái sau khi kết thúc ngày
+    public function resetStatusAfterDayEnd()
+    {
+        $this->where('reservation_date', '<', Carbon::now()->startOfDay())
+             ->update(['status' => self::STATUS_AVAILABLE]);
+    }
+
+    // Phương thức để cập nhật trạng thái nếu quá hạn 3 giờ
+    public function resetStatusAfterThreeHours()
+    {
+        $this->where('reservation_date', '<', Carbon::now()->subHours(3))
+             ->update(['status' => self::STATUS_AVAILABLE]);
     }
 }

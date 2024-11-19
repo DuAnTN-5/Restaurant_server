@@ -4,16 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-
+use Illuminate\Database\Eloquent\SoftDeletes; // Thêm SoftDeletes nếu sử dụng xóa mềm
 
 class Coupon extends Model
 {
-    use HasFactory;  // Sử dụng SoftDeletes để hỗ trợ xóa mềm
+    use HasFactory, SoftDeletes;
 
-    // Tên bảng liên kết
     protected $table = 'coupons';
 
-    // Các trường có thể ghi vào cơ sở dữ liệu
     protected $fillable = [
         'code',
         'discount_type',
@@ -27,13 +25,12 @@ class Coupon extends Model
         'updated_at',
     ];
 
-    // Định dạng cho các trường kiểu ngày
     protected $dates = ['start_date', 'end_date', 'created_at', 'updated_at'];
 
-    // Mối quan hệ One-to-Many với bảng orders (một mã giảm giá có thể được sử dụng cho nhiều đơn hàng)
-    public function orders()
+    // Mối quan hệ One-to-Many với bảng payments
+    public function payments()
     {
-        return $this->hasMany(Order::class, 'coupon_code', 'code');
+        return $this->hasMany(Payment::class, 'coupon_id', 'id');
     }
 
     // Kiểm tra nếu mã giảm giá đang hoạt động

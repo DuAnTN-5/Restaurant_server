@@ -9,9 +9,7 @@ use Carbon\Carbon;
 
 class StaffSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
+
     public function run(): void
     {
         $staffData = [

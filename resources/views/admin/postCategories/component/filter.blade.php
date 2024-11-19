@@ -1,6 +1,6 @@
 <div class="row">
     <div class="col-lg-12 text-right">
-        <form method="GET" action="{{ route('post-categories.index') }}" class="form-inline">
+        <form method="GET" action="{{ route('postCategories.index') }}" class="form-inline">
             
             <!-- Lọc theo ngày tạo -->
             <div class="form-group mb-2">
@@ -25,7 +25,7 @@
             <button type="submit" class="btn btn-primary mb-2">Tìm kiếm</button>
 
             <!-- Nút Thêm Danh Mục -->
-            <a href="{{ route('post-categories.create') }}" class="btn btn-danger mb-2 ml-2">Thêm Danh Mục</a>
+            <a href="{{ route('postCategories.create') }}" class="btn btn-danger mb-2 ml-2">Thêm Danh Mục</a>
         </form>
     </div>
 </div>

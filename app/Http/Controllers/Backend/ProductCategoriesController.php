@@ -39,17 +39,17 @@ class ProductCategoriesController extends Controller
             $query->where('parent_id', $parentId);
         }
 
-        $categories = $query->paginate(10)->appends($request->all());
-        $categoriesParent = ProductCategory::whereNull('parent_id')->get();
+        $productCategories = $query->paginate(5)->appends($request->all());
+        $productCategoriesParent = ProductCategory::whereNull('parent_id')->get();
 
-        return view('admin.productcategories.index', compact('categories', 'categoriesParent'));
+        return view('admin.productcategories.index', compact('productCategories', 'productCategoriesParent'));
     }
 
     // Hiển thị form tạo mới danh mục
     public function create()
     {
-        $categories = ProductCategory::all();
-        return view('admin.productcategories.create', compact('categories'));
+        $productCategories = ProductCategory::all();
+        return view('admin.productcategories.create', compact('productCategories'));
     }
 
     // Lưu danh mục mới vào cơ sở dữ liệu
@@ -89,15 +89,15 @@ class ProductCategoriesController extends Controller
     // Hiển thị form chỉnh sửa danh mục
     public function edit($id)
     {
-        $category = ProductCategory::findOrFail($id);
-        $categories = ProductCategory::all();
-        return view('admin.productcategories.edit', compact('category', 'categories'));
+        $productCategory = ProductCategory::findOrFail($id);
+        $productCategories = ProductCategory::all();
+        return view('admin.productcategories.edit', compact('productCategory', 'productCategories'));
     }
 
     // Cập nhật danh mục sản phẩm
     public function update(Request $request, $id)
     {
-        $category = ProductCategory::findOrFail($id);
+        $productCategory = ProductCategory::findOrFail($id);
 
         $request->validate([
             'name' => 'required|max:255',
@@ -113,15 +113,15 @@ class ProductCategoriesController extends Controller
         }
 
         if ($request->hasFile('image')) {
-            if ($category->image && Storage::disk('public')->exists($category->image)) {
-                Storage::disk('public')->delete($category->image);
+            if ($productCategory->image && Storage::disk('public')->exists($productCategory->image)) {
+                Storage::disk('public')->delete($productCategory->image);
             }
             $image = $request->file('image');
             $imagePath = $image->storeAs('productfiles', time() . '.' . $image->getClientOriginalExtension(), 'public');
-            $category->image = $imagePath;
+            $productCategory->image = $imagePath;
         }
 
-        $category->update([
+        $productCategory->update([
             'name' => $request->name,
             'slug' => $slug,
             'description' => $request->description,
@@ -134,13 +134,13 @@ class ProductCategoriesController extends Controller
     // Xóa danh mục sản phẩm
     public function destroy($id)
     {
-        $category = ProductCategory::findOrFail($id);
+        $productCategory = ProductCategory::findOrFail($id);
 
-        if ($category->image && Storage::disk('public')->exists($category->image)) {
-            Storage::disk('public')->delete($category->image);
+        if ($productCategory->image && Storage::disk('public')->exists($productCategory->image)) {
+            Storage::disk('public')->delete($productCategory->image);
         }
 
-        $category->delete();
+        $productCategory->delete();
 
         return redirect()->route('product-categories.index')->with('success', 'Danh mục sản phẩm đã được xóa!');
     }
@@ -153,15 +153,71 @@ class ProductCategoriesController extends Controller
             'status' => 'required|in:active,inactive',
         ]);
 
-        $category = ProductCategory::findOrFail($request->id);
-        $category->status = $request->status;
-        $category->save();
+        $productCategory = ProductCategory::findOrFail($request->id);
+        $productCategory->status = $request->status;
+        $productCategory->save();
 
-        $message = $category->status === 'active'
+        $message = $productCategory->status === 'active'
             ? 'Danh mục sản phẩm đã được kích hoạt.'
             : 'Danh mục sản phẩm đã bị vô hiệu hóa.';
 
         return response()->json(['success' => true, 'message' => $message]);
     }
+    public function trashed(Request $request)
+    {
+        $search = $request->input('search');
+        $status = $request->input('status');
+        $parentId = $request->input('parent_id');
+        $createdAt = $request->input('created_at');
 
+        $query = ProductCategory::onlyTrashed();
+
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'LIKE', "%{$search}%")
+                    ->orWhere('slug', 'LIKE', "%{$search}%");
+            });
+        }
+
+        if ($status) {
+            $query->where('status', $status);
+        }
+
+        if ($createdAt) {
+            $query->whereDate('created_at', $createdAt);
+        }
+
+        if ($parentId) {
+            $query->where('parent_id', $parentId);
+        }
+
+        $productCategories = $query->paginate(5)->appends($request->all());
+        $productCategoriesParent = ProductCategory::whereNull('parent_id')->get();
+
+        return view('admin.productcategories.trashed', compact('productCategories', 'productCategoriesParent'));
+    }
+
+    // Khôi phục một danh mục đã bị xóa mềm
+    public function restore($id)
+    {
+        $productCategory = ProductCategory::onlyTrashed()->findOrFail($id);
+        $productCategory->restore();
+
+        return redirect()->route('product-categories.trashed')->with('success', 'Danh mục sản phẩm đã được khôi phục!');
+    }
+
+    // Xóa vĩnh viễn một danh mục
+    public function forceDelete($id)
+    {
+        $productCategory = ProductCategory::onlyTrashed()->findOrFail($id);
+
+        if ($productCategory->image && Storage::disk('public')->exists($productCategory->image)) {
+            Storage::disk('public')->delete($productCategory->image);
+        }
+
+        $productCategory->forceDelete();
+
+        return redirect()->route('product-categories.trashed')->with('success', 'Danh mục sản phẩm đã được xóa vĩnh viễn!');
+    }
 }
+

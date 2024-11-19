@@ -40,8 +40,10 @@
                 <td>{{ $product->stock_quantity }}</td>
                 <td>{{ $product->position }}</td>
                 <td style="text-align: center; vertical-align: middle;">
-                    <input type="checkbox" class="js-switch" data-id="{{ $product->id }}" 
-                           {{ $product->status == 'active' ? 'checked' : '' }}>
+                    <input type="checkbox" class="js-switch" 
+                           data-id="{{ $product->id }}" 
+                           data-type="product" 
+                           {{ $product->status === 'active' ? 'checked' : '' }}>
                 </td>
                 
                 

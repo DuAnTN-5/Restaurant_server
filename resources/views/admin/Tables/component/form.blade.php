@@ -54,7 +54,7 @@
             <div class="form-group">
                 <label for="status">Trạng Thái:</label>
                 <select name="status" class="form-control" required>
-                    <option value="available" {{ old('status', $table->status ?? 'available') == 'available' ? 'selected' : '' }}>Có Sẵn</option>
+                    <option value="available" {{ old('status', $table->status ?? 'available') == 'available' ? 'selected' : '' }}>Trống</option>
                     <option value="reserved" {{ old('status', $table->status ?? '') == 'reserved' ? 'selected' : '' }}>Đã Đặt</option>
                     <option value="occupied" {{ old('status', $table->status ?? '') == 'occupied' ? 'selected' : '' }}>Đang Sử Dụng</option>
                 </select>

@@ -10,10 +10,12 @@ class Kernel extends ConsoleKernel
     /**
      * Define the application's command schedule.
      */
-    protected function schedule(Schedule $schedule): void
+    protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')->hourly();
+    $schedule->command('reset:reservation-status')->dailyAt('23:59'); // Reset hàng ngày
+    $schedule->command('reset:reservation-status')->everyThreeHours(); // Reset mỗi 3 giờ
     }
+
 
     /**
      * Register the commands for the application.

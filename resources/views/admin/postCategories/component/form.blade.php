@@ -1,4 +1,4 @@
-<form action="{{ isset($category) ? route('PostCategories.update', $category->id) : route('post-categories.store') }}"
+<form action="{{ isset($category) ? route('PostCategories.update', $category->id) : route('postCategories.store') }}"
     method="POST">
     @csrf
     @if (isset($category))
@@ -22,7 +22,7 @@
     </div>
 
     <button type="submit" class="btn btn-primary">{{ isset($category) ? 'Cập Nhật' : 'Lưu Loại Bài Viết' }}</button>
-    <a href="{{ route('post-categories.index') }}" class="btn btn-secondary">Hủy</a>
+    <a href="{{ route('postCategories.index') }}" class="btn btn-secondary">Hủy</a>
 </form>
 <script src=" {{ asset('backend/js/plugins/summernote/summernote.min.js') }}"></script>
 <link href="{{ asset('backend/css/plugins/summernote/summernote.css') }}" rel="stylesheet">

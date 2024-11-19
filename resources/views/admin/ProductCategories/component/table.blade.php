@@ -12,27 +12,31 @@
     </thead>
     
     <tbody>
-        @foreach ($categories as $category)
+        @foreach ($productCategories as $productCategory)
             <tr>
-                <td>{{ $category->id }}</td>
+                <td>{{ $productCategory->id }}</td>
                 <td>
-                    {{ $category->name }}
+                    {{ $productCategory->name }}
                     <small style="color: red; display: block; margin-top: 5px;">
-                        Danh mục cha: {{ $category->parent ? $category->parent->name : 'Không có' }}
+                        Danh mục cha: {{ $productCategory->parent ? $productCategory->parent->name : 'Không có' }}
                     </small>
                 </td>
                 
-                <td>{{ $category->description }}</td>
-                <td>{{ $category->position }}</td>
+                <td>{{ $productCategory->description }}</td>
+                <td>{{ $productCategory->position }}</td>
                 <td style="text-align: center; vertical-align: middle;">
-                    <input type="checkbox" class="js-switch" data-id="{{ $category->id }}" {{ $category->status == 'active' ? 'checked' : '' }}>
+                    <input type="checkbox" class="js-switch" 
+                        data-id="{{ $productCategory->id }}" 
+                        data-type="productCategory"
+                        {{ $productCategory->status === 'active' ? 'checked' : '' }}>
                 </td>
                 
+                
                 <td style="text-align: center;">
-                    <a href="{{ route('product-categories.edit', $category->id) }}" class="btn btn-success">
+                    <a href="{{ route('product-categories.edit', $productCategory->id) }}" class="btn btn-success">
                         <i class="fa fa-edit"></i>
                     </a>
-                    <form method="POST" action="{{ route('product-categories.destroy', $category->id) }}" style="display: inline;">
+                    <form method="POST" action="{{ route('product-categories.destroy', $productCategory->id) }}" style="display: inline;">
                         @csrf
                         @method('DELETE')
                         <button type="submit" class="btn btn-danger" onclick="return confirm('Xác nhận xóa?')">
@@ -54,4 +58,3 @@
         </tr>
     </tfoot>
 </table>
-

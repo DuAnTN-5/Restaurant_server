@@ -1,4 +1,4 @@
-<!-- Switchery CSS and JS -->
+{{-- <!-- Switchery CSS and JS -->
 <link rel="stylesheet" href="{{ asset('backend/css/plugins/switchery/switchery.css') }}">
 <script src="{{ asset('backend/js/plugins/switchery/switchery.js') }}"></script>
 
@@ -117,4 +117,4 @@
             "hideMethod": "fadeOut"
         };
     });
-</script>
+</script> --}}
