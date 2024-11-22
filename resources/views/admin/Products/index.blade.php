@@ -11,8 +11,9 @@
             </ol>
         </div>
         <div class="col-lg-2 text-right">
-            <a href="{{ route('products.create') }}" class="btn btn-primary" style="margin-top: 20px;">Thêm Sản Phẩm</a>
+            <a href="{{ route('products.trashed') }}" class="btn btn-warning" style="margin-top: 20px;">Danh Sách Đã Xóa</a>
         </div>
+        
     </div>
 
     @if ($errors->has('error'))
@@ -53,7 +54,7 @@
     </div>
 @endsection
 
-@push('scripts')
+{{-- @push('scripts')
     <!-- Bao gồm script thay đổi trạng thái -->
     @include('admin.products.component.script')
-@endpush
+@endpush --}}

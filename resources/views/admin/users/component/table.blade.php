@@ -23,9 +23,15 @@
                         <img src="{{ asset('default-avatar.png') }}" alt="Default Image" class="img-thumbnail">
                     @endif
                 </td>
+                
                 <td style="text-align: center; vertical-align: middle;">
-                    <input type="checkbox" class="js-switch" data-id="{{ $user->id }}" {{ $user->status == 'active' ? 'checked' : '' }}>
+                    <input type="checkbox" class="js-switch" 
+                           data-id="{{ $user->id }}" 
+                           data-type="user" 
+                           {{ $user->status === 'active' ? 'checked' : '' }}>
                 </td>
+                
+
                 <td style="text-align: center; vertical-align: middle;">
                     @if (isset($user->role))
                         @if ($user->role == 1)
@@ -57,3 +63,26 @@
         @endforeach
     </tbody>
 </table>
+<style>
+    .toast-success {
+        background-color: #1AB394 !important;
+        /* Success color */
+    }
+
+    .toast-error {
+        background-color: red !important;
+        /* Error color */
+    }
+
+    .text-center th,
+    .text-center td {
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    .img-thumbnail {
+        width: 50px;
+        height: 50px;
+        object-fit: cover;
+    }
+</style>

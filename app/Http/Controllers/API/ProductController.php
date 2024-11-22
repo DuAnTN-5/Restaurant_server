@@ -24,39 +24,37 @@ class ProductController extends Controller
         ]);
     }
 
-    // Lấy chi tiết sản phẩm
-    // public function show($id)
-    // {
-    //     $product = Product::find($id);
-    //     if (!$product) {
-    //         return response()->json([
-    //             'status' => false,
-    //             'message' => 'Sản phẩm không tìm thấy.',
-    //         ], 404);
-    //     }
-
-    //     return response()->json([
-    //         'status' => true,
-    //         'data' => new ProductResource($product),
-    //     ]);
-    // }
-
     // Sản phẩm theo slug
     public function show($slug)
-    {
-        $product = Product::where('slug', $slug)->firstOrFail();
-        if (!$product) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Không tìm thấy món ăn.',
-            ], 404);
-        }
+{
+    $product = Product::where('slug', $slug)->firstOrFail();
 
+    if (!$product) {
         return response()->json([
-            'status' => true,
-            'data' => new ProductResource($product),
-        ]);
+            'status' => false,
+            'message' => 'Không tìm thấy món ăn.',
+        ], 404);
     }
+
+    // Tính sao trung bình và số lượt đánh giá
+    $averageRating = $product->reviews()
+        ->whereNotNull('rating')
+        ->avg('rating');
+
+    $totalRatings = $product->reviews()
+        ->whereNotNull('rating')
+        ->count();
+
+    return response()->json([
+        'status' => true,
+        'data' => [
+            'product' => new ProductResource($product),
+            'average_rating' => number_format($averageRating, 1), // Định dạng 1 chữ số thập phân
+            'total_ratings' => $totalRatings,
+        ],
+    ]);
+}
+
 
 
     public function addToCart(Request $request)

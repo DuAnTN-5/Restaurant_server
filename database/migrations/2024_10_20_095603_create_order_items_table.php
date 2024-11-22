@@ -21,7 +21,7 @@ class CreateOrderItemsTable extends Migration
             $table->unsignedBigInteger('discount_promotion_id')->nullable();
             $table->decimal('discount_applied', 10, 2)->nullable();
             $table->decimal('price', 10, 2);
-            $table->decimal('total_price', 10, 2);
+            $table->decimal('total_price', 10, 2)->default(0);
             $table->softDeletes();
             $table->timestamps();
 

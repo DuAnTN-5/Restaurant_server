@@ -11,7 +11,7 @@
             </ol>
         </div>
         <div class="col-lg-2 text-right">
-            <a href="{{ route('post-categories.index') }}" class="btn btn-primary" style="margin-top: 20px;">Danh Sách</a>
+            <a href="{{ route('postCategories.index') }}" class="btn btn-primary" style="margin-top: 20px;">Danh Sách</a>
         </div>
     </div>
 
@@ -37,8 +37,8 @@
                     </div>
                 </div>
             </div>
-             <!-- Phần Danh Sách Loại Bài Viết -->
-        <div class="col-lg-4">
+            <!-- Phần Danh Sách Loại Bài Viết -->
+            {{-- <div class="col-lg-4">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
                     <h5>Danh Sách Loại Bài Viết Đã Thêm</h5>
@@ -67,13 +67,13 @@
                                     </td>
                                 </tr>
                              @endforeach --}}
-                        </tbody>
+            {{-- </tbody>
                     </table>
                 </div>
             </div>
+        </div> --}}
         </div>
     </div>
-</div>
-        </div>
+    </div>
     </div>
 @endsection

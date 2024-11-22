@@ -1,6 +1,6 @@
-<form method="POST" action="{{ isset($category) ? route('product-categories.update', $category->id) : route('product-categories.store') }}" enctype="multipart/form-data">
+<form method="POST" action="{{ isset($productCategory) ? route('product-categories.update', $productCategory->id) : route('product-categories.store') }}" enctype="multipart/form-data">
     @csrf
-    @if (isset($category))
+    @if (isset($productCategory))
         @method('PUT')
     @endif
 
@@ -10,13 +10,13 @@
             <!-- Category Name -->
             <div class="form-group">
                 <label for="name">Tên Danh Mục <span class="text-danger">(*)</span></label>
-                <input type="text" name="name" id="name" class="form-control" value="{{ old('name', $category->name ?? '') }}" required>
+                <input type="text" name="name" id="name" class="form-control" value="{{ old('name', $productCategory->name ?? '') }}" required>
             </div>
 
             <!-- Description -->
             <div class="form-group">
                 <label for="description">Mô Tả</label>
-                <textarea name="description" id="description" class="form-control" rows="3">{{ old('description', $category->description ?? '') }}</textarea>
+                <textarea name="description" id="description" class="form-control" rows="3">{{ old('description', $productCategory->description ?? '') }}</textarea>
             </div>
         </div>
 
@@ -27,9 +27,9 @@
                 <label for="parent_id">Danh Mục Cha</label>
                 <select name="parent_id" id="parent_id" class="form-control select2">
                     <option value="">[Chọn Danh Mục Cha]</option>
-                    @foreach ($categories as $parentCategory)
-                        <option value="{{ $parentCategory->id }}" {{ old('parent_id', $category->parent_id ?? '') == $parentCategory->id ? 'selected' : '' }}>
-                            {{ $parentCategory->name }}
+                    @foreach ($productCategories as $parentProductCategory)
+                        <option value="{{ $parentProductCategory->id }}" {{ old('parent_id', $productCategory->parent_id ?? '') == $parentProductCategory->id ? 'selected' : '' }}>
+                            {{ $parentProductCategory->name }}
                         </option>
                     @endforeach
                 </select>
@@ -39,22 +39,22 @@
             <div class="form-group">
                 <label for="status">Trạng Thái</label>
                 <select name="status" id="status" class="form-control">
-                    <option value="active" {{ old('status', $category->status ?? 'active') == 'active' ? 'selected' : '' }}>Active</option>
-                    <option value="inactive" {{ old('status', $category->status ?? 'inactive') == 'inactive' ? 'selected' : '' }}>Inactive</option>
+                    <option value="active" {{ old('status', $productCategory->status ?? 'active') == 'active' ? 'selected' : '' }}>Active</option>
+                    <option value="inactive" {{ old('status', $productCategory->status ?? 'inactive') == 'inactive' ? 'selected' : '' }}>Inactive</option>
                 </select>
             </div>
 
             <!-- Position -->
             <div class="form-group">
                 <label for="position">Thứ Tự</label>
-                <input type="number" name="position" id="position" class="form-control" value="{{ old('position', $category->position ?? 0) }}">
+                <input type="number" name="position" id="position" class="form-control" value="{{ old('position', $productCategory->position ?? 0) }}">
             </div>
         </div>
     </div>
 
     <!-- Save Button -->
     <div class="form-group text-right">
-        <button type="submit" class="btn btn-primary">{{ isset($category) ? 'Cập Nhật' : 'Lưu' }}</button>
+        <button type="submit" class="btn btn-primary">{{ isset($productCategory) ? 'Cập Nhật' : 'Lưu' }}</button>
         <a href="{{ route('product-categories.index') }}" class="btn btn-secondary">Hủy</a>
     </div>
 </form>

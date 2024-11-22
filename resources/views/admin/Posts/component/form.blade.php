@@ -30,13 +30,14 @@
             <!-- Meta Keywords -->
             <div class="form-group">
                 <label for="meta_keywords">Meta Keywords:</label>
-                <input type="text" name="meta_keywords" class="form-control " value="{{ old('meta_keywords', $post->meta_keywords ?? '') }}">
+                <input type="text" name="meta_keywords" class="form-control"
+                    value="{{ old('meta_keywords', $post->meta_keywords ?? '') }}">
             </div>
 
             <!-- Meta Description -->
             <div class="form-group">
                 <label for="meta_description">Meta Description:</label>
-                <textarea name="meta_description" class="form-control " rows="2">{{ old('meta_description', $post->meta_description ?? '') }}</textarea>
+                <textarea name="meta_description" class="form-control" rows="2">{{ old('meta_description', $post->meta_description ?? '') }}</textarea>
             </div>
         </div>
 
@@ -47,10 +48,10 @@
                 <label for="category_id">Danh mục:</label>
                 <select name="category_id" class="form-control" required>
                     <option value="">-- Chọn danh mục --</option>
-                    @foreach ($categories as $category)
-                        <option value="{{ $category->id }}"
-                            {{ old('category_id', $post->category_id ?? '') == $category->id ? 'selected' : '' }}>
-                            {{ $category->name }}
+                    @foreach ($postCategories as $postCategory)
+                        <option value="{{ $postCategory->id }}"
+                            {{ old('category_id', $post->category_id ?? '') == $postCategory->id ? 'selected' : '' }}>
+                            {{ $postCategory->name }}
                         </option>
                     @endforeach
                 </select>
@@ -61,36 +62,35 @@
                 <div class="image-preview text-center">
                     <label for="image_url">
                         <!-- Hình ảnh thay thế cho input -->
-                        <img id="preview-image" src="{{ asset('logo/anh-chon.jpg') }}" alt="Chọn ảnh" width="300" style="cursor: pointer;">
+                        <img id="preview-image" src="{{ asset('logo/anh-chon.jpg') }}" alt="Chọn ảnh" width="300"
+                            style="cursor: pointer;">
                     </label>
                     <!-- Input chọn file thực sự, ẩn đi -->
-                    <input type="file" name="image_url" id="image_url" style="display: none;" onchange="previewImage(event)">
+                    <input type="file" name="image_url" id="image_url" style="display: none;"
+                        onchange="previewImage(event)">
                 </div>
                 <!-- Hiển thị ảnh được chọn -->
                 <div id="preview-images" class="text-center"></div>
             </div>
-            {{-- <div class="form-group">
-                <label for="tags">Tags:</label>
-                <input type="text" name="tags" class="form-control" value="{{ old('tags', $post->tags ?? '') }}">
-            </div> --}}
+
             <!-- Thứ tự -->
             <div class="form-group">
                 <label for="position">Thứ tự:</label>
                 <input type="number" name="position" class="form-control"
                     value="{{ old('position', $post->position ?? '') }}" required>
             </div>
-            
 
             <!-- Trạng thái -->
             <div class="form-group">
                 <label for="status">Trạng thái:</label>
                 <select name="status" class="form-control" required>
-                    <option value="published" {{ old('status', $post->status ?? 'published') == 'published' ? 'selected' : '' }}>Đã xuất bản</option>
-                    <option value="draft" {{ old('status', $post->status ?? '') == 'draft' ? 'selected' : '' }}>Nháp</option>
+                    <option value="published"
+                        {{ old('status', $post->status ?? 'published') == 'published' ? 'selected' : '' }}>Đã xuất bản
+                    </option>
+                    <option value="draft" {{ old('status', $post->status ?? '') == 'draft' ? 'selected' : '' }}>Nháp
+                    </option>
                 </select>
             </div>
-            
-            
         </div>
     </div>
 
@@ -101,32 +101,27 @@
         <a href="{{ route('posts.index') }}" class="btn btn-secondary">Hủy</a>
     </div>
 </form>
-<script src=" {{ asset('backend/js/plugins/summernote/summernote.min.js') }}"></script>
+
+<script src="{{ asset('backend/js/plugins/summernote/summernote.min.js') }}"></script>
 <link href="{{ asset('backend/css/plugins/summernote/summernote.css') }}" rel="stylesheet">
 <link href="{{ asset('backend/css/plugins/summernote/summernote-bs3.css') }}" rel="stylesheet">
 <script>
     $(document).ready(function() {
-
         $('.summernote').summernote();
-
     });
-</script>
-<!-- JavaScript để hiển thị trước các ảnh -->
-{{-- <script>
+
+    // JavaScript để hiển thị trước các ảnh
     function previewImage(event) {
-    const file = event.target.files[0];  // Lấy file đã chọn
-    const preview = document.getElementById('preview-image');
+        const file = event.target.files[0];
+        const preview = document.getElementById('preview-image');
 
-    const reader = new FileReader();
-    reader.onload = function(e) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            preview.src = e.target.result;
+        };
 
-        preview.src = e.target.result;
-    };
-
-
-    if (file) {
-        reader.readAsDataURL(file);
+        if (file) {
+            reader.readAsDataURL(file);
+        }
     }
-}
-
-</script> --}}
+</script>

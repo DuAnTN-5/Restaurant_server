@@ -28,6 +28,20 @@ class Review extends Model
     // Định dạng cho các trường kiểu ngày
     protected $dates = ['created_at', 'updated_at'];
 
+    public function getFormattedDateAttribute()
+    {
+        return $this->created_at->format('Y-m-d'); // Ví dụ: 2024-11-01
+    }
+
+    // Accessor để tách giờ
+    public function getFormattedTimeAttribute()
+    {
+        return $this->created_at->format('H:i:s'); // Ví dụ: 10:00:00
+    }
+
+    // Thêm các thuộc tính này vào JSON trả về
+    protected $appends = ['formatted_date', 'formatted_time'];
+
     // Mối quan hệ Many-to-One với bảng Users (một đánh giá được tạo bởi một người dùng)
     public function user()
     {

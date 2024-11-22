@@ -29,8 +29,8 @@
                             </div>
                         @endif
 
-                        <!-- Include form tạo bài viết -->
-                        @include('admin.posts.component.form', ['categories' => $categories])
+                        <!-- Include form tạo bài viết, truyền biến postCategories -->
+                        @include('admin.posts.component.form', ['postCategories' => $postCategories])
                     </div>
                 </div>
             </div>
