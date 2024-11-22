@@ -21,9 +21,10 @@ class PostController extends Controller
     }
 
     // Lấy chi tiết bài viết
-    public function show($id)
+    public function show($slug)
     {
-        $post = Post::find($id);
+        // $post = Post::find($slug);
+        $post = Post::where('slug', $slug)->firstOrFail();
         if (!$post) {
             return response()->json([
                 'status' => false,

@@ -7,6 +7,7 @@ use App\Http\Controllers\API\RegisterController;
 use App\Http\Controllers\API\PostCategoryController; 
 use App\Http\Controllers\API\ProductCategoryController; 
 use App\Http\Controllers\API\PostController;
+use App\Http\Controllers\API\ReviewController;
 use App\Http\Controllers\API\SocialAuthController;
 use App\Models\DishReview;
 use Illuminate\Http\Request;
@@ -62,7 +63,15 @@ Route::get('/product-categories/{id}', [ProductCategoryController::class, 'produ
 
 
 // Route cho bài viết
-Route::apiResource('posts', PostController::class);
+Route::get('/posts', [PostController::class, 'index']);
+Route::get('/posts/{slug}', [PostController::class, 'show']);
+
+Route::post('/ratings', [ReviewController::class, 'rate']);
+Route::post('/product-comments', [ReviewController::class, 'comment']);
+Route::get('/products/{product_id}/comments', [ReviewController::class, 'getComments']);
+
+
+
 
 // Route cho danh mục bài viết
 // Route::apiResource('post-categories', PostCategoryController::class);
