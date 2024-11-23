@@ -50,19 +50,18 @@ Route::get('auth/{provider}/callback', [SocialAuthController::class, 'handleProv
 
 // Route cho sản phẩm
 Route::get('/products', [ProductController::class, 'index']);
-
-
 Route::get('/products/{slug}', [ProductController::class, 'show']);
-
 //bình luận của 1 món ăn
 Route::get('/products/{product_id}/comments', [ReviewController::class, 'getComments']);
 // Route::get('/products/{slug}/comments', [CommentProductController::class, 'index']);
-
+Route::get('/latestProducts', [ProductController::class, 'latestProducts']);
 // Route cho danh mục sản phẩm
 Route::get('/product-categories', [ProductCategoryController::class, 'index']);
 
 // Route để lấy sản phẩm theo danh mục
 Route::get('/product-categories/{id}', [ProductCategoryController::class, 'products']);
+
+Route::post('/product/cart', [ProductController::class, 'productCart']);
 
 
 // Route cho bài viết
@@ -91,6 +90,9 @@ Route::post('/product-comments', [ReviewController::class, 'comment']);
 // Route::get('/dishrating/{dish_id}', [DishReviewController::class, 'getDishRating']);
 
 // Đường dẫn để lấy thông tin người dùng hiện tại
-Route::get('user', function (Request $request) {
+// Route::get('user', function (Request $request) {
+//     return $request->user();
+// })->name('user');
+Route::middleware('auth:sanctum')->get('user', function (Request $request) {
     return $request->user();
 })->name('user');
