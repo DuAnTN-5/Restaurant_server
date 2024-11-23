@@ -15,6 +15,8 @@ class User extends Authenticatable
     use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
 
     // Các trường có thể điền vào được (Mass Assignment)
+    protected $table = 'users';
+    
     protected $fillable = [
         'name',
         'email',
@@ -145,7 +147,7 @@ class User extends Authenticatable
     // Ví dụ: Quan hệ với bảng Reviews
     public function reviews()
     {
-        return $this->hasMany(Review::class, 'user_id');
+        return $this->hasMany(Review::class , 'user_id');
     }
 
     public function payments()
