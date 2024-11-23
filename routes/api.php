@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\API\CommentPostController;
 use App\Http\Controllers\API\CommentProductController;
 use App\Http\Controllers\API\DishReviewController;
 use App\Http\Controllers\API\ProductController;
@@ -29,8 +30,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [RegisterController::class, 'logout']);
     // Thêm sản phẩm vào giỏ hàng
     Route::post('/cart/add', [ProductController::class, 'addToCart']);
-
-    Route::post('/comment-product', [CommentProductController::class, 'store']);
 });
 
 // Đăng ký các route cho đăng ký và đăng nhập
@@ -51,9 +50,13 @@ Route::get('auth/{provider}/callback', [SocialAuthController::class, 'handleProv
 
 // Route cho sản phẩm
 Route::get('/products', [ProductController::class, 'index']);
+
+
 Route::get('/products/{slug}', [ProductController::class, 'show']);
 
-Route::get('/products/{slug}/comments', [CommentProductController::class, 'index']);
+//bình luận của 1 món ăn
+Route::get('/products/{product_id}/comments', [ReviewController::class, 'getComments']);
+// Route::get('/products/{slug}/comments', [CommentProductController::class, 'index']);
 
 // Route cho danh mục sản phẩm
 Route::get('/product-categories', [ProductCategoryController::class, 'index']);
@@ -66,11 +69,14 @@ Route::get('/product-categories/{id}', [ProductCategoryController::class, 'produ
 Route::get('/posts', [PostController::class, 'index']);
 Route::get('/posts/{slug}', [PostController::class, 'show']);
 
+// bình luận của 1 bài viết
+Route::get('/posts/{postId}/comments', [CommentPostController::class, 'index']);
+
+// Thêm bình luận mới
+Route::post('/post-comments', [CommentPostController::class, 'store']);
+
 Route::post('/ratings', [ReviewController::class, 'rate']);
 Route::post('/product-comments', [ReviewController::class, 'comment']);
-Route::get('/products/{product_id}/comments', [ReviewController::class, 'getComments']);
-
-
 
 
 // Route cho danh mục bài viết

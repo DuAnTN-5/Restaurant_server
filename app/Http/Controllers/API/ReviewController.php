@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Review;
 
+
 class ReviewController extends Controller
 {
     public function rate(Request $request)
@@ -58,26 +59,29 @@ class ReviewController extends Controller
     {
         $comments = Review::where('product_id', $product_id)
             ->whereNotNull('comment')
-            ->with('user:id,name,image') // Chỉ lấy các trường name và image của user
-            ->orderBy('created_at', 'desc')
-            ->get();
-
-        return response()->json([
-            'status' => true,
-            'data' => $comments->map(function ($comment) {
+            ->with('user:id,name,image') // Chỉ lấy các trường cần thiết từ user
+            ->orderByDesc('created_at')
+            ->get()
+            ->map(function ($comment) {
                 return [
                     'id' => $comment->id,
                     'user_id' => $comment->user_id,
                     'name' => $comment->user->name ?? 'Ẩn danh',
                     'image' => $comment->user->image ?? null,
                     'comment' => $comment->comment,
-                    'created_at' => $comment->created_at,
-                    'formatted_date' => $comment->formatted_date,
-                    'formatted_time' => $comment->formatted_time,
+                    // 'created_at' => $comment->created_at->format('Y-m-d H:i:s'),
+                    'date' => $comment->formatted_date, 
+                    'time' => $comment->formatted_time,
                 ];
-            }),
+            });
+    
+        return response()->json([
+            'status' => true,
+            'data' => $comments,
         ]);
     }
+    
+
 
 
 }
