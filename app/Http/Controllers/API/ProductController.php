@@ -26,35 +26,44 @@ class ProductController extends Controller
 
     // Sản phẩm theo slug
     public function show($slug)
-{
-    $product = Product::where('slug', $slug)->firstOrFail();
+    {
+        $product = Product::where('slug', $slug)->firstOrFail();
 
-    if (!$product) {
+        if (!$product) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Không tìm thấy món ăn.',
+            ], 404);
+        }
+
+        // Tính sao trung bình và số lượt đánh giá
+        $averageRating = $product->reviews()
+            ->whereNotNull('rating')
+            ->avg('rating');
+
+        $totalRatings = $product->reviews()
+            ->whereNotNull('rating')
+            ->count();
+
         return response()->json([
-            'status' => false,
-            'message' => 'Không tìm thấy món ăn.',
-        ], 404);
+            'status' => true,
+            'data' => [
+                'product' => new ProductResource($product),
+                'average_rating' => number_format($averageRating, 1), // Định dạng 1 chữ số thập phân
+                'total_ratings' => $totalRatings,
+            ],
+        ]);
     }
+    
 
-    // Tính sao trung bình và số lượt đánh giá
-    $averageRating = $product->reviews()
-        ->whereNotNull('rating')
-        ->avg('rating');
-
-    $totalRatings = $product->reviews()
-        ->whereNotNull('rating')
-        ->count();
-
-    return response()->json([
-        'status' => true,
-        'data' => [
-            'product' => new ProductResource($product),
-            'average_rating' => number_format($averageRating, 1), // Định dạng 1 chữ số thập phân
-            'total_ratings' => $totalRatings,
-        ],
-    ]);
-}
-
+    public function latestProducts()
+    {
+        $latestProducts = Product::latest('created_at')->take(4)->get();
+        return response()->json([
+            'status' => true,
+            'data' => ProductResource::collection($latestProducts),
+        ]);
+    }
 
 
     public function addToCart(Request $request)
@@ -98,7 +107,32 @@ class ProductController extends Controller
             'message' => 'Product added to cart successfully',
             'cart' => $cart->load('cartItems.product') // Load các sản phẩm trong giỏ hàng
         ]);
-    }       
+    }  
+    
+    public function productCart(Request $request)
+    {
+        // Lấy tất cả dữ liệu JSON từ React gửi lên
+        $data = $request->json()->all();
+
+        $getProduct = [];
+        foreach ($data as $key => $value) {
+            // Tìm sản phẩm theo ID, nếu không tìm thấy trả về lỗi
+            $get = Product::findOrFail($key)->toArray();
+
+            // Thêm số lượng (qty) từ dữ liệu frontend
+            $get['qty'] = $value;
+
+            // Lưu vào danh sách sản phẩm
+            $getProduct[] = $get;
+        }
+
+        // Trả về JSON response
+        return response()->json([
+            'response' => 'success',
+            'data' => $getProduct,
+        ], 200);
+    }
+
 
     // public function store(StoreProductRequest $request)
     // {
