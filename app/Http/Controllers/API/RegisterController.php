@@ -13,6 +13,8 @@ use Illuminate\Support\Str;
 use App\Mail\VerificationMail;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Hash;
+
 
 class RegisterController extends BaseController
 {
@@ -157,4 +159,93 @@ class RegisterController extends BaseController
 
         return $this->sendResponse([], 'User logged out successfully.');
     }
+
+    // API Đổi Mật Khẩu
+    public function changePassword(Request $request): JsonResponse
+    {
+        $validator = Validator::make($request->all(), [
+            'current_password' => 'required',
+            'new_password' => 'required|min:6|confirmed',
+        ]);
+
+        if($validator->fails()){
+            return $this->sendError('Lỗi xác thực.', $validator->errors());
+        }
+
+        $user = Auth::user();
+
+        // Kiểm tra mật khẩu hiện tại có đúng không
+        if (!\Hash::check($request->current_password, $user->password)) {
+            return $this->sendError('Mật khẩu hiện tại không đúng.', [], 400);
+        }
+
+        // Cập nhật mật khẩu mới
+        $user->password = bcrypt($request->new_password);
+        $user->save();
+
+        return $this->sendResponse([], 'Mật khẩu đã được cập nhật thành công.');
+    }
+
+    public function updateUserInfo(Request $request): JsonResponse
+    {
+        $validator = Validator::make($request->all(), [
+            'name' => 'sometimes|required|string|max:255',
+            'email' => 'sometimes|required|email|unique:users,email,' . Auth::id(),
+            'phone_number' => 'sometimes|required|numeric',
+            'address' => 'sometimes|required|string',
+            'image' => 'sometimes|nullable|string',
+        ]);
+    
+        if($validator->fails()){
+            return $this->sendError('Lỗi xác thực.', $validator->errors());
+        }
+    
+        $user = Auth::user();
+    
+        // Cập nhật thông tin người dùng
+        if ($request->has('name')) {
+            $user->name = $request->name;
+        }
+    
+        if ($request->has('email')) {
+            $user->email = $request->email;
+        }
+    
+        if ($request->has('phone_number')) {
+            $user->phone_number = $request->phone_number;
+        }
+    
+        if ($request->has('address')) {
+            $user->address = $request->address;
+        }
+    
+        if ($request->has('image')) {
+            // Lấy chuỗi base64 từ frontend
+            $imageData = $request->image;
+    
+            // Loại bỏ tiền tố base64 (data:image/jpeg;base64,...)
+            $image = preg_replace('/^data:image\/(jpeg|png|jpg);base64,/', '', $imageData);
+    
+            // Giải mã base64 thành dữ liệu nhị phân
+            $image = base64_decode($image);
+    
+            // Tạo tên file ngẫu nhiên cho ảnh
+            $imageName = Str::random(10) . '.jpg';  // Nếu bạn muốn lưu ảnh ở dạng .jpg, có thể thay đổi thành .png nếu cần
+    
+            // Lưu ảnh vào thư mục public/userfiles/image/
+            $path = public_path('userfiles/image/' . $imageName);
+            file_put_contents($path, $image);
+    
+            // Cập nhật đường dẫn vào cơ sở dữ liệu
+            $user->image = 'userfiles/image/' . $imageName;
+        }
+    
+        // Lưu thông tin người dùng vào cơ sở dữ liệu
+        $user->save();
+    
+        return $this->sendResponse($user, 'Thông tin người dùng đã được cập nhật thành công.');
+    }
+    
+
+
 }
