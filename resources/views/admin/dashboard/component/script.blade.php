@@ -55,17 +55,18 @@
     // Các route được khai báo trong script này
     var csrfToken = "{{ csrf_token() }}";
     var updateUserStatusRoute = "{{ route('users.update-status') }}";
-    var updatePaymentMethodStatusRoute = "{{ route('payment_methods.update-status') }}";
+    // var updatePaymentMethodStatusRoute = "{{ route('payment_methods.update-status') }}";
     var updatePostCategoriesStatusRoute = "{{ route('postCategories.update-status') }}";
 
     var updatePostStatusRoute = "{{ route('posts.update-status') }}";
-    var updateProductCategoriesStatusRoute = "{{ route('product-categories.update-status') }}";
+    var updateProductCategoriesStatusRoute = "{{ route('ProductCategories.update-status') }}";
     var updateProductStatusRoute = "{{ route('products.update-status') }}";
     var updateOrderStatusRoute = "{{ route('orders.update-status') }}";  // Thêm nếu cần
    
     var updateTablesStatusRoute = "{{ route('tables.update-status') }}";  // Thêm nếu cần
     var updateReservationsStatusRoute = "{{ route('reservations.update-status') }}";  // Thêm nếu cần
     var updateCouponsStatusRoute = "{{ route('coupons.update-status') }}";  // Thêm nếu cần
+    var updatePaymentMethodStatusRoute = "{{ route('payment_methods.update-status') }}";  // Thêm nếu cần
 </script>
 
 <script src="{{ asset('backend/js/status/status.js') }}"></script>

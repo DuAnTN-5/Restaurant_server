@@ -57,8 +57,8 @@
             <div class="form-group">
                 <label for="is_active">Trạng thái:</label>
                 <select name="is_active" class="form-control" required>
-                    <option value="1" {{ old('is_active', $paymentMethod->is_active ?? '1') == '1' ? 'selected' : '' }}>Kích hoạt</option>
-                    <option value="0" {{ old('is_active', $paymentMethod->is_active ?? '') == '0' ? 'selected' : '' }}>Vô hiệu</option>
+                    <option value="1" {{ old('is_active', $paymentMethod->status ?? '1') == '1' ? 'selected' : '' }}>Kích hoạt</option>
+                    <option value="0" {{ old('is_active', $paymentMethod->status ?? '') == '0' ? 'selected' : '' }}>Vô hiệu</option>
                 </select>
             </div>
         </div>

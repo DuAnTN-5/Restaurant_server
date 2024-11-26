@@ -20,7 +20,8 @@
                     <h5>Chỉnh Sửa Danh Mục</h5>
                 </div>
                 <div class="ibox-content">
-                    @include('admin.productcategories.component.form', ['category' => $category])
+                    @include('admin.ProductCategories.component.form', ['productCategory' => $productCategory])
+
                 </div>
             </div>
         </div>

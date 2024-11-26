@@ -1,4 +1,4 @@
-<form method="POST" action="{{ isset($productCategory) ? route('product-categories.update', $productCategory->id) : route('product-categories.store') }}" enctype="multipart/form-data">
+<form method="POST" action="{{ isset($productCategory) ? route('ProductCategories.update', $productCategory->id) : route('ProductCategories.store') }}" enctype="multipart/form-data">
     @csrf
     @if (isset($productCategory))
         @method('PUT')
@@ -47,14 +47,15 @@
             <!-- Position -->
             <div class="form-group">
                 <label for="position">Thứ Tự</label>
-                <input type="number" name="position" id="position" class="form-control" value="{{ old('position', $productCategory->position ?? 0) }}">
+                <input type="number" name="position" id="position" class="form-control" value="{{ old('position', $productCategory->position ?? 0) }}" min="1" step="1">
             </div>
+            
         </div>
     </div>
 
     <!-- Save Button -->
     <div class="form-group text-right">
         <button type="submit" class="btn btn-primary">{{ isset($productCategory) ? 'Cập Nhật' : 'Lưu' }}</button>
-        <a href="{{ route('product-categories.index') }}" class="btn btn-secondary">Hủy</a>
+        <a href="{{ route('ProductCategories.index') }}" class="btn btn-secondary">Hủy</a>
     </div>
 </form>

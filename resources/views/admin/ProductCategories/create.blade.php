@@ -20,7 +20,7 @@
                     <h5>Thêm Mới Danh Mục</h5>
                 </div>
                 <div class="ibox-content">
-                    @include('admin.productcategories.component.form')
+                    @include('admin.ProductCategories.component.form')
                 </div>
             </div>
         </div>

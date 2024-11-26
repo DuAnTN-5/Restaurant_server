@@ -12,7 +12,7 @@ class AdminMiddleware
     public function handle(Request $request, Closure $next)
     {
         // Kiểm tra nếu người dùng đã đăng nhập và có role là 1 (admin), 2 (manager), hoặc 3 (staff)
-        if (Auth::check() && in_array(Auth::user()->role, [1, 2, 3])) {
+        if (Auth::check() && auth()->user()->hasAnyRole(['Admin', 'Manager', 'Staff'])) {
             return $next($request);
         }
 

@@ -3,7 +3,7 @@ function initializeSwitchery() {
     
     elems.forEach(function(elem) {
         var switchery = new Switchery(elem, {
-            color: '#1AB394'  // Đặt màu cho nút bật/tắt
+            color: '#1AB394'  
         });
 
         // Xử lý sự kiện khi thay đổi trạng thái
@@ -12,14 +12,14 @@ function initializeSwitchery() {
             var itemType = this.getAttribute('data-type');
             var checked = this.checked ? 1 : 0;
             var status = checked == 1 ? 'active' : 'inactive';
-
+            // console.log(itemType, status, itemId);
             // Xác định route cần sử dụng dựa trên loại đối tượng (itemType)
             var updateStatusRoute;
             switch (itemType) {
                 case 'user':
                     updateStatusRoute = updateUserStatusRoute;
                     break;
-                case 'payment_method':
+                case 'payment_methods':
                     updateStatusRoute = updatePaymentMethodStatusRoute;
                     break;
                 case 'postCategory':
@@ -46,6 +46,7 @@ function initializeSwitchery() {
                 case 'coupons':
                     updateStatusRoute = updateCouponsStatusRoute;
                     break;
+               
                 default:
                     console.error('Không nhận diện được loại đối tượng.');
                     return;
@@ -74,9 +75,10 @@ function initializeSwitchery() {
                 if (data.success) {
                     toastr.success(data.message);  // Hiển thị thông báo thành công
                 } else {
-                    toastr.error('Có lỗi xảy ra, vui lòng thử lại.');
+                    toastr.error('Có lỗi xảy ra ở phía serve, vui lòng thử lại.');
                 }
             } catch (error) {
+
                 console.error('Error:', error);
                 toastr.error('Có lỗi xảy ra. Vui lòng thử lại.');
             }

@@ -39,7 +39,7 @@ class ProductCategoriesController extends Controller
             $query->where('parent_id', $parentId);
         }
 
-        $productCategories = $query->paginate(5)->appends($request->all());
+        $productCategories = $query->orderBy('position', 'asc')->paginate(5)->appends($request->all()); // Sắp xếp theo position
         $productCategoriesParent = ProductCategory::whereNull('parent_id')->get();
 
         return view('admin.productcategories.index', compact('productCategories', 'productCategoriesParent'));
@@ -74,6 +74,9 @@ class ProductCategoriesController extends Controller
             $imagePath = $image->storeAs('productfiles', time() . '.' . $image->getClientOriginalExtension(), 'public');
         }
 
+        $maxPosition = ProductCategory::max('position') ?? 0; // Lấy giá trị lớn nhất của position
+        $position = $request->position ?? ($maxPosition + 1); // Nếu không có input, tự động tăng
+
         ProductCategory::create([
             'name' => $request->name,
             'slug' => $slug,
@@ -81,9 +84,10 @@ class ProductCategoriesController extends Controller
             'image' => $imagePath,
             'status' => 'active',
             'parent_id' => $request->parent_id,
+            'position' => $position,
         ]);
 
-        return redirect()->route('product-categories.index')->with('success', 'Danh mục sản phẩm đã được thêm thành công!');
+        return redirect()->route('ProductCategories.index')->with('success', 'Danh mục sản phẩm đã được thêm thành công!');
     }
 
     // Hiển thị form chỉnh sửa danh mục
@@ -91,7 +95,7 @@ class ProductCategoriesController extends Controller
     {
         $productCategory = ProductCategory::findOrFail($id);
         $productCategories = ProductCategory::all();
-        return view('admin.productcategories.edit', compact('productCategory', 'productCategories'));
+        return view('admin.ProductCategories.edit', compact('productCategory', 'productCategories'));
     }
 
     // Cập nhật danh mục sản phẩm
@@ -126,9 +130,10 @@ class ProductCategoriesController extends Controller
             'slug' => $slug,
             'description' => $request->description,
             'parent_id' => $request->parent_id,
+            'position' => $request->position ?? $productCategory->position, // Cập nhật hoặc giữ nguyên
         ]);
 
-        return redirect()->route('product-categories.index')->with('success', 'Danh mục sản phẩm đã được cập nhật thành công!');
+        return redirect()->route('ProductCategories.index')->with('success', 'Danh mục sản phẩm đã được cập nhật thành công!');
     }
 
     // Xóa danh mục sản phẩm
@@ -142,7 +147,7 @@ class ProductCategoriesController extends Controller
 
         $productCategory->delete();
 
-        return redirect()->route('product-categories.index')->with('success', 'Danh mục sản phẩm đã được xóa!');
+        return redirect()->route('ProductCategories.index')->with('success', 'Danh mục sản phẩm đã được xóa!');
     }
 
     // Cập nhật trạng thái danh mục sản phẩm (active/inactive)
@@ -163,6 +168,8 @@ class ProductCategoriesController extends Controller
 
         return response()->json(['success' => true, 'message' => $message]);
     }
+
+    // Hiển thị danh mục đã xóa (soft delete)
     public function trashed(Request $request)
     {
         $search = $request->input('search');
@@ -191,10 +198,10 @@ class ProductCategoriesController extends Controller
             $query->where('parent_id', $parentId);
         }
 
-        $productCategories = $query->paginate(5)->appends($request->all());
+        $productCategories = $query->orderBy('position', 'asc')->paginate(5)->appends($request->all());
         $productCategoriesParent = ProductCategory::whereNull('parent_id')->get();
 
-        return view('admin.productcategories.trashed', compact('productCategories', 'productCategoriesParent'));
+        return view('admin.ProductCategories.restore', compact('productCategories', 'productCategoriesParent'));
     }
 
     // Khôi phục một danh mục đã bị xóa mềm
@@ -203,7 +210,7 @@ class ProductCategoriesController extends Controller
         $productCategory = ProductCategory::onlyTrashed()->findOrFail($id);
         $productCategory->restore();
 
-        return redirect()->route('product-categories.trashed')->with('success', 'Danh mục sản phẩm đã được khôi phục!');
+        return redirect()->route('ProductCategories.trashed')->with('success', 'Danh mục sản phẩm đã được khôi phục!');
     }
 
     // Xóa vĩnh viễn một danh mục
@@ -217,7 +224,6 @@ class ProductCategoriesController extends Controller
 
         $productCategory->forceDelete();
 
-        return redirect()->route('product-categories.trashed')->with('success', 'Danh mục sản phẩm đã được xóa vĩnh viễn!');
+        return redirect()->route('ProductCategories.trashed')->with('success', 'Danh mục sản phẩm đã được xóa vĩnh viễn!');
     }
 }
-

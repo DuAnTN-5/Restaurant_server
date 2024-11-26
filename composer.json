@@ -12,7 +12,8 @@
         "laravel/socialite": "^5.16",
         "laravel/tinker": "^2.8",
         "maatwebsite/excel": "^1.1",
-        "php-flasher/flasher-laravel": "^1.15"
+        "php-flasher/flasher-laravel": "^1.15",
+        "spatie/laravel-permission": "^6.10"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.14",

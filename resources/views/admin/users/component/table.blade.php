@@ -23,29 +23,30 @@
                         <img src="{{ asset('default-avatar.png') }}" alt="Default Image" class="img-thumbnail">
                     @endif
                 </td>
-                
-                <td style="text-align: center; vertical-align: middle;">
-                    <input type="checkbox" class="js-switch" 
-                           data-id="{{ $user->id }}" 
-                           data-type="user" 
-                           {{ $user->status === 'active' ? 'checked' : '' }}>
-                </td>
-                
 
                 <td style="text-align: center; vertical-align: middle;">
-                    @if (isset($user->role))
-                        @if ($user->role == 1)
-                            <span class="badge badge-primary">Admin</span>
-                        @elseif ($user->role == 2)
-                            <span class="badge badge-warning">Manager</span>
-                        @elseif ($user->role == 3)
-                            <span class="badge badge-info">Staff</span>
-                        @else
-                            <span class="badge badge-secondary">User</span>
-                        @endif
+                    <input type="checkbox" class="js-switch"
+                           data-id="{{ $user->id }}"
+                           data-type="user"
+                           {{ $user->status === 'active' ? 'checked' : '' }}>
+                </td>
+
+
+                <td style="text-align: center; vertical-align: middle;">
+
+                    @php $roleName = implode(',', $user->getRoleNames()->toArray()) @endphp
+
+                    @if ($roleName == 'Admin')
+                        <span class="badge badge-primary">
+                    @elseif ($roleName == 'Staff')
+                        <span class="badge badge-warning">
+                    @elseif ($roleName == 'User')
+                        <span class="badge badge-info">
                     @else
-                        <span class="badge badge-secondary">User</span>
+                        <span class="badge badge-secondary">
                     @endif
+
+                    {{ $roleName }}</span>
                 </td>
                 <td style="text-align: center; vertical-align: middle;">
                     <a href="{{ route('users.edit', $user->id) }}" class="btn btn-success">
