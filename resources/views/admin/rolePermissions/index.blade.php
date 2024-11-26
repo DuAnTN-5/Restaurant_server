@@ -2,31 +2,39 @@
 
 @section('content')
     <div class="row wrapper border-bottom white-bg page-heading">
+        @flasher_render
         <div class="col-lg-10">
-            <h2>Danh Sách Loại Sản Phẩm</h2>
+            <h2>Danh Sách Người Dùng</h2>
             <ol class="breadcrumb">
-                <li><a href="{{ route('admin.index') }}">Trang Chủ</a></li>
-                <li><a>Quản Lý Loại Sản Phẩm</a></li>
-                <li class="active"><strong>Danh Sách Loại Sản Phẩm</strong></li>
+                <li>
+                    <a href="{{ route('admin.index') }}">Trang Chủ</a>
+                </li>
+                <li>
+                    <a>Quản Lý Người Dùng</a>
+                </li>
+                <li class="active">
+                    <strong>Danh Sách Người Dùng</strong>
+                </li>
             </ol>
         </div>
         <div class="col-lg-2 text-right">
-            <a href="{{ route('ProductCategories.trashed') }}" class="btn btn-primary" style="margin-top: 20px;">Xem Danh Sách Đã Xóa</a>
+            <!-- Nút Xem Danh Sách Đã Xóa -->
+            <a href="{{ route('users.trashed') }}" class="btn btn-warning" style="margin-top: 20px; margin-left: 10px;">Xem
+                Danh Sách Đã Xóa</a>
         </div>
-        
     </div>
+
 
     @if ($errors->has('error'))
         <div class="alert alert-danger">{{ $errors->first('error') }}</div>
     @endif
 
     <div class="wrapper wrapper-content animated fadeInRight">
-        @flasher_render
         <div class="row">
             <div class="col-lg-12">
                 <div class="ibox float-e-margins">
                     <div class="ibox-title">
-                        <h5>Danh Sách Loại Sản Phẩm</h5>
+                        <h5>Danh Sách Người Dùng</h5>
                         <div class="ibox-tools">
                             <a class="collapse-link">
                                 <i class="fa fa-chevron-up"></i>
@@ -36,16 +44,17 @@
                             </a>
                         </div>
                     </div>
+
                     <div class="ibox-content">
                         <div class="table-responsive">
-                            <!-- Bao gồm form tìm kiếm -->
-                            @include('admin.ProductCategories.component.filter')
+                            <!-- Include filter form -->
+                            {{-- @include('admin.users.component.filter') --}}
 
-                            <!-- Bao gồm bảng dữ liệu -->
-                            @include('admin.ProductCategories.component.table')
+                            <!-- Include table content -->
+                            @include('admin.roleDetails.component.table')
 
-                            <!-- Bao gồm phân trang -->
-                            @include('admin.ProductCategories.component.paginate')
+                            <!-- Include pagination -->
+                            {{-- @include('admin.users.component.paginate')  --}}
                         </div>
                     </div>
                 </div>
@@ -54,7 +63,6 @@
     </div>
 @endsection
 
-{{-- @push('scripts')
-    <!-- Bao gồm script thay đổi trạng thái -->
-    @include('admin.productcategories.component.script')
-@endpush --}}
+@push('scripts')
+    @include('admin.roleDetails.component.script')
+@endpush

@@ -9,11 +9,12 @@ use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\EmailVerification;
-
+// phan quyen
+use Spatie\Permission\Traits\HasRoles;
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
-
+    use HasRoles;
     // Các trường có thể điền vào được (Mass Assignment)
     protected $table = 'users';
     
@@ -177,4 +178,8 @@ class User extends Authenticatable
         return $this->hasOne(Cart::class);
     }
 
+    // public function roles()
+    // {
+    //     return $this->belongsToMany(Role::class);
+    // }
 }

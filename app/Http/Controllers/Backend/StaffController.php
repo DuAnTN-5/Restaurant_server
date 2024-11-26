@@ -20,7 +20,12 @@ class StaffController extends Controller
         $status = $request->query('status');
         $role = $request->query('role');
 
-        $query = Staff::query();
+        
+        $query = Staff::with(['user'])
+        ->whereHas('user', function ($q)  {
+            $q->whereNull('deleted_at');
+            });
+        
 
         if ($role) {
             $query->whereHas('user', function ($q) use ($role) {

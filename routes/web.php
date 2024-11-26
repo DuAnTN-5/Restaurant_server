@@ -23,6 +23,8 @@ use App\Http\Controllers\Backend\DiscountPromotionsController;
 use App\Http\Controllers\Backend\PaymentsController;
 use App\Http\Controllers\Backend\PaymentMethodsController;
 use App\Http\Controllers\LocationController;
+use App\Http\Controllers\Backend\RoleDetailsController;
+use App\Http\Controllers\Backend\RoleController;
 
 Route::get('/districts/{province_id}', [LocationController::class, 'getDistricts']);
 Route::get('/wards/{district_id}', [LocationController::class, 'getWards']);
@@ -46,7 +48,7 @@ Route::controller(ForgotPasswordController::class)->group(function () {
 // Định nghĩa route cho Admin Dashboard và Quản lý người dùng
 Route::group(['middleware' => ['auth', 'admin']], function () {
     // Route index dashboard
-    Route::get('/', [AdminController::class, 'index'])->name('admin.index'); // Sửa lại phần name thành 'admin.index'
+    Route::get('/', [AdminController::class, 'index'])->name('admin.index')->middleware('can:view dashboard'); // Sửa lại phần name thành 'admin.index'
     Route::controller(UserController::class)->group(function () {
         Route::get('/users', 'index')->name('users.index'); // Danh sách người dùng
         Route::get('/users/create', 'create')->name('users.create'); // Form thêm người dùng
@@ -64,17 +66,35 @@ Route::group(['middleware' => ['auth', 'admin']], function () {
         Route::get('/users/trashed', 'trashed')->name('users.trashed'); // Xem danh sách người dùng đã xóa mềm
         Route::delete('/users/{id}/force-delete', [UserController::class, 'forceDelete'])->name('users.forceDelete');
 
-    });
+    })->middleware('can:manage users');
     Route::post('/store-location', [UserController::class, 'storeLocation'])->name('user.storeLocation');
     // Route để cập nhật trạng thái người dùng (active/inactive)
-    Route::post('/users/update-status', [UserController::class, 'updateStatus'])->name('users.update-status');
+    Route::post('/users/update-status', [UserController::class, 'updateStatus'])->name('users.update-status')->middleware('can:manage users');
 
     // Routes cho nhân viên
     Route::prefix('/staff')->group(function () {
+
         Route::match(['get', 'post'], '/', [StaffController::class, 'index'])->name('staff.index'); // Danh sách nhân viên
         Route::post('/', [StaffController::class, 'store'])->name('staff.store'); // Lưu nhân viên mới
         Route::get('/{id}', [StaffController::class, 'show'])->name('staff.show'); // Xem chi tiết nhân viên
-    });
+        // Route để hiển thị form cập nhật quyền cho nhân viên
+
+
+    })->middleware('can:manage staff');
+    //tạo quyền
+    Route::post('/roles', [RoleController::class, 'store'])->name('roles.store');
+    Route::get('/roles', [RoleController::class, 'index'])->name('roles.index');
+    //Route::get('/roles', [RoleController::class, 'roles.create']);
+    Route::post('/roles/{role}/permissions/{permissions}', [RoleController::class, 'roles.update']);
+    Route::put('/roles/{role}/permissions/toggle', [RoleController::class, 'togglePermission']);
+    Route::delete('/roles/{role}/delete', [RoleController::class, 'destroy']);
+    Route::put('/roles/{role}/rename', [RoleController::class, 'rename'])->name('roles.rename');
+
+    // Route để cập nhật quyền
+    Route::get('/role-details', [RoleDetailsController::class, 'index'])->name('roleDetail.index');
+    Route::get('/role-details/create', [RoleDetailsController::class, 'create'])->name('roleDetail.create');
+    Route::put('/role-details/{id}/update', [RoleDetailsController::class, 'updateStatus'])->name('roleDetail.updateStatus');
+
 
     Route::prefix('postCategories')->group(function () {
         Route::get('/', [PostCategoriesController::class, 'index'])->name('postCategories.index');
@@ -84,7 +104,7 @@ Route::group(['middleware' => ['auth', 'admin']], function () {
         Route::put('/{id}', [PostCategoriesController::class, 'update'])->name('postCategories.update');
         Route::delete('/{id}', [PostCategoriesController::class, 'destroy'])->name('postCategories.destroy');
         Route::post('/update-status', [PostCategoriesController::class, 'updateStatus'])->name('postCategories.update-status');
-    });
+    })->middleware('can:manage posts');
 
     // Route cho bài viết (Posts)
     Route::prefix('posts')->group(function () {
@@ -112,20 +132,24 @@ Route::group(['middleware' => ['auth', 'admin']], function () {
 
         // Route cập nhật trạng thái (update-status) cho bài viết
         Route::post('/update-status', [PostController::class, 'updateStatus'])->name('posts.update-status');
-    });
+    })->middleware('can:manage posts');
 
 
-    // Định nghĩa route cho quản lý sản phẩm (Product Categories)
-    Route::prefix('/categories/product-categories')->group(function () {
-        Route::get('/', [ProductCategoriesController::class, 'index'])->name('product-categories.index');
-        Route::get('/create', [ProductCategoriesController::class, 'create'])->name('product-categories.create');
-        Route::post('/', [ProductCategoriesController::class, 'store'])->name('product-categories.store');
-        Route::get('/{id}/edit', [ProductCategoriesController::class, 'edit'])->name('product-categories.edit');
-        Route::put('/{id}', [ProductCategoriesController::class, 'update'])->name('product-categories.update');
-        Route::delete('/{id}', [ProductCategoriesController::class, 'destroy'])->name('product-categories.destroy');
-        Route::post('/product-categories/update-status', [ProductCategoriesController::class, 'updateStatus'])->name('product-categories.update-status');
+    Route::prefix('/categories/ProductCategories')->group(function () {
+        Route::get('/', [ProductCategoriesController::class, 'index'])->name('ProductCategories.index');
+        Route::get('/create', [ProductCategoriesController::class, 'create'])->name('ProductCategories.create');
+        Route::post('/', [ProductCategoriesController::class, 'store'])->name('ProductCategories.store');
+        Route::get('/{id}/edit', [ProductCategoriesController::class, 'edit'])->name('ProductCategories.edit');
+        Route::put('/{id}', [ProductCategoriesController::class, 'update'])->name('ProductCategories.update');
+        Route::delete('/{id}', [ProductCategoriesController::class, 'destroy'])->name('ProductCategories.destroy');
+        Route::post('/update-status', [ProductCategoriesController::class, 'updateStatus'])->name('ProductCategories.update-status');
 
-    });
+        // Route bổ sung
+        Route::get('/trashed', [ProductCategoriesController::class, 'trashed'])->name('ProductCategories.trashed');
+        Route::post('/restore/{id}', [ProductCategoriesController::class, 'restore'])->name('ProductCategories.restore');
+        Route::delete('/force-delete/{id}', [ProductCategoriesController::class, 'forceDelete'])->name('ProductCategories.forceDelete');
+    })->middleware('can:manage products');
+
     // Định nghĩa route cho quản lý sản phẩm (Products)
     Route::prefix('products')->group(function () {
         Route::get('/', [ProductController::class, 'index'])->name('products.index');
@@ -135,13 +159,13 @@ Route::group(['middleware' => ['auth', 'admin']], function () {
         Route::put('/{id}', [ProductController::class, 'update'])->name('products.update');
         Route::delete('/{id}', [ProductController::class, 'destroy'])->name('products.destroy');
         Route::post('/update-status', [ProductController::class, 'updateStatus'])->name('products.update-status');
-    
+
         // Routes cho sản phẩm đã xóa mềm
         Route::get('/trashed', [ProductController::class, 'trashed'])->name('products.trashed');
         Route::post('/{id}/restore', [ProductController::class, 'restore'])->name('products.restore');
         Route::delete('/{id}/force-delete', [ProductController::class, 'forceDelete'])->name('products.forceDelete');
-    });
-    
+    })->middleware('can:manage products');
+
 
     Route::prefix('/tables')->group(function () {
         Route::get('/', [TableController::class, 'index'])->name('tables.index');          // Hiển thị danh sách bàn
@@ -151,7 +175,7 @@ Route::group(['middleware' => ['auth', 'admin']], function () {
         Route::put('/{id}', [TableController::class, 'update'])->name('tables.update');     // Cập nhật thông tin bàn
         Route::delete('/{id}', [TableController::class, 'destroy'])->name('tables.destroy');// Xóa bàn
         Route::post('/update-status', [TableController::class, 'updateStatus'])->name('tables.update-status');
-    });
+    })->middleware('can:manage tables');
     // Định nghĩa route cho quản lý đặt chỗ (Reservations)
     Route::prefix('/reservations')->group(function () {
         Route::get('/', [ReservationController::class, 'index'])->name('reservations.index');
@@ -161,7 +185,7 @@ Route::group(['middleware' => ['auth', 'admin']], function () {
         Route::put('/{id}', [ReservationController::class, 'update'])->name('reservations.update');
         Route::delete('/{id}', [ReservationController::class, 'destroy'])->name('reservations.destroy');
         Route::post('/reservations/update-status', [ReservationController::class, 'updateStatus'])->name('reservations.update-status');
-    });
+    })->middleware('can:manage tables');
     // Định nghĩa route cho quản lý đơn hàng (Orders)
     Route::prefix('/orders')->group(function () {
         Route::get('/', [OrdersController::class, 'index'])->name('orders.index');
@@ -175,7 +199,7 @@ Route::group(['middleware' => ['auth', 'admin']], function () {
         // Route cho modal "Đặt Món"
         Route::get('/{orderId}/items', [OrdersController::class, 'showItems'])->name('orders.items');
         Route::post('/{orderId}/items', [OrdersController::class, 'storeItems'])->name('orders.storeItems');
-    });
+    })->middleware('can:manage orders');
 
     // CRUD cho Order Items chi tiết
     Route::prefix('/orders/{orderId}/manage-items')->group(function () {
@@ -185,7 +209,7 @@ Route::group(['middleware' => ['auth', 'admin']], function () {
         Route::get('/{id}/edit', [OrderItemsController::class, 'edit'])->name('order_items.edit');
         Route::put('/{id}', [OrderItemsController::class, 'update'])->name('order_items.update');
         Route::delete('/{id}', [OrderItemsController::class, 'destroy'])->name('order_items.destroy');
-    });
+    })->middleware('can:manage orders');
     Route::prefix('/coupons')->group(function () {
         Route::get('/', [CouponsController::class, 'index'])->name('coupons.index');           // Danh sách mã giảm giá
         Route::get('/create', [CouponsController::class, 'create'])->name('coupons.create');    // Form thêm mã giảm giá
@@ -196,7 +220,7 @@ Route::group(['middleware' => ['auth', 'admin']], function () {
 
         // Route cập nhật trạng thái của mã giảm giá
         Route::post('/update-status', [CouponsController::class, 'updateStatus'])->name('coupons.update-status');
-    });
+    })->middleware('can:manage coupons');
 
     // Route::prefix('/discounts_promotions')->group(function () {
     //     Route::get('/', [DiscountPromotionsController::class, 'index'])->name('discounts_promotions.index');         // Danh sách chương trình khuyến mãi
@@ -219,7 +243,7 @@ Route::group(['middleware' => ['auth', 'admin']], function () {
 
         // Route cập nhật trạng thái của thanh toán
         Route::post('/update-status', [PaymentsController::class, 'updateStatus'])->name('payments.update-status');
-    });
+    })->middleware('can:manage payments');
 
     Route::prefix('/payment_methods')->group(function () {
         Route::get('/', [PaymentMethodsController::class, 'index'])->name('payment_methods.index');           // Danh sách phương thức thanh toán
@@ -230,7 +254,7 @@ Route::group(['middleware' => ['auth', 'admin']], function () {
         Route::delete('/{id}', [PaymentMethodsController::class, 'destroy'])->name('payment_methods.destroy'); // Xóa phương thức thanh toán
         Route::post('/update-status', [PaymentMethodsController::class, 'updateStatus'])->name('payment_methods.update-status');
 
-    });
+    })->middleware('can:manage payments');
 
 });
 

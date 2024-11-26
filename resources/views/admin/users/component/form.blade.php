@@ -123,23 +123,23 @@
                 <div class="ibox-content">
                     <div class="form-group">
                         <label for="role">Quyền hạn <span class="text-danger">(*)</span></label>
+                        {{-- @php $roleName = implode(',', $user->getRoleNames()->toArray()) @endphp --}}
+                        @php
+                            $roleName = isset($user) ? implode(',', $user->getRoleNames()->toArray()) : '';
+                        @endphp
                         <select name="role" id="role" class="form-control" required
                             onchange="toggleStaffFields()">
                             <option value="" disabled
-                                {{ old('role', $user->role ?? '') == '' ? 'selected' : '' }}>Chọn quyền hạn</option>
-                            <option value="1" {{ old('role', $user->role ?? '') == 1 ? 'selected' : '' }}>Admin
-                            </option>
-                            <option value="0" {{ old('role', $user->role ?? '') == 0 ? 'selected' : '' }}>User
-                            </option>
-                            <option value="2" {{ old('role', $user->role ?? '') == 2 ? 'selected' : '' }}>Manager
-                            </option>
-                            <option value="3" {{ old('role', $user->role ?? '') == 3 ? 'selected' : '' }}>Staff
-                            </option>
+                                {{ old('role', $roleName ?? '') == '' ? 'selected' : '' }}>Chọn quyền hạn</option>
+                            @foreach ($roles as $role )
+                                <option value="{{ $role->name }}" {{ old('role', $roleName ?? '') == $role->name ? 'selected' : '' }}>{{ $role->name }}
+                                </option>
+                            @endforeach
                         </select>
                     </div>
 
                     <!-- Thông tin bổ sung cho Manager và Staff -->
-                    <div id="staff-fields" style="display: none;">
+                    <div id="staff-fields" style="display:none">
                         <!-- Bộ phận chỉ hiển thị cho Staff -->
                         <div id="department-field" class="form-group">
                             <label for="department">Bộ phận</label>
@@ -200,11 +200,11 @@
             const departmentField = document.getElementById('department-field');
 
             // Hiển thị các trường bổ sung nếu chọn Manager hoặc Staff
-            if (role == '2' || role == '3') {
+            if (role == 'Manager' || role == 'Staff') {
                 staffFields.style.display = 'block';
 
                 // Chỉ hiển thị trường Bộ phận cho Staff
-                if (role == '3') {
+                if (role == 'Staff') {
                     departmentField.style.display = 'block';
                 } else {
                     departmentField.style.display = 'none';

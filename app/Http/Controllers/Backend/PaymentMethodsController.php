@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Backend;
 use App\Http\Controllers\Controller;
 use App\Models\PaymentMethod;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class PaymentMethodsController extends Controller
 {
@@ -139,16 +140,19 @@ class PaymentMethodsController extends Controller
      */
     public function updateStatus(Request $request)
     {
-        $request->validate([
+        
+        $validate = Validator::make($request->all(),[
             'id' => 'required|exists:payment_methods,id',
-            'status' => 'required|boolean',
-        ]);
-
+            'status' => 'required|in:active,inactive',
+        ] );
+        if ($validate->fails()) {
+            return response()->json(['success' => false, 'errors' => $validate->errors()], 422);
+        }
         $paymentMethod = PaymentMethod::findOrFail($request->id);
-        $paymentMethod->status = $request->status;
+        $paymentMethod->status = $request->status = 'active' ? 1: 0;
         $paymentMethod->save();
 
-        $message = $request->status ? 'Phương thức thanh toán đã được kích hoạt.' : 'Phương thức thanh toán đã bị vô hiệu hóa.';
+        $message = $request->status = 'active' ? 'Phương thức thanh toán đã được kích hoạt.' : 'Phương thức thanh toán đã bị vô hiệu hóa.';
         return response()->json(['success' => true, 'message' => $message]);
     }
 }

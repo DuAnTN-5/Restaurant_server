@@ -25,12 +25,9 @@
                 <td style="text-align: center; vertical-align: middle;">
                     <input type="checkbox" class="js-switch" 
                            data-id="{{ $paymentMethod->id }}" 
-                           data-type="payment_method"
-                           {{ $paymentMethod->is_active ? 'checked' : '' }}>
+                           data-type="payment_methods"
+                           {{ $paymentMethod->status ? 'checked' : '' }}>
                 </td>
-                
-                
-                          
 
                 <!-- Action Buttons -->
                 <td>

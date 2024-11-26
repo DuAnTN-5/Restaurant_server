@@ -33,10 +33,10 @@
                 
                 
                 <td style="text-align: center;">
-                    <a href="{{ route('product-categories.edit', $productCategory->id) }}" class="btn btn-success">
+                    <a href="{{ route('ProductCategories.edit', $productCategory->id) }}" class="btn btn-success">
                         <i class="fa fa-edit"></i>
                     </a>
-                    <form method="POST" action="{{ route('product-categories.destroy', $productCategory->id) }}" style="display: inline;">
+                    <form method="POST" action="{{ route('ProductCategories.destroy', $productCategory->id) }}" style="display: inline;">
                         @csrf
                         @method('DELETE')
                         <button type="submit" class="btn btn-danger" onclick="return confirm('Xác nhận xóa?')">

@@ -2,7 +2,7 @@
     <div class="sidebar-collapse">
         <ul class="nav metismenu" id="side-menu">
             <li class="nav-header">
-                <div class="dropdown profile-element"> 
+                <div class="dropdown profile-element">
                     <span>
                         <img style="width: 100px; height: 100px;" src="{{ asset('logo/LogoPNG.png') }}"
                         alt="">
@@ -26,35 +26,44 @@
 
                 </div>
             </li>
-
+            @can('view dashboard')
             <li class="{{ Request::is('/') ? 'active' : '' }}">
                 <a href="{{ url('/') }}">
                     <i class="fa fa-home"></i>
                     <span class="nav-label">Trang Chủ</span>
                 </a>
             </li>
-            <li class="{{ Request::is('admin/users*') ? 'active' : '' }}">
-                <a href="{{ route('users.index') }}">
-                    <i class="fa fa-users"></i>
-                    <span class="nav-label">Quản Lý Người Dùng</span>
-                    <span class="fa arrow"></span>
-                </a>
-                <ul class="nav nav-second-level">
-                    <li class="{{ Request::is('admin/users') ? 'active' : '' }}">
-                        <a href="{{ route('users.index') }}">
-                            <i class="fa fa-list"></i> Danh Sách Người Dùng
-                        </a>
-                    </li>
-                    
-                    <li class="{{ Request::is('admin/staff') ? 'active' : '' }}">
-                        <a href="{{ route('staff.index') }}">
-                            <i class="fa fa-briefcase"></i> Danh Sách Nhân Viên
-                        </a>
-                    </li>
-                    
-                </ul>
-            </li>
-            
+            @endcan
+            @can('manage users')
+                <li class="{{ Request::is('admin/users*') ? 'active' : '' }}">
+                    <a href="{{ route('users.index') }}">
+                        <i class="fa fa-users"></i>
+                        <span class="nav-label">Quản Lý Người Dùng</span>
+                        <span class="fa arrow"></span>
+                    </a>
+                    <ul class="nav nav-second-level">
+                        <li class="{{ Request::is('admin/users') ? 'active' : '' }}">
+                            <a href="{{ route('users.index') }}">
+                                <i class="fa fa-list"></i> Danh Sách Người Dùng
+                            </a>
+                        </li>
+
+                        <li class="{{ Request::is('admin/staff') ? 'active' : '' }}">
+                            <a href="{{ route('staff.index') }}">
+                                <i class="fa fa-briefcase"></i> Danh Sách Nhân Viên
+                            </a>
+                        </li>
+
+                        <li class="{{ Request::is('admin/roleDetails') ? 'active' : '' }}">
+                            <a href="{{ route('roleDetail.index') }}">
+                                <i class="fa fa-shield"></i> Phân Quyền Tài Khoản
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            @endcan
+
+            @can('manage posts')
             <!-- Quản Lý Tin Tức -->
             <li class="{{ Request::is('admin/posts*') || Request::is('admin/PostCategories') ? 'active' : '' }}">
                 <a href="#">
@@ -73,13 +82,15 @@
                     </li>
                 </ul>
             </li>
+            @endcan
 
+            @can('manage products')
             <!-- Quản Lý Sản Phẩm -->
             <li class="{{ Request::is('admin/products*') || Request::is('admin/ProductCategories') ? 'active' : '' }}">
                 <a href="#"><i class="fa fa-cutlery"></i> <span class="nav-label">Quản Lý Sản Phẩm</span> <span class="fa arrow"></span></a>
                 <ul class="nav nav-second-level">
                     <li class="{{ Request::is('admin/ProductCategories') ? 'active' : '' }}">
-                        <a href="{{ route('product-categories.index') }}"><i class="fa fa-list"></i> Loại Sản Phẩm</a>
+                        <a href="{{ route('ProductCategories.index') }}"><i class="fa fa-list"></i> Loại Sản Phẩm</a>
                     </li>
                     <li class="{{ Request::is('admin/products') ? 'active' : '' }}">
                         <a href="{{ route('products.index') }}"><i class="fa fa-list"></i> Danh Sách Sản Phẩm</a>
@@ -89,6 +100,9 @@
                     </li>
                 </ul>
             </li>
+            @endcan
+
+            @can('manage tables')
             <li class="{{ Request::is('admin/tables*') || Request::is('admin/reservations*') ? 'active' : '' }}">
                 <a href="#"><i class="fa fa-table"></i> <span class="nav-label">Quản Lý Bàn & Đặt Bàn</span> <span class="fa arrow"></span></a>
                 <ul class="nav nav-second-level">
@@ -105,6 +119,9 @@
                     </li>
                 </ul>
             </li>
+            @endcan
+
+            @can('manage orders')
             <li class="{{ Request::is('admin/orders*') || Request::is('admin/orders/*/items*') ? 'active' : '' }}">
                 <a href="#"><i class="fa fa-shopping-cart"></i> <span class="nav-label">Quản Lý Đơn Hàng</span> <span class="fa arrow"></span></a>
                 <ul class="nav nav-second-level">
@@ -123,6 +140,9 @@
                     @endisset
                 </ul>
             </li>
+            @endcan
+
+            @can('manage coupons')
             <li class="{{ Request::is('admin/coupons*') || Request::is('admin/discount_promotions*') ? 'active' : '' }}">
                 <a href="#"><i class="fa fa-tags"></i> <span class="nav-label">Quản Lý Coupons & Khuyến Mãi</span> <span class="fa arrow"></span></a>
                 <ul class="nav nav-second-level">
@@ -139,6 +159,9 @@
                     </li> --}}
                 </ul>
             </li>
+            @endcan
+
+            @can('manage payments')
             <li class="{{ Request::is('admin/payments*') || Request::is('admin/payment_methods*') ? 'active' : '' }}">
                 <a href="#"><i class="fa fa-credit-card"></i> <span class="nav-label">Quản Lý Thanh Toán</span> <span class="fa arrow"></span></a>
                 <ul class="nav nav-second-level">
@@ -146,7 +169,7 @@
                     <li class="{{ Request::is('admin/payments') ? 'active' : '' }}">
                         <a href="{{ route('payments.index') }}"><i class="fa fa-list"></i> Danh Sách Thanh Toán</a>
                     </li>
-            
+
                     <!-- Quản lý Phương Thức Thanh Toán -->
                     <li class="{{ Request::is('admin/payment_methods') ? 'active' : '' }}">
                         <a href="{{ route('payment_methods.index') }}"><i class="fa fa-list-alt"></i>Phương Thức Thanh Toán</a>
@@ -154,9 +177,9 @@
 
                 </ul>
             </li>
-            
-            
-            
+            @endcan
+
+
         </ul>
     </div>
 </nav>
