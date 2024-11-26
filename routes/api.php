@@ -29,7 +29,10 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [RegisterController::class, 'logout']);
     // Thêm sản phẩm vào giỏ hàng
-    Route::post('/cart/add', [ProductController::class, 'addToCart']);
+    // Route::post('/cart/add', [ProductController::class, 'addToCart']);
+
+    Route::post('change-password', [RegisterController::class, 'changePassword']);
+    Route::post('update-user-info', [RegisterController::class, 'updateUserInfo']);
 });
 
 // Đăng ký các route cho đăng ký và đăng nhập
