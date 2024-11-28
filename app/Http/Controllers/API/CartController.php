@@ -34,8 +34,9 @@ class CartController extends Controller
             }
 
             // Trả về dữ liệu của giỏ hàng với count và total
+
             return (object) [
-                'cart_id' => $cartItem->id,
+                'id' => $cartItem->id,
                 'user_id' => $cartItem->user_id,
                 'table_id' => $cartItem->table_id,
                 'date' => $cartItem->date,
@@ -71,6 +72,7 @@ class CartController extends Controller
 
         $productsDetails = $listProduct->map(function ($cartItem) {
             return [
+                'id' => $cartItem->id,
                 'product_name' => $cartItem->product->name,
                 'product_image' => $cartItem->product->image_url,
                 'quantity' => $cartItem->quantity,
@@ -189,22 +191,9 @@ class CartController extends Controller
         }
     }
 
-    public function quantityUp(Request $request)
+    public function quantityUp($itemId)
     {
-        $validated = Validator::make($request->all(), [
-            "cart_id" => 'required',
-            "product_id" => 'required',
-        ]);
-
-        if ($validated->fails()) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Lỗi xác thực' . $validated->errors(),
-            ]);
-        }
-
-        $quantity = CartItem::where('cart_id', '=', $request->cart_id)
-            ->where('product_id', '=', $request->product_id)->first();
+        $quantity = CartItem::find($itemId);
 
         if ($quantity) {
             $quantity->update(['quantity' => $quantity->quantity++]);
@@ -215,27 +204,14 @@ class CartController extends Controller
         } else {
             return response()->json([
                 'status' => false,
-                'message' => 'Cập nhật số lượng thất bại' . $validated->errors(),
+                'message' => 'Cập nhật số lượng thất bại',
             ]);
         }
     }
 
-    public function quantityDown(Request $request)
+    public function quantityDown($itemId)
     {
-        $validated = Validator::make($request->all(), [
-            "cart_id" => 'required',
-            "product_id" => 'required',
-        ]);
-
-        if ($validated->fails()) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Lỗi xác thực' . $validated->errors(),
-            ]);
-        }
-
-        $quantity = CartItem::where('cart_id', '=', $request->cart_id)
-            ->where('product_id', '=', $request->product_id)->first();
+        $quantity = CartItem::find($itemId);
 
         if ($quantity) {
             $quantity->update(['quantity' => $quantity->quantity--]);
@@ -246,27 +222,15 @@ class CartController extends Controller
         } else {
             return response()->json([
                 'status' => false,
-                'message' => 'Cập nhật số lượng thất bại' . $validated->errors(),
+                'message' => 'Cập nhật số lượng thất bại',
             ]);
         }
     }
 
-    public function destroyProduct(Request $request)
+    public function destroyProduct($itemId)
     {
-        $validated = Validator::make($request->all(), [
-            "cart_id" => 'required',
-            "product_id" => 'required',
-        ]);
 
-        if ($validated->fails()) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Lỗi xác thực' . $validated->errors(),
-            ]);
-        }
-
-        $product = CartItem::where('cart_id', '=', $request->cart_id)
-            ->where('product_id', '=', $request->product_id)->first();
+        $product = CartItem::find($itemId);
 
         if ($product) {
             $product->delete();
@@ -277,7 +241,7 @@ class CartController extends Controller
         } else {
             return response()->json([
                 'status' => false,
-                'message' => 'Không tìm thấy món ăn' . $validated->errors(),
+                'message' => 'Không tìm thấy món ăn' 
             ]);
         }
     }
