@@ -42,7 +42,6 @@ Route::middleware('auth:sanctum')->group(function () {
     // Bàn
     Route::get('/tables', [TableController::class, 'index']);
 
-    Route::get('/cart/list/{id}', [CartController::class, 'index']);
     Route::get('/cart/list-product/{cartId}', [CartController::class, 'listProduct']);
     Route::post('/cart/add-cart', [CartController::class, 'addCart']);
     Route::post('/cart/add-product', [CartController::class, 'addProduct']);
@@ -51,6 +50,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/cart/product/delete', [CartController::class, 'destroyProduct']);
     Route::delete('/cart/{id}', [CartController::class, 'destroyCart']);
 });
+Route::get('/cart/list/{id}', [CartController::class, 'index']);
 
 // Đăng ký các route cho đăng ký và đăng nhập
 Route::controller(RegisterController::class)->group(function () {
@@ -91,6 +91,7 @@ Route::get('/posts/{slug}', [PostController::class, 'show']);
 // bình luận của 1 bài viết
 Route::get('/posts/{postId}/comments', [CommentPostController::class, 'index']);
 
+Route::get('/test/{cartId}', [CartController::class, 'itemTotal']);
 
 
 

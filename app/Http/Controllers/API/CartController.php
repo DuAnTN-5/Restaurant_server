@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Models\Api\Cart;
 use App\Models\Api\CartItem;
+use App\Models\Product;
 use App\Models\Table;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -13,9 +14,47 @@ class CartController extends Controller
 {
     public function index($id)
     {
+        // Lấy tất cả giỏ hàng của người dùng với ID $id
         $cart = Cart::where('user_id', '=', $id)->get();
-        return response()->json($cart);
+
+        // Tính toán count và total cho mỗi giỏ hàng
+        $cartList = $cart->map(function ($cartItem) {
+            // Lấy tất cả CartItem của giỏ hàng hiện tại
+            $cartItems = CartItem::where('cart_id', '=', $cartItem->id)->get();
+
+            // Tính số lượng sản phẩm trong giỏ
+            $countProduct = $cartItems->count();
+
+            // Tính tổng tiền cho giỏ hàng
+            $total = 0;
+            foreach ($cartItems as $cartItemDetail) {
+                $quantity = $cartItemDetail->quantity;
+                $price = $this->itemTotal($cartItemDetail->product_id); // Giả sử itemTotal tính toán tổng giá trị của sản phẩm
+                $total += ($quantity * $price);
+            }
+
+            // Trả về dữ liệu của giỏ hàng với count và total
+            return (object) [
+                'cart_id' => $cartItem->id,
+                'user_id' => $cartItem->user_id,
+                'table_id' => $cartItem->table_id,
+                'date' => $cartItem->date,
+                'time' => $cartItem->time,
+                'guest_count' => $cartItem->guest_count,
+                'notes' => $cartItem->notes,
+                'count' => $countProduct,
+                'total' => $total,
+            ];
+        });
+
+        // Trả về phản hồi JSON với thông tin giỏ hàng
+        return response()->json([
+            'status' => true,
+            'message' => 'Danh sách giỏ hàng',
+            'data' => $cartList
+        ]);
     }
+
 
     public function listProduct($cartId)
     {
@@ -65,7 +104,30 @@ class CartController extends Controller
             ]);
         }
 
-        $addCart = Cart::create($validated);
+        $checkCart = Cart::where('user_id', '=', $request->user_id)
+            ->where('table_id', '=', $request->table_id);
+        if (!$checkCart) {
+            $addCart = Cart::create([
+                "user_id" => $request->user_id,
+                "table_id" => $request->table_id,
+                "date" => $request->date,
+                "time" => $request->time,
+                "guest_count" => $request->guest_count,
+                "notes" => $request->notes,
+            ]);
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Tạo thành công',
+                'data' => $addCart
+
+            ], 201);
+        } else {
+            return response()->json([
+                'status' => false,
+                'message' => 'Bàn đã tồn tại.',
+            ]);
+        }
         //đổi trạng thái bàn
         $table_id = $request->table_id;
         $table = Table::find($table_id);
@@ -79,13 +141,6 @@ class CartController extends Controller
                 'message' => 'Bàn không tồn tại',
             ]);
         }
-
-        return response()->json([
-            'status' => true,
-            'message' => 'Tạo thành công',
-            'data' => $addCart
-
-        ], 201);
     }
 
     public function addProduct(Request $request)
@@ -101,37 +156,36 @@ class CartController extends Controller
                 'status' => false,
                 'message' => 'Lỗi thông tin không xác thực' . $validated->errors()->first(),
             ]);
+        }
+        $cartId = $request->cart_id;
+        $productId = $request->product_id;
+        $quantity = $request->quantity;
 
-            $cartId = $request->cart_id;
-            $productId = $request->product_id;
-            $quantity = $request->quantity;
+        $cartItem = CartItem::where('cart_id', $cartId)
+            ->where('product_id', $productId)
+            ->first();
 
-            $cartItem = CartItem::where('cart_id', $cartId)
-                ->where('product_id', $productId)
-                ->first();
+        if ($cartItem) {
+            $cartItem->quantity += $quantity;
+            $cartItem->save();
 
-            if ($cartItem) {
-                $cartItem->quantity += $quantity;
-                $cartItem->save();
+            return response()->json([
+                'status' => true,
+                'message' => 'Sản phẩm đã được cập nhật vào giỏ hàng.',
+                'data' => $cartItem
+            ]);
+        } else {
+            $addProduct = CartItem::create([
+                'cart_id' => $cartId,
+                'product_id' => $productId,
+                'quantity' => $quantity,
+            ]);
 
-                return response()->json([
-                    'status' => true,
-                    'message' => 'Sản phẩm đã được cập nhật vào giỏ hàng.',
-                    'data' => $cartItem
-                ]);
-            } else {
-                $addProduct = CartItem::create([
-                    'cart_id' => $cartId,
-                    'product_id' => $productId,
-                    'quantity' => $quantity,
-                ]);
-
-                return response()->json([
-                    'status' => true,
-                    'message' => 'Sản phẩm đã được thêm vào giỏ hàng.',
-                    'data' => $addProduct
-                ]);
-            }
+            return response()->json([
+                'status' => true,
+                'message' => 'Sản phẩm đã được thêm vào giỏ hàng.',
+                'data' => $addProduct
+            ]);
         }
     }
 
@@ -245,5 +299,15 @@ class CartController extends Controller
                 'message' => 'Không tìm thấy giỏ hàng',
             ]);
         }
+    }
+
+    public function itemTotal($productId)
+    {
+        $item = Product::find($productId);
+
+        $price = $item->price;
+
+
+        return $price;
     }
 }
