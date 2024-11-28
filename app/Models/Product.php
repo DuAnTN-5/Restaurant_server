@@ -88,4 +88,8 @@ class Product extends Model
     {
         return $this->availability === true;
     }
+    public function cartItems()
+    {
+        return $this->hasMany(CartItem::class, 'product_id'); // 'product_id' là khóa ngoại trong bảng CartItem
+    }
 }

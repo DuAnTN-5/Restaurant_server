@@ -1,15 +1,17 @@
 <?php
 
+use App\Http\Controllers\API\CartController;
 use App\Http\Controllers\API\CommentPostController;
 use App\Http\Controllers\API\CommentProductController;
 use App\Http\Controllers\API\DishReviewController;
 use App\Http\Controllers\API\ProductController;
 use App\Http\Controllers\API\RegisterController;
-use App\Http\Controllers\API\PostCategoryController; 
-use App\Http\Controllers\API\ProductCategoryController; 
+use App\Http\Controllers\API\PostCategoryController;
+use App\Http\Controllers\API\ProductCategoryController;
 use App\Http\Controllers\API\PostController;
 use App\Http\Controllers\API\ReviewController;
 use App\Http\Controllers\API\SocialAuthController;
+use App\Http\Controllers\API\TableController;
 use App\Models\DishReview;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -28,11 +30,26 @@ use Illuminate\Support\Facades\Route;
 // Đường dẫn API yêu cầu xác thực
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [RegisterController::class, 'logout']);
-    // Thêm sản phẩm vào giỏ hàng
-    // Route::post('/cart/add', [ProductController::class, 'addToCart']);
 
     Route::post('change-password', [RegisterController::class, 'changePassword']);
     Route::post('update-user-info', [RegisterController::class, 'updateUserInfo']);
+
+    Route::post('/ratings', [ReviewController::class, 'rate']);
+    Route::post('/product-comments', [ReviewController::class, 'comment']);
+    // Thêm bình luận mới
+    Route::post('/post-comments', [CommentPostController::class, 'store']);
+
+    // Bàn
+    Route::get('/tables', [TableController::class, 'index']);
+
+    Route::get('/cart/list/{id}', [CartController::class, 'index']);
+    Route::get('/cart/list-product/{cartId}', [CartController::class, 'listProduct']);
+    Route::post('/cart/add-cart', [CartController::class, 'addCart']);
+    Route::post('/cart/add-product', [CartController::class, 'addProduct']);
+    Route::post('/cart/product/quantity-up', [CartController::class, 'quantityUp']);
+    Route::post('/cart/product/quantity-down', [CartController::class, 'quantityDown']);
+    Route::post('/cart/product/delete', [CartController::class, 'destroyProduct']);
+    Route::delete('/cart/{id}', [CartController::class, 'destroyCart']);
 });
 
 // Đăng ký các route cho đăng ký và đăng nhập
@@ -74,28 +91,9 @@ Route::get('/posts/{slug}', [PostController::class, 'show']);
 // bình luận của 1 bài viết
 Route::get('/posts/{postId}/comments', [CommentPostController::class, 'index']);
 
-// Thêm bình luận mới
-Route::post('/post-comments', [CommentPostController::class, 'store']);
-
-Route::post('/ratings', [ReviewController::class, 'rate']);
-Route::post('/product-comments', [ReviewController::class, 'comment']);
 
 
-// Route cho danh mục bài viết
-// Route::apiResource('post-categories', PostCategoryController::class);
 
-// Route cho đánh giá món ăn
-// Route::post('/reviews-dish', [DishReviewController::class, 'store']); // Thêm đánh giá
-// Route::get('/reviews-dish/{dish_id}', [DishReviewController::class, 'index']); // Lấy đánh giá của món ăn
-// Route::put('/reviews-dish/{id}', [DishReviewController::class, 'update']); // Cập nhật đánh giá
-// Route::delete('/reviews-dish/{id}', [DishReviewController::class, 'destroy']); // Xóa đánh giá
-
-// Route::get('/dishrating/{dish_id}', [DishReviewController::class, 'getDishRating']);
-
-// Đường dẫn để lấy thông tin người dùng hiện tại
-// Route::get('user', function (Request $request) {
-//     return $request->user();
-// })->name('user');
 Route::middleware('auth:sanctum')->get('user', function (Request $request) {
     return $request->user();
 })->name('user');

@@ -11,19 +11,19 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('comment_product', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('product_id'); // Liên kết với sản phẩm
-            $table->unsignedBigInteger('user_id'); // Liên kết với người dùng đăng bình luận
-            $table->unsignedBigInteger('parent_id')->nullable(); // Để liên kết bình luận con với bình luận cha
-            $table->text('content'); // Nội dung bình luận
-            $table->timestamps(); // Thêm timestamps một lần
+        // Schema::create('comment_product', function (Blueprint $table) {
+        //     $table->id();
+        //     $table->unsignedBigInteger('product_id'); // Liên kết với sản phẩm
+        //     $table->unsignedBigInteger('user_id'); // Liên kết với người dùng đăng bình luận
+        //     $table->unsignedBigInteger('parent_id')->nullable(); // Để liên kết bình luận con với bình luận cha
+        //     $table->text('content'); // Nội dung bình luận
+        //     $table->timestamps(); // Thêm timestamps một lần
 
-            // Các khóa ngoại
-            $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('parent_id')->references('id')->on('comment_product')->onDelete('cascade'); 
-        });
+        //     // Các khóa ngoại
+        //     $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
+        //     $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+        //     $table->foreign('parent_id')->references('id')->on('comment_product')->onDelete('cascade'); 
+        // });
     }
 
     /**
