@@ -83,7 +83,7 @@ class RegisterController extends BaseController
              }
 
              $success['token'] =  $user->createToken('MyApp')->plainTextToken;
-             $success['name'] =  $user->name;
+             $success['user'] =  $user;
  
              return $this->sendResponse($success, 'Đăng nhập thành công..');
          }
