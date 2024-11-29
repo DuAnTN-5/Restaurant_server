@@ -196,7 +196,7 @@ class CartController extends Controller
         $quantity = CartItem::find($itemId);
 
         if ($quantity) {
-            $quantity->update(['quantity' => $quantity->quantity++]);
+            $quantity->update(['quantity' => $quantity->quantity + 1]);
             return response()->json([
                 'status' => true,
                 'message' => 'Cập nhật số lượng thành công',
@@ -214,7 +214,7 @@ class CartController extends Controller
         $quantity = CartItem::find($itemId);
 
         if ($quantity) {
-            $quantity->update(['quantity' => $quantity->quantity--]);
+            $quantity->update(['quantity' => $quantity->quantity - 1]);
             return response()->json([
                 'status' => true,
                 'message' => 'Cập nhật số lượng thành công',
