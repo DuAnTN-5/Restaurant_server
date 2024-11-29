@@ -191,9 +191,11 @@ class CartController extends Controller
         }
     }
 
-    public function quantityUp($itemId)
+    public function quantityUp($itemId, $tableId)
     {
-        $quantity = CartItem::find($itemId);
+        $quantity = CartItem::where('id', $itemId)
+                        ->where('table_id', $tableId)
+                        ->first();
 
         if ($quantity) {
             $quantity->update(['quantity' => $quantity->quantity + 1]);
@@ -208,17 +210,25 @@ class CartController extends Controller
             ]);
         }
     }
-
-    public function quantityDown($itemId)
+    public function quantityDown($itemId, $tableId)
     {
-        $quantity = CartItem::find($itemId);
-
+        $quantity = CartItem::where('id', $itemId)
+                            ->where('table_id', $tableId)
+                            ->first();
+    
         if ($quantity) {
-            $quantity->update(['quantity' => $quantity->quantity - 1]);
-            return response()->json([
-                'status' => true,
-                'message' => 'Cập nhật số lượng thành công',
-            ]);
+            if ($quantity->quantity > 1) {
+                $quantity->update(['quantity' => $quantity->quantity - 1]);
+                return response()->json([
+                    'status' => true,
+                    'message' => 'Cập nhật số lượng thành công',
+                ]);
+            } else {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Số lượng không thể giảm dưới 1',
+                ]);
+            }
         } else {
             return response()->json([
                 'status' => false,
@@ -226,12 +236,14 @@ class CartController extends Controller
             ]);
         }
     }
+    
 
-    public function destroyProduct($itemId)
+    public function destroyProduct($itemId, $tableId)
     {
-
-        $product = CartItem::find($itemId);
-
+        $product = CartItem::where('id', $itemId)
+                           ->where('table_id', $tableId)
+                           ->first();
+    
         if ($product) {
             $product->delete();
             return response()->json([
@@ -241,11 +253,11 @@ class CartController extends Controller
         } else {
             return response()->json([
                 'status' => false,
-                'message' => 'Không tìm thấy món ăn' 
+                'message' => 'Không tìm thấy món ăn',
             ]);
         }
     }
-
+    
     public function destroyCart($id)
     {
 
