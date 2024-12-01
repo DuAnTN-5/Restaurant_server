@@ -278,6 +278,5 @@ Route::get('language/{lang}', function ($lang) {
     return redirect()->back();
 });
 
-// Route::post('/vnpay-payment', [PaymentController::class, 'vnpay_payment']);
-// Route::get('/vnpay', [PaymentController::class, 'vnpay']);
+
 
