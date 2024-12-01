@@ -72,7 +72,7 @@ class CartController extends Controller
 
         $productsDetails = $listProduct->map(function ($cartItem) {
             return [
-                'id' => $cartItem->id,
+                'id' => $cartItem->product_id,
                 'product_name' => $cartItem->product->name,
                 'product_image' => $cartItem->product->image_url,
                 'quantity' => $cartItem->quantity,

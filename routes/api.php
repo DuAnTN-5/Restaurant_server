@@ -93,7 +93,9 @@ Route::get('/posts/{slug}', [PostController::class, 'show']);
 Route::get('/posts/{postId}/comments', [CommentPostController::class, 'index']);
 
 // Route::get('/test/{cartId}', [CartController::class, 'itemTotal']);
-// Route::post('/vnpay-payment', [PaymentController::class, 'vnpay_payment']); 
+Route::post('/vnpay/payment', [PaymentController::class, 'vnpay_payment']);
+Route::get('/vnpay/callback', [PaymentController::class, 'vnpayCallback']);
+
 
 
 
