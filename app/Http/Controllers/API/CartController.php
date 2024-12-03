@@ -72,7 +72,7 @@ class CartController extends Controller
 
         $productsDetails = $listProduct->map(function ($cartItem) {
             return [
-                'id' => $cartItem->id,
+                'id' => $cartItem->product_id,
                 'product_name' => $cartItem->product->name,
                 'product_image' => $cartItem->product->image_url,
                 'quantity' => $cartItem->quantity,
@@ -106,8 +106,13 @@ class CartController extends Controller
             ]);
         }
 
+        // $checkCart = Cart::where('user_id', '=', $request->user_id)
+        //     ->where('table_id', '=', $request->table_id);
         $checkCart = Cart::where('user_id', '=', $request->user_id)
-            ->where('table_id', '=', $request->table_id);
+            ->where('table_id', '=', $request->table_id)
+            ->where('date', '=', $request->date)
+            ->first();
+
         if (!$checkCart) {
             $addCart = Cart::create([
                 "user_id" => $request->user_id,
@@ -193,9 +198,9 @@ class CartController extends Controller
 
     public function quantityUp($itemId, $tableId)
     {
-        $quantity = CartItem::where('id', $itemId)
-                        ->where('table_id', $tableId)
-                        ->first();
+        $quantity = CartItem::where('product_id', $itemId)
+            ->where('cart_id', $tableId)
+            ->first();
 
         if ($quantity) {
             $quantity->update(['quantity' => $quantity->quantity + 1]);
@@ -212,10 +217,10 @@ class CartController extends Controller
     }
     public function quantityDown($itemId, $tableId)
     {
-        $quantity = CartItem::where('id', $itemId)
-                            ->where('table_id', $tableId)
-                            ->first();
-    
+        $quantity = CartItem::where('product_id', $itemId)
+            ->where('cart_id', $tableId)
+            ->first();
+
         if ($quantity) {
             if ($quantity->quantity > 1) {
                 $quantity->update(['quantity' => $quantity->quantity - 1]);
@@ -236,14 +241,14 @@ class CartController extends Controller
             ]);
         }
     }
-    
+
 
     public function destroyProduct($itemId, $tableId)
     {
-        $product = CartItem::where('id', $itemId)
-                           ->where('table_id', $tableId)
-                           ->first();
-    
+        $product = CartItem::where('product_id', $itemId)
+            ->where('cart_id', $tableId)
+            ->first();
+
         if ($product) {
             $product->delete();
             return response()->json([
@@ -257,7 +262,7 @@ class CartController extends Controller
             ]);
         }
     }
-    
+
     public function destroyCart($id)
     {
 

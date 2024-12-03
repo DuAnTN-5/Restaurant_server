@@ -63,7 +63,9 @@ class ProductController extends Controller
             'description' => 'nullable',
             'price' => 'required|numeric|min:0',
             'stock_quantity' => 'nullable|integer|min:0',
-            'image_url' => 'nullable|image|mimes:jpg,png,jpeg,gif|max:2048',
+            // 'image_url' => 'nullable|image|mimes:jpg,png,jpeg,gif|max:2048',
+            'image_url' => 'nullable|array|max:3',
+            'image_url.*' => 'image|mimes:jpg,png,jpeg,gif|max:2048',
             'category_id' => 'required|exists:product_categories,id',
         ]);
 
@@ -72,12 +74,13 @@ class ProductController extends Controller
             $slug = $slug . '-' . time();
         }
 
-        $imageUrl = null;
+        $imageUrls = [];
         if ($request->hasFile('image_url')) {
-            $file = $request->file('image_url');
-            $fileName = time() . '.' . $file->getClientOriginalExtension();
-            $file->move(public_path('productfiles'), $fileName);
-            $imageUrl = 'productfiles/' . $fileName;
+            foreach ($request->file('image_url') as $file) {
+                $fileName = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+                $file->move(public_path('productfiles'), $fileName);
+                $imageUrls[] = 'productfiles/' . $fileName;  // Lưu đường dẫn ảnh
+            }
         }
 
         Product::create([
@@ -87,14 +90,19 @@ class ProductController extends Controller
             'price' => $request->price,
             'discount_price' => $request->discount_price,
             'stock_quantity' => $request->stock_quantity,
-            'image_url' => $imageUrl,
+            // 'image_url' => $imageUrl,
+            'image_url' => json_encode($imageUrls),
             'category_id' => $request->category_id,
             'tags' => $request->tags,
+            'summary' => $request->summary,
+            'ingredients' => $request->ingredients,
+            'position' => $request->position,
             'status' => $request->status ?? 'active',
             'product_code' => $request->product_code,
         ]);
 
         $flasher->addSuccess('Sản phẩm đã được thêm thành công!');
+        // echo ($productt);
         return redirect()->route('products.index');
     }
 
@@ -116,8 +124,11 @@ class ProductController extends Controller
             'description' => 'nullable',
             'price' => 'required|numeric|min:0',
             'stock_quantity' => 'nullable|integer|min:0',
-            'image_url' => 'nullable|image|mimes:jpg,png,jpeg,gif|max:2048',
+            // 'image_url' => 'nullable|image|mimes:jpg,png,jpeg,gif|max:2048',
+            'image_url' => 'nullable|array|max:3',  // Chấp nhận tối đa 3 ảnh
+            'image_url.*' => 'image|mimes:jpg,png,jpeg,gif|max:2048',
             'category_id' => 'required|exists:product_categories,id',
+           
         ]);
 
         $slug = Str::slug($request->name);
@@ -125,15 +136,21 @@ class ProductController extends Controller
             $slug = $slug . '-' . time();
         }
 
+        // Xử lý ảnh nếu có
         if ($request->hasFile('image_url')) {
+            // Xóa ảnh cũ nếu có
             if ($product->image_url && file_exists(public_path($product->image_url))) {
-                unlink(public_path($product->image_url));
+                unlink(public_path($product->image_url));  // Xóa ảnh cũ
             }
 
-            $file = $request->file('image_url');
-            $fileName = time() . '.' . $file->getClientOriginalExtension();
-            $file->move(public_path('productfiles'), $fileName);
-            $product->image_url = 'productfiles/' . $fileName;
+            // Xử lý tải lên các ảnh mới
+            $imageUrls = [];
+            foreach ($request->file('image_url') as $file) {
+                $fileName = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+                $file->move(public_path('productfiles'), $fileName);
+                $imageUrls[] = 'productfiles/' . $fileName;  // Lưu đường dẫn ảnh vào mảng
+            }
+            $product->image_url = json_encode($imageUrls);  // Lưu mảng ảnh dưới dạng JSON
         }
 
         $product->update([
@@ -145,6 +162,9 @@ class ProductController extends Controller
             'stock_quantity' => $request->stock_quantity,
             'category_id' => $request->category_id,
             'tags' => $request->tags,
+            'summary' => $request->summary,
+            'ingredients' => $request->ingredients,
+            'position' => $request->position,
             'status' => $request->status ?? 'active',
             'product_code' => $request->product_code,
         ]);

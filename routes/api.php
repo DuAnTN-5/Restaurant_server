@@ -4,6 +4,7 @@ use App\Http\Controllers\API\CartController;
 use App\Http\Controllers\API\CommentPostController;
 use App\Http\Controllers\API\CommentProductController;
 use App\Http\Controllers\API\DishReviewController;
+use App\Http\Controllers\API\PaymentController;
 use App\Http\Controllers\API\ProductController;
 use App\Http\Controllers\API\RegisterController;
 use App\Http\Controllers\API\PostCategoryController;
@@ -91,7 +92,10 @@ Route::get('/posts/{slug}', [PostController::class, 'show']);
 // bình luận của 1 bài viết
 Route::get('/posts/{postId}/comments', [CommentPostController::class, 'index']);
 
-Route::get('/test/{cartId}', [CartController::class, 'itemTotal']);
+// Route::get('/test/{cartId}', [CartController::class, 'itemTotal']);
+Route::post('/vnpay/payment', [PaymentController::class, 'vnpay_payment']);
+Route::get('/vnpay/callback', [PaymentController::class, 'vnpayCallback']);
+
 
 
 

@@ -36,6 +36,22 @@
                         <img src="{{ asset('default-product.png') }}" alt="Default Image" width="50">
                     @endif
                 </td>
+                {{-- <td>
+                    @if (isset($product->image_url) && is_array($product->image_url) && count($product->image_url) > 0)
+                        @php
+                            // Xử lý ảnh đầu tiên trong mảng, thay thế '\/' thành '/'
+                            $imagePath = str_replace('\/', '/', $product->image_url[0]);
+                        @endphp
+                        @if (file_exists(public_path($imagePath)))
+                            <img src="{{ asset($imagePath) }}" alt="Image" width="80">
+                        @else
+                            <img src="{{ asset('default-product.png') }}" alt="Default Image" width="50">
+                        @endif
+                    @else
+                        <img src="{{ asset('default-product.png') }}" alt="Default Image" width="50">
+                    @endif
+                </td> --}}
+           
                 
                 <td>{{ $product->stock_quantity }}</td>
                 <td>{{ $product->position }}</td>

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\API\PaymentController;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
@@ -276,3 +277,6 @@ Route::get('language/{lang}', function ($lang) {
     }
     return redirect()->back();
 });
+
+
+
