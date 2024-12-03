@@ -57,6 +57,7 @@ class ProductController extends Controller
     // Lưu sản phẩm mới vào cơ sở dữ liệu
     public function store(Request $request, FlasherInterface $flasher)
     {
+      
         $request->validate([
             'name' => 'required',
             'description' => 'nullable',
