@@ -65,13 +65,40 @@
                 </select>
             </div>
 
-            <div class="form-group text-center">
+            {{-- <div class="form-group text-center">
                 <label for="image_url">Chọn ảnh:</label>
                 <div class="image-preview text-center">
                     <label for="image_url">
                         <img id="preview-image" src="{{ isset($product->image_url) ? asset('productfiles/' . $product->image_url) : asset('logo/anh-chon.jpg') }}" alt="Chọn ảnh" width="300" style="cursor: pointer;">
                     </label>
                     <input type="file" name="image_url" id="image_url" style="display: none;" onchange="previewImage(event)">
+                </div>
+            </div> --}}
+            <div class="form-group text-center">
+                <label for="image_url">Chọn ảnh: (Tối đa 3 ảnh)</label>
+                <div class="image-preview text-center">
+                    <label for="image_url">
+                        <img id="preview-image" src="{{ asset('/logo/anh-chon.jpg') }}" alt="Chọn ảnh" width="300" style="cursor: pointer;">
+                    </label>
+                    {{-- <label for="image_url">
+                        <img id="preview-image" src="{{ isset($product->image_url) ? asset('productfiles/' . $product->image_url) : asset('logo/anh-chon.jpg') }}" alt="Chọn ảnh" width="300" style="cursor: pointer;">
+                    </label> --}}
+                    {{-- <label for="image_url">
+                        <img id="preview-image" 
+                        src="{{ 
+                            isset($product->image_url) ? 
+                            (is_array($product->image_url) 
+                                ? asset('productfiles/' . $product->image_url[0]) 
+                                : asset('productfiles/' . (is_string($product->image_url) ? json_decode($product->image_url)[0] : $product->image_url[0]))) 
+                            : asset('logo/anh-chon.jpg') }}" 
+                         alt="Chọn ảnh" width="300" style="cursor: pointer;">
+                    </label> --}}
+                    
+                   
+                    <input type="file" name="image_url[]" id="image_url" style="display: none;" onchange="previewImages(event)" multiple>
+                    <div id="image-thumbnails" class="mt-2">
+                        <!-- Các thumbnail ảnh sẽ hiển thị ở đây -->
+                    </div>
                 </div>
             </div>
 
@@ -115,3 +142,4 @@
 
 <!-- Link và Script cho Tagify và Summernote -->
 @include('admin.products.component.script')
+

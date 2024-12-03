@@ -3,7 +3,9 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
 
 <!-- jQuery và Các Plugin Chính -->
-<script src="{{ asset('backend/js/jquery.min.js') }}"></script>
+<script src="{{ asset('backend/js/jquery-3.1.1.min.js') }}"></script>
+
+ <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="{{ asset('backend/js/bootstrap.min.js') }}"></script>
 <script src="{{ asset('backend/js/plugins/metisMenu/jquery.metisMenu.js') }}"></script>
 <script src="{{ asset('backend/js/plugins/slimscroll/jquery.slimscroll.min.js') }}"></script>

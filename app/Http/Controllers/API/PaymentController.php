@@ -19,8 +19,8 @@ class PaymentController extends Controller
         $vnp_TxnRef = uniqid('txn_'); // Mã giao dịch (unique)
         $vnp_OrderInfo = 'Order ' . $vnp_TxnRef;  // Thông tin đơn hàng
         $cart_id = $request->cart_id;
-        $amount = $request->amount;
-        $vnp_Amount = $request->amount * 100; // Chuyển đổi từ VND sang cent (100)
+        $amount = $request->amount * 1000;
+        $vnp_Amount = $amount * 100; // Chuyển đổi từ VND sang cent (100)
         $vnp_Locale = 'vn'; // Mã ngôn ngữ (Việt Nam)
         $vnp_BankCode = 'NCB';
 
@@ -81,7 +81,8 @@ class PaymentController extends Controller
         return response()->json([
             'status' => 'success',
             'message' => 'Redirect to VNPay',
-            'payment_url' => $url
+            'payment_url' => $url,
+            'transaction_code' => $vnp_TxnRef,
         ]);
     }
 
@@ -103,29 +104,34 @@ class PaymentController extends Controller
 
         // So sánh giá trị SecureHash nhận được và giá trị SecureHash tính toán
         if ($secureHash === $vnp_SecureHash) {
-            $txnRef = $request->input('vnp_TxnRef');
-            // Xử lý thanh toán thành công
-            Log::info("Payment successful");
+            $txnRef = $request->input('vnp_TxnRef');  // Mã giao dịch
+            // $orderInfo = $request->input('vnp_OrderInfo');  // Thông tin đơn hàng
+            // $amount = $request->input('vnp_Amount');  // Số tiền thanh toán
+            $responseCode = $request->input('vnp_ResponseCode');  // Mã phản hồi
 
-            $payment = Payment::where('transaction_id', $txnRef)->first();
-            if ($payment) {
-                $payment->payment_status = 'complete';
-                $payment->save();
-                return response()->json(['status' => 'success', 'message' => 'Thanh toán thành công']);
-                // Lưu kết quả vào cơ sở dữ liệu
+            if ($responseCode == '00') {
+                $payment = Payment::where('transaction_id', $txnRef)->first();
+                if ($payment) {
+                    $payment->payment_status = 'complete';
+                    $payment->save();
+                }
+
+                return response()->json(['status' => 'success', 'message' => 'Thanh toán thành công'], 200);
             } else {
+                $payment = Payment::where('transaction_id', $txnRef)->first();
+                if ($payment) {
+                    $payment->payment_status = 'failed';
+                    $payment->save();
+                }
+
                 return response()->json(['status' => 'error', 'message' => 'Thanh toán thất bại']);
             }
         } else {
             // Xử lý thanh toán thất bại
-            Log::error("Payment failed");
-            return response()->json(['status' => 'error', 'message' => 'Thanh toán thất bại']);
+            Log::error("SecureHash mismatch: " . json_encode($request->all()));
+            return response()->json(['status' => 'error', 'message' => 'Dữ liệu giả mạo'], 400);
         }
 
-        return response()->json(['message' => 'Callback processed']);
+        // return response()->json(['message' => 'Callback thất bại']);
     }
-
-    // public function vnpay() {
-    //     return view('test-payment');
-    // }
 }
