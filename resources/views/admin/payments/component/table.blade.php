@@ -2,7 +2,6 @@
     <thead>
         <tr>
             <th>ID</th>
-            <th>Order ID</th>
             <th>Table ID</th>
             <th>Phương Thức Thanh Toán</th>
             <th>Trạng Thái</th>
@@ -15,8 +14,7 @@
         @foreach ($payments as $payment)
             <tr>
                 <td>{{ $payment->id }}</td>
-                <td>{{ $payment->order_id }}</td>
-                <td>{{ $payment->table_id }}</td>
+                <td>{{ $payment->table_id->number }}</td>
                 <td>{{ $payment->payment_method }}</td>
                 <td>
                     <span class="badge {{ $payment->payment_status === 'completed' ? 'badge-success' : 'badge-warning' }}">

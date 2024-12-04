@@ -17,7 +17,7 @@ class PaymentController extends Controller
         $vnp_HashSecret = env('VNPAY_HASH_SECRET'); // Chuỗi bí mật
 
         $vnp_TxnRef = uniqid('txn_'); // Mã giao dịch (unique)
-        $vnp_OrderInfo = 'Order ' . $vnp_TxnRef;  // Thông tin đơn hàng
+        $vnp_OrderInfo = 'Order' . $vnp_TxnRef;  // Thông tin đơn hàng
         $cart_id = $request->cart_id;
         $amount = $request->amount * 1000;
         $vnp_Amount = $amount * 100; // Chuyển đổi từ VND sang cent (100)
