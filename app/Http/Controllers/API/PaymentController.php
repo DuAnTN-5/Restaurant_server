@@ -128,7 +128,7 @@ class PaymentController extends Controller
             }
         } else {
             // Xử lý thanh toán thất bại
-            Log::error("SecureHash mismatch: " . json_encode($request->all()));
+            // Log::error("SecureHash mismatch: " . json_encode($request->all()));
             return response()->json(['status' => 'error', 'message' => 'Dữ liệu giả mạo'], 400);
         }
 

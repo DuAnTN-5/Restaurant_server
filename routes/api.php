@@ -3,6 +3,7 @@
 use App\Http\Controllers\API\CartController;
 use App\Http\Controllers\API\CommentPostController;
 use App\Http\Controllers\API\CommentProductController;
+use App\Http\Controllers\API\CouponsController;
 use App\Http\Controllers\API\DishReviewController;
 use App\Http\Controllers\API\PaymentController;
 use App\Http\Controllers\API\ProductController;
@@ -100,6 +101,8 @@ Route::get('/posts/{postId}/comments', [CommentPostController::class, 'index']);
 Route::post('/vnpay/payment', [PaymentController::class, 'vnpay_payment']);
 Route::get('/vnpay/callback', [PaymentController::class, 'vnpayCallback']);
 
+Route::get('/coupons', [CouponsController::class, 'getCoupons']);
+Route::get('coupons/{code}', [CouponsController::class, 'getCouponByCode']);
 
 
 
