@@ -81,9 +81,9 @@
                 
                     <!-- Nút "Thanh Toán" chỉ hiển thị khi trạng thái là "Hoàn Thành" -->
                     @if($order->status == 'completed' && !$order->is_paid)
-                        <a href="javascript:void(0);" class="btn btn-warning" onclick="openPaymentModal({{ $order->id }})">
+                        {{-- <a href="javascript:void(0);" class="btn btn-warning" onclick="openPaymentModal({{ $order->id }})">
                             <i class="fa fa-money"></i> Thanh Toán
-                        </a>
+                        </a> --}}
                     @else
                         <!-- Các nút thao tác khác nếu trạng thái không phải là "Hoàn Thành" hoặc đã thanh toán -->
                         <a href="javascript:void(0);" class="btn btn-info" onclick="openOrderItemModal({{ $order->id }})">

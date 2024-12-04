@@ -38,7 +38,9 @@ class Payment extends Model
     {
         return $this->belongsTo(Order::class, 'order_id');
     }
-
+    public function users(){
+        return $this->belongsToMany(User::class,'','user_id');
+    }
     // Mối quan hệ Many-to-One với bảng coupons
     public function coupon()
     {
@@ -57,11 +59,7 @@ class Payment extends Model
         return $this->belongsTo(PaymentMethod::class, 'payment_method_id');
     }
 
-    // Kiểm tra nếu thanh toán qua MoMo
-    public function isMoMo()
-    {
-        return optional($this->paymentMethod)->name === 'MoMo';
-    }
+
 
     // Kiểm tra nếu thanh toán qua VNPay
     public function isVNPay()
@@ -69,11 +67,6 @@ class Payment extends Model
         return optional($this->paymentMethod)->name === 'VNPay';
     }
 
-    // Kiểm tra nếu thanh toán bằng tiền mặt
-    public function isCash()
-    {
-        return optional($this->paymentMethod)->name === 'Cash';
-    }
 
     // Kiểm tra trạng thái thanh toán hoàn thành
     public function isCompleted()

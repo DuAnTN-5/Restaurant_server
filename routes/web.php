@@ -223,17 +223,6 @@ Route::group(['middleware' => ['auth', 'admin']], function () {
         Route::post('/update-status', [CouponsController::class, 'updateStatus'])->name('coupons.update-status');
     })->middleware('can:manage coupons');
 
-    // Route::prefix('/discounts_promotions')->group(function () {
-    //     Route::get('/', [DiscountPromotionsController::class, 'index'])->name('discounts_promotions.index');         // Danh sách chương trình khuyến mãi
-    //     Route::get('/create', [DiscountPromotionsController::class, 'create'])->name('discounts_promotions.create'); // Form thêm khuyến mãi
-    //     Route::post('/', [DiscountPromotionsController::class, 'store'])->name('discounts_promotions.store');        // Lưu khuyến mãi
-    //     Route::get('/{id}/edit', [DiscountPromotionsController::class, 'edit'])->name('discounts_promotions.edit');  // Form chỉnh sửa khuyến mãi
-    //     Route::put('/{id}', [DiscountPromotionsController::class, 'update'])->name('discounts_promotions.update');   // Cập nhật khuyến mãi
-    //     Route::delete('/{id}', [DiscountPromotionsController::class, 'destroy'])->name('discounts_promotions.destroy'); // Xóa khuyến mãi
-
-    //     // Route cập nhật trạng thái của khuyến mãi
-    //     Route::post('/update_status', [DiscountPromotionsController::class, 'updateStatus'])->name('discounts_promotions.update_status');
-    // });
     Route::prefix('/payments')->group(function () {
         Route::get('/', [PaymentsController::class, 'index'])->name('payments.index');           // Danh sách thanh toán
         Route::get('/create', [PaymentsController::class, 'create'])->name('payments.create');    // Form thêm thanh toán

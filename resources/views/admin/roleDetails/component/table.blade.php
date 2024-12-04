@@ -26,9 +26,14 @@
                         </td>
                     @endforeach
                     <td>
-                        <button class="btn btn-primary btn-sm rename-role" data-role-id="{{ $role->id }}">Đổi tên</button>
-                        <button class="btn btn-danger btn-sm delete-role" data-role-id="{{ $role->id }}">Xóa</button>
+                        <a href="javascript:void(0);" class="btn btn-primary btn-sm rename-role" data-role-id="{{ $role->id }}">
+                            <i class="fa fa-pencil-alt"></i> <!-- Icon bút để đổi tên -->
+                        </a>
+                        <a href="javascript:void(0);" class="btn btn-danger btn-sm delete-role" data-role-id="{{ $role->id }}">
+                            <i class="fa fa-trash"></i> <!-- Icon thùng rác để xóa -->
+                        </a>
                     </td>
+                    
                 </tr>
             @endforeach
     </tbody>
