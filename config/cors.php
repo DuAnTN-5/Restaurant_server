@@ -19,13 +19,11 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['*'],
-
     'allowed_origins_patterns' => [],
 
     'allowed_headers' => ['*'],
 
-    'allowed_origins' => ['http://localhost:5173'],
+    'allowed_origins' => ['*'],
 
     'exposed_headers' => [],
 
