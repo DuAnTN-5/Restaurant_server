@@ -8,6 +8,7 @@ use App\Models\Api\CartItem;
 use App\Models\Product;
 use App\Models\Table;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class CartController extends Controller
@@ -15,7 +16,10 @@ class CartController extends Controller
     public function index($id)
     {
         // Lấy tất cả giỏ hàng của người dùng với ID $id
-        $cart = Cart::where('user_id', '=', $id)->get();
+        $cart = Cart::where('user_id', '=', $id)
+            ->where('status', '=', 0) // Chỉ lấy các cart có status = 0 (chưa thanh toán)
+            ->get();
+
 
         // Tính toán count và total cho mỗi giỏ hàng
         $cartList = $cart->map(function ($cartItem) {
@@ -290,5 +294,28 @@ class CartController extends Controller
 
 
         return $price;
+    }
+
+    public function getPaidCarts($id)
+    {
+        // Lấy tất cả các đơn hàng đã thanh toán của người dùng
+        $paidCarts = Cart::where('user_id', $id)
+            ->where('status', 1)  // Status = 1 tức là đã thanh toán
+            ->get();
+
+        if ($paidCarts->isEmpty()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Không tìm thấy đơn hàng đã thanh toán cho người dùng này.',
+                'data' => []
+            ], 404);
+        } else {
+            // Trả về dữ liệu dưới dạng JSON
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Danh sách đơn hàng đã thanh toán',
+                'data' => $paidCarts
+            ]);
+        }
     }
 }

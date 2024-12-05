@@ -19,6 +19,7 @@ return new class extends Migration
             $table->time('time'); // Giờ đặt bàn
             $table->integer('guest_count');
             $table->text('notes')->nullable();
+            $table->integer('status')->default(0);
             $table->timestamps();
 
             // khóa ngoại 

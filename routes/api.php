@@ -51,8 +51,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/cart/quantity-down/{itemId}/{tableId}', [CartController::class, 'quantityDown']);
     Route::post('/cart/delete/{itemId}/{tableId}', [CartController::class, 'destroyProduct']);
     Route::post('/cart/{id}/delete', [CartController::class, 'destroyCart']);
+    Route::get('/cart/list/{id}', [CartController::class, 'index']);
+    Route::get('/paid-carts/{id}', [CartController::class, 'getPaidCarts']);
+
+Route::post('/product/cart', [ProductController::class, 'productCart']);
+
 });
-Route::get('/cart/list/{id}', [CartController::class, 'index']);
 
 // Đăng ký các route cho đăng ký và đăng nhập
 Route::controller(RegisterController::class)->group(function () {
@@ -87,7 +91,6 @@ Route::get('/product-categories', [ProductCategoryController::class, 'index']);
 // Route để lấy sản phẩm theo danh mục
 Route::get('/product-categories/{id}', [ProductCategoryController::class, 'products']);
 
-Route::post('/product/cart', [ProductController::class, 'productCart']);
 
 
 // Route cho bài viết
@@ -97,12 +100,14 @@ Route::get('/posts/{slug}', [PostController::class, 'show']);
 // bình luận của 1 bài viết
 Route::get('/posts/{postId}/comments', [CommentPostController::class, 'index']);
 
-// Route::get('/test/{cartId}', [CartController::class, 'itemTotal']);
-Route::post('/vnpay/payment', [PaymentController::class, 'vnpay_payment']);
+Route::post('/vnpay/payment', [PaymentController::class, 'vnpayPayment']);
 Route::get('/vnpay/callback', [PaymentController::class, 'vnpayCallback']);
 
 Route::get('/coupons', [CouponsController::class, 'getCoupons']);
-Route::get('coupons/{code}', [CouponsController::class, 'getCouponByCode']);
+// Route::get('coupons/{code}', [CouponsController::class, 'getCouponByCode']);
+
+Route::post('/check-coupon', [CouponsController::class, 'checkCoupon']);
+Route::post('/use-coupon', [CouponsController::class, 'useCoupon']);
 
 
 

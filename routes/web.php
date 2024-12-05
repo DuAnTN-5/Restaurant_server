@@ -268,4 +268,6 @@ Route::get('language/{lang}', function ($lang) {
 });
 
 
+Route::get('/testPayment', [PaymentController::class, 'vnpayCallback']);       
+
 
