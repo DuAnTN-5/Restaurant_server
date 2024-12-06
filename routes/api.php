@@ -5,6 +5,8 @@ use App\Http\Controllers\API\CommentPostController;
 use App\Http\Controllers\API\CommentProductController;
 use App\Http\Controllers\API\CouponsController;
 use App\Http\Controllers\API\DishReviewController;
+use App\Http\Controllers\API\FacebookController;
+use App\Http\Controllers\API\GoogleController;
 use App\Http\Controllers\API\PaymentController;
 use App\Http\Controllers\API\ProductController;
 use App\Http\Controllers\API\RegisterController;
@@ -74,12 +76,14 @@ Route::get('/verify-email/{token}', [RegisterController::class, 'verifyEmail']);
 Route::post('/forgot-password', [RegisterController::class, 'forgotPassword']);
 Route::post('/reset-password', [RegisterController::class, 'resetPassword']);
 
-//route đăng nhập facebook và google
-// Route::get('auth/{provider}', [SocialAuthController::class, 'redirectToProvider']);
-// Route::get('auth/{provider}/callback', [SocialAuthController::class, 'handleProviderCallback']);
-Route::prefix('api')->group(function () {
-    Route::get('auth/{provider}', [SocialAuthController::class, 'redirectToProvider']);
-    Route::get('auth/{provider}/callback', [SocialAuthController::class, 'handleProviderCallback']);
+Route::prefix('auth')->group(function () {
+    // Google Login
+    Route::get('google', [GoogleController::class, 'redirectToGoogle']);
+    Route::get('google/callback', [GoogleController::class, 'handleGoogleCallback']);
+    
+    // Facebook Login
+    Route::get('facebook', [FacebookController::class, 'redirectToFacebook']);
+    Route::get('facebook/callback', [FacebookController::class, 'handleFacebookCallback']);
 });
 
 // Route cho sản phẩm

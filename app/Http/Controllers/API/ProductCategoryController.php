@@ -26,13 +26,18 @@ class ProductCategoryController extends Controller
     public function products($id)
     {
         $category = ProductCategory::findOrFail($id);
-        $products = $category->products;
-
+        // $products = $category->products;
+        $products = $category->products->map(function($product) {
+            // Gọi phương thức getIngredients() trên từng sản phẩm
+            $product->ingredients = $product->getIngredients();
+            return $product;
+        });
         return response()->json([
             'status' => true,
             'data' => ProductResource::collection($products),
         ]);
     }
+
 
 
     // Lấy chi tiết danh mục
