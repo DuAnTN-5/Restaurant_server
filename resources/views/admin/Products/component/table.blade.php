@@ -29,13 +29,33 @@
                         <br><span style="color: red;">Giá giảm: {{ $product->discount_price }}</span>
                     @endif
                 </td>
-                <td>
+                {{-- <td>
                     @if ($product->image_url && file_exists(public_path($product->image_url)))
                         <img src="{{ asset($product->image_url) }}" alt="Image" width="80">
                     @else
                         <img src="{{ asset('default-product.png') }}" alt="Default Image" width="50">
                     @endif
+                </td> --}}
+                <td>
+                    @if (!empty($product->image_url))
+                        @php
+                            // Chuyển đổi image_url từ JSON sang mảng
+                            $imageArray = json_decode($product->image_url, true);
+                
+                            // Lấy ảnh đầu tiên trong mảng (nếu có)
+                            $imagePath = is_array($imageArray) && count($imageArray) > 0 ? $imageArray[0] : null;
+                        @endphp
+                
+                        @if ($imagePath && file_exists(public_path($imagePath)))
+                            <img src="{{ asset($imagePath) }}" alt="Image" width="80">
+                        @else
+                            <img src="{{ asset('default-product.png') }}" alt="Default Image" width="50">
+                        @endif
+                    @else
+                        <img src="{{ asset('default-product.png') }}" alt="Default Image" width="50">
+                    @endif
                 </td>
+                
                 {{-- <td>
                     @if (isset($product->image_url) && is_array($product->image_url) && count($product->image_url) > 0)
                         @php

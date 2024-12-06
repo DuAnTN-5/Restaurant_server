@@ -71,8 +71,12 @@ Route::post('/forgot-password', [RegisterController::class, 'forgotPassword']);
 Route::post('/reset-password', [RegisterController::class, 'resetPassword']);
 
 //route đăng nhập facebook và google
-Route::get('auth/{provider}', [SocialAuthController::class, 'redirectToProvider']);
-Route::get('auth/{provider}/callback', [SocialAuthController::class, 'handleProviderCallback']);
+// Route::get('auth/{provider}', [SocialAuthController::class, 'redirectToProvider']);
+// Route::get('auth/{provider}/callback', [SocialAuthController::class, 'handleProviderCallback']);
+Route::prefix('api')->group(function () {
+    Route::get('auth/{provider}', [SocialAuthController::class, 'redirectToProvider']);
+    Route::get('auth/{provider}/callback', [SocialAuthController::class, 'handleProviderCallback']);
+});
 
 // Route cho sản phẩm
 Route::get('/products', [ProductController::class, 'index']);

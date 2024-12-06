@@ -7,10 +7,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
-<link href="{{ asset('backend/css/plugins/dropzone/dropzone.css') }}" rel="stylesheet">
-<script src="{{ asset('backend/js/plugins/dropzone/dropzone.js') }}"></script>
-
-<style>
+{{-- <style>
     .toast-success {
         background-color: #1AB394 !important;
     }
@@ -94,7 +91,7 @@
             "hideMethod": "fadeOut"
         };
     });
-</script>
+</script> --}}
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tagify/4.9.8/tagify.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tagify/4.9.8/tagify.min.js"></script>
