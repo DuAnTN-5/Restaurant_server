@@ -16,24 +16,33 @@ class ReviewController extends Controller
             'product_id' => 'required|exists:products,id',
             'rating' => 'required|integer|min:1|max:5',
         ]);
-
-        // Tìm hoặc tạo đánh giá
-        $review = Review::updateOrCreate(
-            [
-                'user_id' => $validated['user_id'],
-                'product_id' => $validated['product_id'],
-            ],
-            [
-                'rating' => $validated['rating'],
-            ]
-        );
-
+    
+        $review = Review::where('user_id', $validated['user_id'])
+                        ->where('product_id', $validated['product_id'])
+                        ->first();
+    
+        if ($review && $review->rating_count >= 2) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Bạn chỉ được đánh giá tối đa 2 lần cho một sản phẩm.',
+                'rating_count' => $review->rating_count,
+            ], 400);
+        }
+    
+        $review = $review ? $review : new Review();
+        $review->user_id = $validated['user_id'];
+        $review->product_id = $validated['product_id'];
+        $review->rating = $validated['rating'];
+        $review->rating_count = ($review->rating_count ?? 0) + 1; 
+        $review->save();
+    
         return response()->json([
+            'status' => true,
             'message' => 'Đánh giá gửi thành công.',
             'data' => $review,
         ], 201);
     }
-
+    
     public function comment(Request $request)
     {
         $validated = $request->validate([
