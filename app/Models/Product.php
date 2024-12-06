@@ -92,4 +92,9 @@ class Product extends Model
     {
         return $this->hasMany(CartItem::class, 'product_id'); // 'product_id' là khóa ngoại trong bảng CartItem
     }
+
+    public function getIngredients()
+    {
+        return collect(json_decode($this->ingredients))->pluck('value')->toArray();
+    }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Models\Api\Cart;
+use App\Models\CouponUser;
 use App\Models\Payment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -135,12 +136,17 @@ class PaymentController extends Controller
                     $payment->payment_status = 'complete';
                     $payment->save();
 
-                    // $cart = Cart::where('id', $cart_id)->first();
-                    $cart = Cart::find($payment->table_id);
+                    $cart = Cart::find($payment->order_id);
                     if ($cart) {
                         $cart->status = 1;
                         $cart->save();
                     }
+
+                    if($payment ->coupon_id)
+                    CouponUser::create([
+                        'user_id' => $payment ->user_id,
+                        'coupon_id' => $payment ->coupon_id
+                    ]);
                 }
 
                 return response()->json([
@@ -158,7 +164,7 @@ class PaymentController extends Controller
                 return response()->json([
                     "success" => false,
                     'message' => "Thanh toán thất bại",
-                ]);
+                ]); 
             }
         } else {
             return response()->json([

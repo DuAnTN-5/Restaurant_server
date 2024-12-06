@@ -18,6 +18,10 @@ class ProductController extends Controller
     public function index()
     {
         $products = Product::all();
+        $products = $products->map(function($product) {
+            $product->ingredients = $product->getIngredients();  
+            return $product;
+        });
         return response()->json([
             'status' => true,
             'data' => ProductResource::collection($products),
@@ -28,6 +32,7 @@ class ProductController extends Controller
     public function show($slug)
     {
         $product = Product::where('slug', $slug)->firstOrFail();
+        $product->ingredients = $product->getIngredients();
 
         if (!$product) {
             return response()->json([
@@ -58,7 +63,13 @@ class ProductController extends Controller
 
     public function latestProducts()
     {
-        $latestProducts = Product::latest('created_at')->take(4)->get();
+        $productIds = [ 2, 3, 4, 5];
+        $latestProducts = Product::whereIn('id', $productIds)->get();
+        // $latestProducts = Product::latest('created_at')->take(4)->get();
+        $latestProducts = $latestProducts->map(function($product) {
+            $product->ingredients = $product->getIngredients();  
+            return $product;
+        });
         return response()->json([
             'status' => true,
             'data' => ProductResource::collection($latestProducts),
