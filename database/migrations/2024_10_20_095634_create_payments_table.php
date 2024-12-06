@@ -15,7 +15,7 @@ class CreatePaymentsTable extends Migration
     {
         Schema::create('payments', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->unsignedBigInteger('order_id')->nullable(); // Liên kết với bảng orders
+            $table->string('order_id')->nullable(); // 
             $table->unsignedBigInteger('table_id')->nullable(); // Liên kết với bảng tables
             $table->unsignedBigInteger('user_id')->nullable(); // Liên kết với bảng users
             $table->unsignedBigInteger('payment_method_id')->nullable(); // Liên kết với bảng payment_methods
@@ -31,7 +31,6 @@ class CreatePaymentsTable extends Migration
             $table->timestamps();
 
             // Khóa ngoại
-            $table->foreign('order_id')->references('id')->on('orders')->onDelete('cascade');
             $table->foreign('table_id')->references('id')->on('tables')->onDelete('set null');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('set null'); // Thêm khóa ngoại cho user_id
             $table->foreign('payment_method_id')->references('id')->on('payment_methods')->onDelete('set null'); // Thêm khóa ngoại cho payment_method_id

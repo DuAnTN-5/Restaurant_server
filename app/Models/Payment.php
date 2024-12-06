@@ -26,6 +26,8 @@ class Payment extends Model
         'provider_response',
         'error_message',
         'payment_date',
+        'coupon_id',
+        'user_id',
         'created_at',
         'updated_at',
     ];

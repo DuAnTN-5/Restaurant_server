@@ -22,6 +22,7 @@ class CreateReviewsTable extends Migration
                 $table->unsignedBigInteger('order_id');
                 $table->unsignedBigInteger('staff_id')->nullable();
                 $table->integer('rating'); // Xếp hạng từ 1-5
+                $table->integer('rating_count')->default(0);
                 $table->text('comment')->nullable();
                 $table->timestamps();
                 $table->softDeletes(); // Xóa mềm
