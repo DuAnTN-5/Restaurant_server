@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Carbon\Carbon;
 
 class PostResource extends JsonResource
 {
@@ -26,7 +27,11 @@ class PostResource extends JsonResource
             'status' => $this->status,
             'position' => $this->position, // Thứ tự sắp xếp
             'image_url' => $this->image_url,
-            'created_at' => $this->created_at,
+            // 'created_at' => $this->created_at,
+            'created_at' => [
+                'date' => Carbon::parse($this->created_at)->locale('vi')->isoFormat('DD/MM/YYYY'), // Ngày tạo
+                'time' => Carbon::parse($this->created_at)->locale('vi')->isoFormat('HH:mm:ss'), // Giờ tạo
+            ],
             'updated_at' => $this->updated_at,
         ];
     }

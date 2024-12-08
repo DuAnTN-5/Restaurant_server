@@ -39,53 +39,53 @@ class PostController extends Controller
     }
 
     // Thêm bài viết mới
-    public function store(StorePostRequest $request)
-    {
-        $post = Post::create($request->validated());
+    // public function store(StorePostRequest $request)
+    // {
+    //     $post = Post::create($request->validated());
 
-        return response()->json([
-            'status' => true,
-            'message' => 'Bài viết đã được tạo thành công.',
-            'data' => new PostResource($post),
-        ], 201);
-    }
+    //     return response()->json([
+    //         'status' => true,
+    //         'message' => 'Bài viết đã được tạo thành công.',
+    //         'data' => new PostResource($post),
+    //     ], 201);
+    // }
 
-    // Cập nhật bài viết
-    public function update(StorePostRequest $request, $id)
-    {
-        $post = Post::find($id);
-        if (!$post) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Bài viết không tìm thấy.',
-            ], 404);
-        }
+    // // Cập nhật bài viết
+    // public function update(StorePostRequest $request, $id)
+    // {
+    //     $post = Post::find($id);
+    //     if (!$post) {
+    //         return response()->json([
+    //             'status' => false,
+    //             'message' => 'Bài viết không tìm thấy.',
+    //         ], 404);
+    //     }
 
-        $post->update($request->validated());
+    //     $post->update($request->validated());
 
-        return response()->json([
-            'status' => true,
-            'message' => 'Bài viết đã được cập nhật thành công.',
-            'data' => new PostResource($post),
-        ]);
-    }
+    //     return response()->json([
+    //         'status' => true,
+    //         'message' => 'Bài viết đã được cập nhật thành công.',
+    //         'data' => new PostResource($post),
+    //     ]);
+    // }
 
-    // Xóa bài viết
-    public function destroy($id)
-    {
-        $post = Post::find($id);
-        if (!$post) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Bài viết không tìm thấy.',
-            ], 404);
-        }
+    // // Xóa bài viết
+    // public function destroy($id)
+    // {
+    //     $post = Post::find($id);
+    //     if (!$post) {
+    //         return response()->json([
+    //             'status' => false,
+    //             'message' => 'Bài viết không tìm thấy.',
+    //         ], 404);
+    //     }
 
-        $post->delete();
+    //     $post->delete();
 
-        return response()->json([
-            'status' => true,
-            'message' => 'Bài viết đã được xóa thành công.',
-        ], 204);
-    }
+    //     return response()->json([
+    //         'status' => true,
+    //         'message' => 'Bài viết đã được xóa thành công.',
+    //     ], 204);
+    // }
 }
