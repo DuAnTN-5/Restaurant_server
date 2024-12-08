@@ -4,7 +4,10 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Models\Api\Cart;
+use App\Models\Api\CartItem;
 use App\Models\CouponUser;
+use App\Models\Order;
+use App\Models\OrderItem;
 use App\Models\Payment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -140,17 +143,43 @@ class PaymentController extends Controller
                     if ($cart) {
                         $cart->status = 1;
                         $cart->save();
-                    }
 
-                    if($payment ->coupon_id)
-                    CouponUser::create([
-                        'user_id' => $payment ->user_id,
-                        'coupon_id' => $payment ->coupon_id
-                    ]);
+                        $order = Order::create([
+                            'user_id' => $cart->user_id,
+                            'table_id' => $cart->table_id,
+                            'discount_promotion_id' => $payment->coupon_id,
+                            'order_type' => 'dine_in',
+                            'order_date' => $payment->payment_date,
+                            'total_price' => $payment->total_amount,
+                            'payment_status' => 'paid',
+                            'status' => 'complete',
+                            'note' => $cart->notes,
+                        ]);
+
+                        $cartItems = CartItem::where('cart_id', $cart->id)->get();
+                        foreach ($cartItems as $cartItem) {
+                            OrderItem::create([
+                                'order_id' => $order->id,
+                                'product_id' => $cartItem->product_id,
+                                'quantity' => $cartItem->quantity,
+                                'price' => $cartItem->product->price,
+                            ]);
+                        }
+
+                        if ($payment->coupon_id)
+                            CouponUser::create([
+                                'user_id' => $payment->user_id,
+                                'coupon_id' => $payment->coupon_id
+                            ]);
+                    }
                 }
 
                 return response()->json([
                     'status' => true,
+                    'data' => [
+                        'order' => $order,
+                        'cartItems' => $cartItems,
+                    ],
                     'message' => "Thanh toán thành công",
                 ], 200);
             } else {
@@ -161,10 +190,40 @@ class PaymentController extends Controller
                     $payment->save();
                 }
 
+                $cart = Cart::find($payment->order_id);
+                if ($cart) {
+                    $order = Order::create([
+                        'user_id' => $cart->user_id,
+                        'table_id' => $cart->table_id,
+                        'discount_promotion_id' => $payment->coupon_id,
+                        'order_type' => 'dine_in',
+                        'order_date' => $payment->payment_date,
+                        'total_price' => $payment->total_amount,
+                        'payment_status' => 'unpaid',
+                        'status' => 'fails',
+                        'note' => $cart->notes,
+                    ]);
+
+                    $cartItems = CartItem::where('cart_id', $cart->id)->get();
+                    foreach ($cartItems as $cartItem) {
+                        OrderItem::create([
+                            'order_id' => $order->id,
+                            'product_id' => $cartItem->product_id,
+                            'quantity' => $cartItem->quantity,
+                            'price' => $cartItem->product->price,
+                        ]);
+                    }
+                }
+
+
                 return response()->json([
                     "success" => false,
+                    'data' => [
+                        'order' => $order,
+                        'cartItems' => $cartItems,
+                    ],
                     'message' => "Thanh toán thất bại",
-                ]); 
+                ]);
             }
         } else {
             return response()->json([

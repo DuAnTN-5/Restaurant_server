@@ -63,7 +63,7 @@ class ProductController extends Controller
 
     public function latestProducts()
     {
-        $productIds = [ 2, 3, 4, 5];
+        $productIds = [ 14, 16, 18, 17];
         $latestProducts = Product::whereIn('id', $productIds)->get();
         // $latestProducts = Product::latest('created_at')->take(4)->get();
         $latestProducts = $latestProducts->map(function($product) {
