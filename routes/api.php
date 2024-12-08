@@ -3,6 +3,7 @@
 use App\Http\Controllers\API\CartController;
 use App\Http\Controllers\API\CommentPostController;
 use App\Http\Controllers\API\CommentProductController;
+use App\Http\Controllers\API\ContactController;
 use App\Http\Controllers\API\CouponsController;
 use App\Http\Controllers\API\DishReviewController;
 use App\Http\Controllers\API\FacebookController;
@@ -62,6 +63,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('/vnpay/payment', [PaymentController::class, 'vnpayPayment']);
     Route::get('/vnpay/callback', [PaymentController::class, 'vnpayCallback']);
+
+    Route::post('/contact', [ContactController::class, 'sendContact']);
 });
 
 // Đăng ký các route cho đăng ký và đăng nhập
