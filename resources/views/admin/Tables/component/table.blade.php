@@ -11,7 +11,7 @@
                 <div class="card-body">
                     {{-- <p><strong>ID:</strong> {{ $table->id }}</p> --}}
                     <p><strong>Số Chỗ Ngồi:</strong> {{ $table->seats }}</p>
-                    <p><strong>Trạng Thái:</strong> {{ $table->status }}</p>
+                    {{-- <p><strong>Trạng Thái:</strong> {{ $table->status }}</p> --}}
                     <p><strong>Vị Trí:</strong> {{ $table->location }}</p>
                     <p><strong>Tính Năng Đặc Biệt:</strong> {{ $table->special_features ?? 'Không có' }}</p>
                     {{-- <p><strong>Phù Hợp Cho Sự Kiện:</strong> {{ $table->suitable_for_events ? 'Có' : 'Không' }}</p> --}}

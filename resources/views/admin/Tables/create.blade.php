@@ -1,5 +1,5 @@
 @extends('admin.dashboard.layoutadmin')
-
+table table-striped table-bordered table-hover dataTables-reservations
 @section('content')
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
