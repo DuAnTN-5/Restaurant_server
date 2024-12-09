@@ -43,7 +43,7 @@ class RegisterController extends BaseController
          $user = User::create($input);
         //  $success['token'] =  $user->createToken('MyApp')->plainTextToken;
 
-         $verificationUrl = url("http://localhost:5173/verify-email/{$verificationToken}");
+         $verificationUrl = url("https://hightfiverestaurant.store/verify-email/{$verificationToken}");
          Mail::to($user->email)->send(new VerificationMail($verificationUrl));
  
          $success['name'] =  $user->name;
@@ -113,7 +113,7 @@ class RegisterController extends BaseController
         ]);
 
         //gửi email với link đặt mk
-        $resetLink = url("http://localhost:5173/reset-password/{$token}?email={$request->email}");
+        $resetLink = url("https://hightfiverestaurant.store/reset-password/{$token}?email={$request->email}");
         Mail::to($request->email)->send(new ResetPasswordMail($resetLink));
 
         return response()->json(['message' => 'Liên kết đặt lại mật khẩu đã được gửi đến email của bạn.',
