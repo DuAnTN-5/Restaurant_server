@@ -61,7 +61,12 @@ class Payment extends Model
         return $this->belongsTo(PaymentMethod::class, 'payment_method_id');
     }
 
-
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+    
+    
 
     // Kiểm tra nếu thanh toán qua VNPay
     public function isVNPay()

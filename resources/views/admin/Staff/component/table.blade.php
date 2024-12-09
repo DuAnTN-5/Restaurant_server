@@ -50,7 +50,7 @@
                                 <span>Không có người dùng liên kết</span>
                             @endif
                         </td>
-
+                        
                         <td style="text-align: center; vertical-align: middle;">
                             @php
                                 $roles = ['1' => 'Admin', '2' => 'Manager', '3' => 'Staff'];
@@ -58,12 +58,17 @@
 
                             @if($staff->user)
                                 <span class="badge badge-{{ $staff->user->role == 1 ? 'primary' : ($staff->user->role == 2 ? 'warning' : 'info') }}">
-                                    {{ $roles[$staff->user->role] ?? 'Unknown' }}
+                                    
+                                    @foreach ($staff->user->roles as $role) 
+                                        {{ $role->name ?? 'Unknown' }}
+                                    
+                                    @endforeach
                                 </span>
                             @else
                                 <span class="badge badge-secondary">No user</span>
                             @endif
                         </td>
+                        
 
                         <td style="text-align: center; vertical-align: middle;">
                             <!-- Nút chỉnh sửa cho user liên kết với staff -->

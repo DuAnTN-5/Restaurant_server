@@ -1,9 +1,9 @@
 <div class="row">
     <div class="col-lg-12 text-right">
         <form method="GET" action="{{ route('users.index') }}" class="form-inline">
-            <div class="form-group mb-2">
+            {{-- <div class="form-group mb-2">
                 <input type="date" name="created_at" class="form-control" value="{{ request()->input('created_at') }}">
-            </div>
+            </div> --}}
             <!-- Dropdown chọn tình trạng -->
             <div class="form-group mb-2">
                 <select name="status" class="form-control">

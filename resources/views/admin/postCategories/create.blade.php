@@ -33,47 +33,15 @@
                         <h5>Thêm Loại Bài Viết</h5>
                     </div>
                     <div class="ibox-content">
-                        @include('admin.PostCategories.component.form') <!-- Include form -->
+                        @include('admin.postCategories.component.form') <!-- Include form -->
                     </div>
                 </div>
             </div>
-            <!-- Phần Danh Sách Loại Bài Viết -->
-            {{-- <div class="col-lg-4">
-            <div class="ibox float-e-margins">
-                <div class="ibox-title">
-                    <h5>Danh Sách Loại Bài Viết Đã Thêm</h5>
-                </div>
-                <div class="ibox-content">
-                    <table class="table table-striped">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Tên Loại</th>
-                                <th>Hành Động</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {{-- @foreach ($categories as $category)
-                                <tr>
-                                    
-                                    <td>{{ $category->name }}</td>
-                                    <td>
-                                        <a href="{{ route('PostCategories.edit', $category->id) }}" class="btn btn-xs btn-primary">Sửa</a>
-                                        <form action="{{ route('PostCategories.destroy', $category->id) }}" method="POST" style="display: inline-block;">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-xs btn-danger">Xóa</button>
-                                        </form>
-                                    </td>
-                                </tr>
-                             @endforeach --}}
-            {{-- </tbody>
-                    </table>
-                </div>
-            </div>
-        </div> --}}
         </div>
     </div>
     </div>
     </div>
 @endsection
+@push('scripts')
+    @include('admin.postCategories.component.script') <!-- Script xử lý trạng thái -->
+@endpush

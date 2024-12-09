@@ -23,7 +23,7 @@ class RoleMiddleware
         // dd($roleDetail);
 
         // Kiểm tra quyền
-        if (!$roleDetail || $roleDetail->$role !== 1) {
+        if (!$roleDetail || $roleDetail->$role > 1) {
             // Trả về lỗi nếu không có quyền 
             abort(403, 'Bạn không có quyền truy cập vào chức năng này.');
         }

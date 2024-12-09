@@ -30,11 +30,15 @@ class Staff extends Model
     ];
     
     // Mối quan hệ với bảng users (one-to-one or one-to-many)
+    // public function user()
+    // {
+    //     return $this->belongsTo(User::class);
+    // }
     public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
-    
+{
+    return $this->belongsTo(User::class, 'user_id', 'id');
+}
+
 
     // Mối quan hệ với bảng reservations (one-to-many)
     public function reservations()

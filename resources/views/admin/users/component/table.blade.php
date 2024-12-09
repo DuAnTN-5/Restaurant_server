@@ -33,11 +33,14 @@
 
 
                 <td style="text-align: center; vertical-align: middle;">
-
-                    @php $roleName = implode(',', $user->getRoleNames()->toArray()) @endphp
-
+                    @php 
+                        $roleName = implode(',', $user->getRoleNames()->toArray()); 
+                    @endphp
+                
                     @if ($roleName == 'Admin')
                         <span class="badge badge-primary">
+                    @elseif ($roleName == 'Manager')
+                        <span class="badge badge-success">
                     @elseif ($roleName == 'Staff')
                         <span class="badge badge-warning">
                     @elseif ($roleName == 'User')
@@ -45,9 +48,10 @@
                     @else
                         <span class="badge badge-secondary">
                     @endif
-
+                
                     {{ $roleName }}</span>
                 </td>
+                
                 <td style="text-align: center; vertical-align: middle;">
                     <a href="{{ route('users.edit', $user->id) }}" class="btn btn-success">
                         <i class="fa fa-edit"></i>
