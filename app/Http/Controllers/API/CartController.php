@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Api\Cart;
 use App\Models\Api\CartItem;
 use App\Models\Product;
+use App\Models\Reservation;
 use App\Models\Table;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -125,6 +126,15 @@ class CartController extends Controller
                 "time" => $request->time,
                 "guest_count" => $request->guest_count,
                 "notes" => $request->notes,
+            ]);
+
+            Reservation::create([
+                "user_id" => $request->user_id,
+                "table_id" => $request->table_id,
+                "reservation_date" => \Carbon\Carbon::parse($request->date . ' ' . $request->time),
+                "guest_count" => $request->guest_count,
+                "special_requests" => $request->notes,
+                "status" => 'confirmed',
             ]);
 
             return response()->json([

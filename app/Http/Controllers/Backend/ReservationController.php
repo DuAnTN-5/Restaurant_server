@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
+use App\Models\Api\Cart;
 use App\Models\Reservation;
 use App\Models\User;
 use App\Models\Table;
@@ -121,6 +122,19 @@ class ReservationController extends Controller
     {
         $reservation = Reservation::findOrFail($id);
         $reservation->delete();
+
+        $reservationDate = \Carbon\Carbon::parse($reservation->reservation_date);
+        $reservationTime = $reservationDate->toTimeString();
+        $reservationDay = $reservationDate->toDateString(); 
+
+        $cart = Cart::where('table_id', $reservation->table_id)
+        ->where('date', '=', $reservationDay)  
+        ->where('time', '=', $reservationTime) 
+        ->first();
+
+        if($cart) {
+            $cart->delete();
+        }
         $this->flasher->addSuccess('Đặt chỗ đã được xóa thành công.');
 
         return redirect()->route('reservations.index');
