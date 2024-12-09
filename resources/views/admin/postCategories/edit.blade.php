@@ -40,3 +40,6 @@
         </div>
     </div>
 @endsection
+@push('scripts')
+    @include('admin.postCategories.component.script') <!-- Script xử lý trạng thái -->
+@endpush

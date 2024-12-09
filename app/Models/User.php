@@ -29,9 +29,6 @@ class User extends Authenticatable
         'sex',
         'role',
         'status',
-        'province_id',
-        'district_id',
-        'ward_id',
         'address',
         'facebook_id',
         'google_id',
@@ -56,11 +53,15 @@ class User extends Authenticatable
     ];
 
     // Quan hệ với bảng staff
+    // public function staff()
+    // {
+    //     return $this->hasOne(Staff::class, 'user_id');
+    // }
     public function staff()
     {
-        return $this->hasOne(Staff::class, 'user_id');
+        return $this->hasOne(Staff::class, 'user_id', 'id');
     }
-
+    
     // Kiểm tra nếu người dùng là Manager
     public function isManager()
     {
@@ -160,18 +161,6 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Product::class, 'favorites', 'user_id', 'product_id');
     }
-
-    public function loyaltyProgram()
-    {
-        return $this->hasOne(LoyaltyProgram::class, 'user_id');
-    }
-
-    // Quan hệ với bảng Events
-    public function events()
-    {
-        return $this->hasMany(Event::class, 'user_id');
-    }
-
 
     public function cart()
     {

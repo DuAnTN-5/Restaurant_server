@@ -27,10 +27,11 @@ use App\Http\Controllers\LocationController;
 use App\Http\Controllers\Backend\RoleDetailsController;
 use App\Http\Controllers\Backend\RoleController;
 
-Route::get('/districts/{province_id}', [LocationController::class, 'getDistricts']);
-Route::get('/wards/{district_id}', [LocationController::class, 'getWards']);
 
-
+Route::get('/admin/revenue', [AdminController::class, 'getRevenueData'])->name('admin.revenue');
+Route::get('/admin/thongketheongay', [AdminController::class,'thongKeTheoNgay']);
+Route::get('/admin/thongketheothang', [AdminController::class,'thongKeTheothang']);
+Route::get('/admin/thongketheonam', [AdminController::class,'thongKeTheonam']);
 Route::controller(LoginController::class)->group(function () {
     Route::get('/login', 'showLoginForm')->name('login'); // Hiển thị form đăng nhập
     Route::post('/login', 'login')->name('login');        // Xử lý đăng nhập

@@ -150,13 +150,7 @@
                     <li class="{{ Request::is('admin/coupons') ? 'active' : '' }}">
                         <a href="{{ route('coupons.index') }}"><i class="fa fa-list"></i> Danh Sách Coupons</a>
                     </li>
-                    <!-- Quản lý Chương Trình Khuyến Mãi -->
-                    {{-- <li class="{{ Request::is('admin/discountPromotions') ? 'active' : '' }}">
-                        <a href="{{ route('discounts_promotions.index') }}"><i class="fa fa-calendar"></i> Danh Sách Khuyến Mãi</a>
-                    </li>
-                    <li class="{{ Request::is('admin/discountPromotions/create') ? 'active' : '' }}">
-                        <a href="{{ route('discounts_promotions.create') }}"><i class="fa fa-plus-circle"></i> Thêm Khuyến Mãi</a>
-                    </li> --}}
+
                 </ul>
             </li>
             @endcan

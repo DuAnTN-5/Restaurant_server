@@ -77,11 +77,11 @@
                                             @if ($user->role == 1)
                                                 <span class="badge badge-primary">Admin</span>
                                             @elseif ($user->role == 2)
-                                                <span class="badge badge-warning">Manager</span>
+                                                <span class="badge badge-success">Manager</span>
                                             @elseif ($user->role == 3)
-                                                <span class="badge badge-info">Staff</span>
+                                                <span class="badge badge-warning">Staff</span>
                                             @else
-                                                <span class="badge badge-secondary">User</span>
+                                                <span class="badge badge-info">User</span>
                                             @endif
                                         </td>
                                         <td style="text-align: center; vertical-align: middle;">
