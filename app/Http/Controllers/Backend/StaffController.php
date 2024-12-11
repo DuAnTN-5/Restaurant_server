@@ -24,6 +24,10 @@ class StaffController extends Controller
         $query = Staff::with(['user'])
         ->whereHas('user', function ($q)  {
             $q->whereNull('deleted_at');
+            $q->orWhereHas('roles', function ($role) {
+                $role->where('id', '>', 1);
+
+                });
             });
         
 
@@ -61,97 +65,97 @@ class StaffController extends Controller
     }
 
     // Hiển thị form để thêm nhân viên mới
-    // public function create()
-    // {
-    //     $users = User::all();
-    //     return view('admin.staff.create', compact('users'));
-    // }
+    public function create()
+    {
+        $users = User::all();
+        return view('admin.staff.create', compact('users'));
+    }
 
     // Lưu thông tin nhân viên mới vào cơ sở dữ liệu
-    // public function store(Request $request, FlasherInterface $flasher)
-    // {
-    //     $validator = Validator::make($request->all(), [
-    //         'user_id' => 'required|exists:users,id|unique:staffs,user_id',
-    //         'position' => 'required|string|max:50',
-    //         'hire_date' => 'required|date',
-    //         'department' => 'required|string|max:50',
-    //         'salary' => 'required|numeric|min:0',
-    //         'status' => 'required|in:active,inactive',
-    //         'shift_start' => 'nullable|date_format:H:i',
-    //         'shift_end' => 'nullable|date_format:H:i',
-    //         'task_description' => 'nullable|string|max:255',
-    //     ]);
+    public function store(Request $request, FlasherInterface $flasher)
+    {
+        $validator = Validator::make($request->all(), [
+            'user_id' => 'required|exists:users,id|unique:staffs,user_id',
+            'position' => 'required|string|max:50',
+            'hire_date' => 'required|date',
+            'department' => 'required|string|max:50',
+            'salary' => 'required|numeric|min:0',
+            'status' => 'required|in:active,inactive',
+            'shift_start' => 'nullable|date_format:H:i',
+            'shift_end' => 'nullable|date_format:H:i',
+            'task_description' => 'nullable|string|max:255',
+        ]);
 
-    //     if ($validator->fails()) {
-    //         foreach ($validator->errors()->all() as $error) {
-    //             $flasher->addError($error);
-    //         }
-    //         return redirect()->back()->withInput();
-    //     }
+        if ($validator->fails()) {
+            foreach ($validator->errors()->all() as $error) {
+                $flasher->addError($error);
+            }
+            return redirect()->back()->withInput();
+        }
 
-    //     $staff = Staff::create($request->all());
+        $staff = Staff::create($request->all());
 
-    //     // Kiểm tra xem user đã xóa mềm chưa và gửi email thông báo
-    //     $user = User::withTrashed()->find($request->user_id);
-    //     if ($user) {
-    //         Mail::to($user->email)->send(new StaffCreated($staff));
-    //     }
+        // Kiểm tra xem user đã xóa mềm chưa và gửi email thông báo
+        $user = User::withTrashed()->find($request->user_id);
+        if ($user) {
+            Mail::to($user->email)->send(new StaffCreated($staff));
+        }
 
-    //     $flasher->addSuccess('Nhân viên đã được thêm thành công và email đã được gửi!');
-    //     return redirect()->route('staff.index');
-    // }
+        $flasher->addSuccess('Nhân viên đã được thêm thành công và email đã được gửi!');
+        return redirect()->route('staff.index');
+    }
 
-    // // Hiển thị form để chỉnh sửa thông tin nhân viên
-    // public function edit($id)
-    // {
-    //     $staff = Staff::with('user')->findOrFail($id);
-    //     $users = User::all();
-    //     return view('admin.staff.edit', compact('staff', 'users'));
-    // }
+    // Hiển thị form để chỉnh sửa thông tin nhân viên
+    public function edit($id)
+    {
+        $staff = Staff::with('user')->findOrFail($id);
+        $users = User::all();
+        return view('admin.staff.edit', compact('staff', 'users'));
+    }
 
-    // // Cập nhật thông tin của nhân viên
-    // public function update(Request $request, $id, FlasherInterface $flasher)
-    // {
-    //     $validator = Validator::make($request->all(), [
-    //         'user_id' => 'required|exists:users,id',
-    //         'position' => 'required|string|max:50',
-    //         'hire_date' => 'required|date',
-    //         'department' => 'required|string|max:50',
-    //         'salary' => 'required|numeric|min:0',
-    //         'status' => 'required|in:active,inactive',
-    //         'shift_start' => 'nullable|date_format:H:i',
-    //         'shift_end' => 'nullable|date_format:H:i',
-    //         'task_description' => 'nullable|string|max:255',
-    //     ]);
+    // Cập nhật thông tin của nhân viên
+    public function update(Request $request, $id, FlasherInterface $flasher)
+    {
+        $validator = Validator::make($request->all(), [
+            'user_id' => 'required|exists:users,id',
+            'position' => 'required|string|max:50',
+            'hire_date' => 'required|date',
+            'department' => 'required|string|max:50',
+            'salary' => 'required|numeric|min:0',
+            'status' => 'required|in:active,inactive',
+            'shift_start' => 'nullable|date_format:H:i',
+            'shift_end' => 'nullable|date_format:H:i',
+            'task_description' => 'nullable|string|max:255',
+        ]);
 
-    //     if ($validator->fails()) {
-    //         foreach ($validator->errors()->all() as $error) {
-    //             $flasher->addError($error);
-    //         }
-    //         return redirect()->back()->withInput();
-    //     }
+        if ($validator->fails()) {
+            foreach ($validator->errors()->all() as $error) {
+                $flasher->addError($error);
+            }
+            return redirect()->back()->withInput();
+        }
 
-    //     $staff = Staff::findOrFail($id);
-    //     $staff->update($request->all());
+        $staff = Staff::findOrFail($id);
+        $staff->update($request->all());
 
-    //     $flasher->addSuccess('Nhân viên đã được cập nhật thành công!');
-    //     return redirect()->route('staff.index');
-    // }
+        $flasher->addSuccess('Nhân viên đã được cập nhật thành công!');
+        return redirect()->route('staff.index');
+    }
 
-    // // Khôi phục một nhân viên đã bị xóa mềm
-    // public function restore($id, FlasherInterface $flasher)
-    // {
-    //     $staff = Staff::withTrashed()->findOrFail($id);
-    //     $staff->restore();
+    // Khôi phục một nhân viên đã bị xóa mềm
+    public function restore($id, FlasherInterface $flasher)
+    {
+        $staff = Staff::withTrashed()->findOrFail($id);
+        $staff->restore();
 
-    //     $flasher->addSuccess('Nhân viên đã được khôi phục thành công');
-    //     return redirect()->route('staff.index');
-    // }
+        $flasher->addSuccess('Nhân viên đã được khôi phục thành công');
+        return redirect()->route('staff.index');
+    }
 
-    // // Tạo báo cáo danh sách nhân viên
-    // public function report()
-    // {
-    //     $staffs = Staff::all();
-    //     return view('admin.staff.report', compact('staffs'));
-    // }
+    // Tạo báo cáo danh sách nhân viên
+    public function report()
+    {
+        $staffs = Staff::all();
+        return view('admin.staff.report', compact('staffs'));
+    }
 }

@@ -13,11 +13,12 @@ class PaymentsController extends Controller
      */
     public function index()
 {
-    // Lấy tất cả các bản ghi thanh toán từ cơ sở dữ liệu
-    $payments = Payment::with('order')->get();
+    // Eager load các quan hệ cần thiết
+    $payments = Payment::with(['user', 'table', 'paymentMethod', 'coupon'])->get();
 
     return view('admin.payments.index', compact('payments'));
 }
+
 
 
     // public function create()

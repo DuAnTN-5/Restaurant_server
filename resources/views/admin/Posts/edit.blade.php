@@ -37,3 +37,6 @@
         </div>
     </div>
 @endsection
+@push('scripts')
+    @include('admin.posts.component.script') <!-- Script xử lý trạng thái -->
+@endpush

@@ -27,3 +27,7 @@
     </div>
 </div>
 @endsection
+@push('scripts')
+    <!-- Bao gồm script thay đổi trạng thái -->
+    @include('admin.products.component.script')
+@endpush

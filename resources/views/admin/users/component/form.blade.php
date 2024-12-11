@@ -237,7 +237,7 @@
                 </div>
                 <div class="ibox-content">
                     <!-- Province, District, Ward, and Address -->
-                    <div class="row">
+                    {{-- <div class="row">
                         <div class="col-lg-6">
                             <div class="form-group">
                                 <label for="province_code">Mã Tỉnh/Thành Phố</label>
@@ -252,16 +252,16 @@
                                     value="{{ old('district_code', $user->district_code ?? '') }}">
                             </div>
                         </div>
-                    </div>
+                    </div> --}}
 
                     <div class="row">
-                        <div class="col-lg-6">
+                        {{-- <div class="col-lg-6">
                             <div class="form-group">
                                 <label for="ward_code">Mã Phường/Xã</label>
                                 <input type="text" name="ward_code" id="ward_code" class="form-control"
                                     value="{{ old('ward_code', $user->ward_code ?? '') }}">
                             </div>
-                        </div>
+                        </div> --}}
                         <div class="col-lg-6">
                             <div class="form-group">
                                 <label for="address">Địa chỉ</label>
@@ -269,10 +269,6 @@
                                     value="{{ old('address', $user->address ?? '') }}">
                             </div>
                         </div>
-                    </div>
-
-                    <!-- Phone Number -->
-                    <div class="row">
                         <div class="col-lg-6">
                             <div class="form-group">
                                 <label for="phone_number">Số điện thoại</label>
@@ -281,6 +277,17 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- Phone Number -->
+                    {{-- <div class="row">
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label for="phone_number">Số điện thoại</label>
+                                <input type="text" name="phone_number" id="phone_number" class="form-control"
+                                    value="{{ old('phone_number', $user->phone_number ?? '') }}">
+                            </div>
+                        </div>
+                    </div> --}}
                 </div>
             </div>
         </div>

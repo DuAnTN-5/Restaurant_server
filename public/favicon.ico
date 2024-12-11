@@ -1,0 +1,3 @@
+{{-- Thẻ này sẽ thêm favicon.ico vào website --}}
+<link rel="shortcut icon" href="{{ asset('backend/img/favicon.ico') }}" type="image/x-icon">
+<link rel="icon" href="{{ asset('backend/img/favicon.ico') }}" type="image/x-icon">

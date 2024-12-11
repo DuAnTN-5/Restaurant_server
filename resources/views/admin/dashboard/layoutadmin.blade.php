@@ -22,8 +22,6 @@
             <!-- Include the right sidebar -->
             @include('admin.dashboard.component.right-sidebar')
 
-            <!-- Main content (content.blade.php) sẽ được chèn vào đây -->
-            {{-- @include('admin.dashboard.component.content') --}}
             @yield('content')
             <!-- Include the footer -->
             @include('admin.dashboard.component.footer')

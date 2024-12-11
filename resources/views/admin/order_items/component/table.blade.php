@@ -12,7 +12,6 @@
             <th>ID</th>
             <th>Tên Sản Phẩm</th>
             <th>Số Lượng</th>
-            <th>Mã Khuyến Mãi</th>
             <th>Giảm Giá</th>
             <th>Giá</th>
             <th>Tổng Giá</th>
@@ -26,7 +25,6 @@
                 <td>{{ $item->id }}</td>
                 <td>{{ $item->product->name ?? 'Không xác định' }}</td> <!-- Sử dụng relationship với sản phẩm -->
                 <td>{{ $item->quantity }}</td>
-                <td>{{ $item->discount_promotion_id ?? 'Không áp dụng' }}</td>
                 <td>{{ $item->discount_applied ? number_format($item->discount_applied, 0, ',', '.') : 0 }} đ</td>
                 <td>{{ number_format($item->price, 0, ',', '.') }} đ</td>
                 <td>{{ number_format($item->total_price, 0, ',', '.') }} đ</td>

@@ -6,7 +6,6 @@
     @endif
 
     <div class="row">
-        <!-- Phần bên trái - 8 cột -->
         <div class="col-lg-8">
             <!-- Tiêu đề -->
             <div class="form-group">
@@ -102,26 +101,4 @@
     </div>
 </form>
 
-<script src="{{ asset('backend/js/plugins/summernote/summernote.min.js') }}"></script>
-<link href="{{ asset('backend/css/plugins/summernote/summernote.css') }}" rel="stylesheet">
-<link href="{{ asset('backend/css/plugins/summernote/summernote-bs3.css') }}" rel="stylesheet">
-<script>
-    $(document).ready(function() {
-        $('.summernote').summernote();
-    });
 
-    // JavaScript để hiển thị trước các ảnh
-    function previewImage(event) {
-        const file = event.target.files[0];
-        const preview = document.getElementById('preview-image');
-
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            preview.src = e.target.result;
-        };
-
-        if (file) {
-            reader.readAsDataURL(file);
-        }
-    }
-</script>
