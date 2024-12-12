@@ -38,7 +38,7 @@ class RegisterController extends BaseController
           // Tạo mã xác nhận và thời gian hết hạn
           $verificationToken = Str::random(64);
           $input["verification_token"] = $verificationToken;
-          $input["verification_expires_at"] = now()->addMinute(30);
+          $input["verification_expires_at"] = now()->addMinute(5);
 
          $user = User::create($input);
         //  $success['token'] =  $user->createToken('MyApp')->plainTextToken;
@@ -61,7 +61,8 @@ class RegisterController extends BaseController
         }
 
         if($user->verification_expires_at < now()) {
-            return $this->sendError('Token đã hết hạn.', [], 400);
+            $user->delete();  
+            return $this->sendError('Token đã hết hạn và tài khoản đã bị xóa.', [], 400);
         }
  
         $user->is_verified = true;
@@ -69,6 +70,7 @@ class RegisterController extends BaseController
         $user->verification_expires_at = NULL;
         $user->save();
 
+        $user->assignRole('User');
         return $this->sendResponse(['verified' => true], 'Email Verify Successfully.');
      }
  
@@ -80,6 +82,10 @@ class RegisterController extends BaseController
     
              if(!$user->is_verified){
                 return $this->sendError('Tài khoản của bạn chưa được xác minh. Vui lòng kiểm tra lại email trong hộp thư.');
+             }
+
+             if($user->status == "inactive"){
+                return $this->sendError('Tài khoản của bạn đã bị khóa.');
              }
 
              $success['token'] =  $user->createToken('MyApp')->plainTextToken;
@@ -134,7 +140,7 @@ class RegisterController extends BaseController
                     ->where('token', $request->token)
                     ->first();
         
-        if(!$reset || $reset->created_at < now()->subMinutes(30)) {
+        if(!$reset || $reset->created_at < now()->subMinutes(5)) {
             return response()->json(['message' => 'Token đặt lại mật khẩu không hợp lệ hoặc đã hết hạn.',
                                      'password_reset' => false
                                     ], 400);
